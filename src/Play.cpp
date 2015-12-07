@@ -47,48 +47,38 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataA = contact->GetFixtureA()->GetUserData();
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
-		//if ((int)fixtureUserDataA == 3 && ((int)fixtureUserDataB == 1 || (int)fixtureUserDataB == 2))
-		//{
-		//	numFootContacts--;
-		//}
 
 		if (fixtureUserDataA == "player1" || fixtureUserDataB == "player1")
 		{
 			numFootContacts--;
 		}
-		if (fixtureUserDataA == "player2" || fixtureUserDataB == "player2")
+		else if (fixtureUserDataA == "player2" || fixtureUserDataB == "player2")
 		{
 			numFootContacts2--;
 		}
 
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1") ||
+		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1"))//if A ROCKET HITS Player1
 		{
 			destroyRocket = true;
 			player1hit = true;
-
-
 		}
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2") ||
+		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2"))//if A ROCKET HITS Player2
 		{
 			destroyRocket = true;
 			player2hit = true;
 		}
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "blocksensor") ||
+		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "blocksensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "blocksensor"))//if A ROCKET HITS ground
 		{
 			Groundhit = true;
 			destroyRocket = true;
-
 		}
 	}
 };
 
-
 MyContactListener myContactListenerInstance;
-
-
 
 Play::Play(Game* game)
 {
@@ -98,10 +88,10 @@ Play::Play(Game* game)
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
 	
-//	game->window.setFramerateLimit(60);
+	game->window.setFramerateLimit(60);
     wormcount = 0;
 	Player1Turn = true;
-	
+	water1.setPositon(sf::Vector2f(100, 100));
 	player1health.setFont(font);
 	player1health.setStyle(sf::Text::Bold);
 	player1health.setPosition(0, 0);
@@ -130,7 +120,6 @@ Play::Play(Game* game)
 	CharacterTexture.loadFromFile("Resources/weird.png");
 
 	numFootContacts = 0;
- //  player1(World, position, CharacterTexture, 1);
    player1.Init(World, position, CharacterTexture, 1);
    player2.Init(World, position + sf::Vector2f(100, 0), CharacterTexture, 2);
 
@@ -187,15 +176,105 @@ void Play::draw()
 void Play::update()
 {
 	World.Step(1 / 60.f, 8, 3);
-
-	game->window.clear(sf::Color::White);
-
+	water1.Update();
+	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
+	UpdateStaticBodies();
+
+	if (Player1Turn == true)
+	{
+		cross.Update(player1.getPosition());
+		player1.Update(numFootContacts);
+	}
+	else
+	{
+		cross.Update(player2.getPosition());
+		player2.Update(numFootContacts2);
+	}
+
+
+	player1.UpdateSprite();
+	player2.UpdateSprite();
+	UpdateCamera();
+	UpdateRockets();
+	UpdateHealth();
+	UpdateBlocks();
+	
+	game->window.draw(player1.getSprite());
+	game->window.draw(player2.getSprite());
+	game->window.draw(cross.getSprite());
+	game->window.draw(player1health);
+	game->window.draw(player2health);
+	game->window.draw(boundingbox);
+	water1.Draw(game);
+	game->window.display();
+
+	return;
+}
+
+void Play::handleInput()
+{
+	sf::Event event;
+
+	while (this->game->window.pollEvent(event))
+	{
+		switch (event.type)
+		{
+			/* Close the window */
+		case sf::Event::Closed:
+		{
+			game->window.close();
+			break;
+		}
+			/* Resize the window */
+
+		case sf::Event::KeyPressed:
+		{
+			if (event.key.code == sf::Keyboard::Escape) this->game->window.close();
+
+			if (event.key.code == sf::Keyboard::E)
+			{
+				if (Rockets.size() < 1)
+				{
+					if (Player1Turn == true)
+					{
+						player1Fire = true;
+						Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
+						Rockets.push_back(tempRocket);
+					}
+					else
+					{
+						player2Fire = true;
+						Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
+						Rockets.push_back(tempRocket);
+					}
+				}
+
+			}
+			if (event.key.code == sf::Keyboard::L)
+			{
+				Player1Turn = false;
+			}
+			if (event.key.code == sf::Keyboard::K)
+			{
+				Player1Turn = true;
+			}
+
+			break;
+		}
+		default: break;
+		}
+	}
+
+	return;
+}
+void Play::UpdateStaticBodies()
+{
 	int BodyCount = 0;
 
 	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
 	{
-	
+
 		if (BodyIterator->GetType() == b2_staticBody){
 
 			if (BodyIterator->GetUserData() == "dirt"){
@@ -275,87 +354,23 @@ void Play::update()
 
 
 	}
-
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+}
+void Play::SwitchTurn()
+{
+	if (Player1Turn == true)
 	{
-		if (Rockets.size() < 1)
-		{
-			if (Player1Turn == true)
-			{
-				player1Fire = true;
-				Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
-				Rockets.push_back(tempRocket);
-			}
-			else
-			{
-				player2Fire = true;
-				Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
-				Rockets.push_back(tempRocket);
-			}
-		}
-
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-	{
+		player1Fire = false;
 		Player1Turn = false;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	else if (Player1Turn == false)
 	{
+		player2Fire = false;
 		Player1Turn = true;
 	}
 
-
-
-	if (Player1Turn == true)
-	{
-		cross.Update(player1.getPosition());
-		player1.Update(numFootContacts);
-
-	}
-	else
-	{
-		cross.Update(player2.getPosition());
-		player2.Update(numFootContacts2);
-	}
-
-
-	if (player1hit == true)
-	{
-		player1.setHealth(20);
-		player1hit = false;
-	}
-	if (player2hit == true)
-	{
-		player2.setHealth(20);
-		player2hit = false;
-	}
-
-	if (destroyRocket == true && World.IsLocked() == false)
-	{
-		for (int i = 0; i < Rockets.size(); i++)
-		{
-			lastbulletpos = Rockets[i].getPosition();
-			World.DestroyBody(Rockets[i].getBody());
-			Rockets.pop_back();
-			destroyRocket = false;
-
-			if (Player1Turn == true)
-			{
-				player1Fire = false;
-				Player1Turn = false;
-			}
-			else if (Player1Turn == false)
-			{
-				player2Fire = false;
-				Player1Turn = true;
-			}
-		}
-	}
-	player1.UpdateSprite();
-	player2.UpdateSprite();
-
-	sf::View player1View, player2View, bulletView;
+}
+void Play::UpdateCamera()
+{
 
 	player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
 
@@ -390,19 +405,9 @@ void Play::update()
 			}
 		}
 	}
-
-
-
-
-	//player1View.setViewport(sf::FloatRect(0.25f, 0.25, 0.5f, 0.5f));
-
-
-	game->window.draw(player1.getSprite());
-	game->window.draw(player2.getSprite());
-	game->window.draw(cross.getSprite());
-
-
-
+}
+void Play::UpdateRockets()
+{
 	for (int i = 0; i < Rockets.size(); i++)
 	{
 
@@ -410,23 +415,47 @@ void Play::update()
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (width * 20) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
-
-
 		}
-
 
 		game->window.draw(Rockets[i].getSprite());
 	}
+
+	if (destroyRocket == true && World.IsLocked() == false)
+	{
+		for (int i = 0; i < Rockets.size(); i++)
+		{
+			lastbulletpos = Rockets[i].getPosition();
+			World.DestroyBody(Rockets[i].getBody());
+			Rockets.pop_back();
+			destroyRocket = false;
+
+			SwitchTurn();
+		}
+	}
+}
+void Play::UpdateHealth()
+{
+
+	if (player1hit == true)
+	{
+		player1.setHealth(20);
+		player1hit = false;
+	}
+	if (player2hit == true)
+	{
+		player2.setHealth(20);
+		player2hit = false;
+	}
+
 	player1health.setPosition(player1.getPosition().x - 10, player1.getPosition().y - 40);
 	player1health.setString(std::to_string(player1.getHealth()));
 
 	player2health.setPosition(player2.getPosition().x - 10, player2.getPosition().y - 40);
 	player2health.setString(std::to_string(player2.getHealth()));
 
-	game->window.draw(player1health);
-
-	game->window.draw(player2health);
-
+}
+void Play::UpdateBlocks()
+{
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		blocks[i].Update(boundingbox);
@@ -447,41 +476,4 @@ void Play::update()
 		Groundhit = false;
 	}
 
-
-
-	game->window.display();
-
-
-
-
-
-	return;
-}
-
-void Play::handleInput()
-{
-	sf::Event event;
-
-	while (this->game->window.pollEvent(event))
-	{
-		switch (event.type)
-		{
-			/* Close the window */
-		case sf::Event::Closed:
-		{
-			game->window.close();
-			break;
-		}
-			/* Resize the window */
-
-		case sf::Event::KeyPressed:
-		{
-			if (event.key.code == sf::Keyboard::Escape) this->game->window.close();
-			break;
-		}
-		default: break;
-		}
-	}
-
-	return;
 }

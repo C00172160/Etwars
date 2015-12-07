@@ -38,6 +38,7 @@
 #include "tmx\MapLoader.h"
 #include "Crosshair.h"
 #include "Rocket.h"
+#include "Water.h"
 
 using namespace std;
 
@@ -53,7 +54,7 @@ private:
 	bool Player1Turn;
 	sf::Text player1health;
 	sf::Text player2health;
-
+	Water water1;
 	vector<Block> blocks;
 
 	//sf::Texture grasstexture;
@@ -64,6 +65,7 @@ private:
 	sf::Texture RocketTexture;
 
 	sf::Texture dirttex;
+	
 	sf::Texture topStraighttex;
 	sf::Texture leftStraighttex;
 	sf::Texture topLeftCornertex;
@@ -72,7 +74,7 @@ private:
 	sf::Texture bottomStraight;
 	sf::Texture bottomLeftCorner;
 
-	
+	sf::View player1View, player2View, bulletView;
 
 	int sizeofmap;
 	
@@ -93,14 +95,18 @@ private:
 	 int heigh30;
 
 
-
-
 public:
 
 	virtual void draw();
 	virtual void update();
 	virtual void handleInput();
-
+	void UpdateStaticBodies();
+	void SwitchTurn();
+	void UpdateCamera();
+	void UpdateRockets();
+	void UpdateHealth();
+	void UpdateBlocks();
+	void UpdateWater();
 	Play(Game* game);
 };
 
