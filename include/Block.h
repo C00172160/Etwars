@@ -10,18 +10,16 @@ class Block {
 
 public:
 	Block();
-	Block(char c, sf::Vector2f position, b2World& world);
-	void createBlock(b2World& world, sf::Vector2f position); 
+	Block(int c, sf::Vector2f position, b2World& world);
+	void createBlock(b2World& world, sf::Vector2f position, int type);
 	void Update(sf::CircleShape& circle2);
 	bool getAlive();
 	b2Body* getBody();
 	sf::CircleShape& getCircle();
 
 private:
-	char type;
+	int type;
 	sf::Vector2f m_position;
-	sf::String GrassSymbols = "1";
-	sf::String DirtSymbols = "2";
 	b2Fixture* SensorFixture;
 	bool alive = true;
 	b2Body * BlockBody;

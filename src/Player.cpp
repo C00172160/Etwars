@@ -47,8 +47,8 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	Sprite.setOrigin(16.f, 16.f);
-
+	//Sprite.setOrigin(16.f, 16.f);
+	Sprite.setOrigin(0, 0);
 	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
 
 	  

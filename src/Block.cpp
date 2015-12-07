@@ -2,12 +2,12 @@
 
 Block::Block(){
 }
-Block::Block(char c ,sf::Vector2f position,b2World& world){
+Block::Block(int c ,sf::Vector2f position,b2World& world){
 
 	m_position = position;
 	m_position = sf::Vector2f(position.x * 20, position.y * 20);
 	type = c;
-	createBlock(world, m_position);
+	createBlock(world, m_position,type);
 	circle.setOrigin(10, 10);
 	circle.setRadius(10);
 	circle.setPosition(m_position.x , m_position.y );
@@ -19,7 +19,7 @@ Block::Block(char c ,sf::Vector2f position,b2World& world){
 	
 	
 
-void Block::createBlock(b2World& world, sf::Vector2f position) {
+void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 
 	
 	
@@ -53,13 +53,53 @@ void Block::createBlock(b2World& world, sf::Vector2f position) {
 	SensorFixture->SetUserData("blocksensor");
 
 
-	if (GrassSymbols.find(type)){
+	//if (type == 2){
 
-		BlockBody->SetUserData("grass");
-	}
-	else if (DirtSymbols.find(type)){
+	//	BlockBody->SetUserData("grass");
+	//}
+	//else if (type == 1){
+
+	//	BlockBody->SetUserData("dirt");
+
+	//}
+
+	if (type == 5){
 
 		BlockBody->SetUserData("dirt");
+	}
+    else if (type == 4){
+
+		BlockBody->SetUserData("topStraight");
+
+	}
+	else if (type == 6){
+
+		BlockBody->SetUserData("leftStraight");
+
+	}
+	else if (type == 3){
+
+		BlockBody->SetUserData("topLeftCorner");
+
+	}
+	else if (type == 2){
+
+		BlockBody->SetUserData("topRightCorner");
+
+	}
+	else if (type == 10){
+
+		BlockBody->SetUserData("rightStraight");
+
+	}
+	else if (type == 8){
+
+		BlockBody->SetUserData("bottomStraight");
+
+	}
+	else if (type == 7){
+
+		BlockBody->SetUserData("bottomLeftCorner");
 
 	}
 
@@ -68,13 +108,6 @@ void Block::createBlock(b2World& world, sf::Vector2f position) {
 
 void Block::Update(sf::CircleShape& circle2)
 {
-	/*if (m_position.x   > rect.getPosition().x  &&
-		m_position.x  < (rect.getPosition().x  + rect.getSize().x ) &&
-		m_position.y  > rect.getPosition().y  &&
-		m_position.y  < (rect.getPosition().y  + rect.getSize().y))
-	{
-		alive = false;
-	}*/
 	if (CollisionManager::CircleDetectCollision(circle, circle2) == true)
 	{
 		alive = false;

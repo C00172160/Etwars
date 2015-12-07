@@ -135,8 +135,7 @@ MyContactListener myContactListenerInstance;
 
 int main()
 {
-	sf::String blockSymbols = "01";
-	sf::String DirtSymbols = "1";
+	
 	sf::Vector2f position(400, 50);
 	sf::Font font;
 	font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
@@ -145,7 +144,6 @@ int main()
 	int wormcount = 0;
 	/** Prepare the world */
 	bool Player1Turn = true;
-
 	sf::Text player1health;
 	player1health.setFont(font);
 	
@@ -164,103 +162,51 @@ int main()
 
 	vector<Block> blocks;
 
-	//sf::String map[] = {"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"22222222222222222222222222222222222222222222",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111" };
-
-	sf::String map[] = {    "00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000010000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000000000000000",
-							"22222222222222222222200022222222222222222222",
-							"11111111111111111111100011111111111111111111",
-							"11111111111111111111100011111111111111111111",
-							"11111111111111111110000011111111111111111111",
-							"11111111111111111100000111111111111111111111",
-							"11111111111111110000011111111111111111111111",
-							"11111111111111000000111111111111111111111111",
-							"11111111111110000001111111111111111111111111",
-							"11111111111110000001111100111111111111111111",
-							"11111111111110000001111000011111111111111111",
-							"10000000000000000000000000000001100000000001",
-							"11000000000000000000000000000000000000000011",
-							"00000000000000000000000000000000000000000000",
-							"00000000000000000000000000000000011000000000",
-							"11111111111111111111111100000111111111111111",
-							"11111111111111111111111100000111111111111111",
-							"11111111111111111111111111111111111111111111",
-							"11111111111111111111111111111111111111111111",
-							"11111111111111111111111111111111111111111111",
-							"11111111111111111111111111111111111111111111",
-							"11111111111111111111111111111111111111111111"};
-					
-
-
-	
-	sf::Texture grasstexture;
+	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
 	sf::Texture CharacterTexture;
-	sf::Texture DirtTexture;
+	//sf::Texture DirtTexture;
 	sf::Texture CrosshairTexture;
 	sf::Texture RocketTexture;
+
+	sf::Texture dirttex;
+	sf::Texture topStraighttex;
+	sf::Texture leftStraighttex;
+	sf::Texture topLeftCornertex;
+	sf::Texture topRightCornertex;
+	sf::Texture rightStraight;
+	sf::Texture bottomStraight;
+	sf::Texture bottomLeftCorner;
+
+	dirttex.loadFromFile("Resources/grass/7.png");
+	 topStraighttex.loadFromFile("Resources/grass/6.png");
+	 leftStraighttex.loadFromFile("Resources/grass/8.png");
+	 topLeftCornertex.loadFromFile("Resources/grass/5.png");
+	 topRightCornertex.loadFromFile("Resources/grass/4.png");
+	 rightStraight.loadFromFile("Resources/grass/3.png");
+	 bottomStraight.loadFromFile("Resources/grass/1.png");
+	 bottomLeftCorner.loadFromFile("Resources/grass/2.png");
 
 	int sizeofmap = 0;
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
 	backGroundTexture.loadFromFile("Resources/background.jpg");
-	DirtTexture.loadFromFile("Resources/dirt1.png");
-	grasstexture.loadFromFile("Resources/grass1.png");
+	//DirtTexture.loadFromFile("Resources/dirt1.jpg");
+	//grasstexture.loadFromFile("Resources/grass1.jpg");
 	CharacterTexture.loadFromFile("Resources/weird.png");
+
 	numFootContacts = 0;
-	//sf::RectangleShape boundingbox(sf::Vector2f(100, 100));
-	//boundingbox.setPosition(position);
 	Player player1(World, position, CharacterTexture,1);
 	Player player2(World, position + sf::Vector2f(100,0), CharacterTexture,2);
 
 	Crosshair cross(CrosshairTexture,position);
-//	Rocket Rock(World, sf::Vector2f(300, 0), RocketTexture, position);
+	bool player1Fire = false , player2Fire = false;
 	std::vector<Rocket> Rockets;
 	sf::Sprite background;
 	background.setTexture(backGroundTexture);
 	background.setPosition(sf::Vector2f(0, 00));
 
 	World.SetContactListener(&myContactListenerInstance);
-	//sf::RectangleShape boundingbox(sf::Vector2f(100, 100));
-	//boundingbox.setPosition(-500,-500);
-	//boundingbox.setFillColor(sf::Color::Transparent);
-	//boundingbox.setOutlineThickness(5.f);
-	//boundingbox.setOutlineColor(sf::Color::Black);
 	sf::CircleShape boundingbox(50);
 	boundingbox.setPosition(-500, -500);
 	boundingbox.setFillColor(sf::Color::Transparent);
@@ -268,25 +214,28 @@ int main()
 	boundingbox.setOutlineColor(sf::Color::Black);
 
 
+	const int width = 200;
+	const int height = 30;
 
+	int map[height][width] = {
+         #include "testtest.txt"
+	};
 
-	int h = 30;
-	int w = 44;
-
-	for (int y = 0; y < h; y++) {
-
-		for (int x = 0; x < w; x++) {
-
-			char c = map[y][x];
-
-				if (blockSymbols.find(c)) {
-					Block temp = Block(map[y][x], sf::Vector2f(x, y), World);
-					blocks.push_back(temp);
-				}
-			
-
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			int c = map[y][x];
+			if (c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 10)
+			{
+				Block temp = Block(map[y][x], sf::Vector2f(x, y), World);
+				blocks.push_back(temp);
+			}
 		}
+
 	}
+
+
 
 
 	while (Window.isOpen())
@@ -302,21 +251,83 @@ int main()
 
 		for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
 		{
+			//sf::Texture dirttex;
+			//sf::Texture topStraighttex;
+			//sf::Texture leftStraighttex;
+			//sf::Texture topLeftCornertex;
+			//sf::Texture topRightCornertex;
+			//sf::Texture rightStraight;
+			//sf::Texture bottomStraight;
+			//sf::Texture bottomLeftCorner;
 			if (BodyIterator->GetType() == b2_staticBody){
 
 				if (BodyIterator->GetUserData() == "dirt"){
 					sf::Sprite DirtSprite;
-					DirtSprite.setTexture(DirtTexture);
-					DirtSprite.setOrigin(10, 10);
+					DirtSprite.setTexture(dirttex);
+					DirtSprite.setOrigin(0, 0);
 					DirtSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 					DirtSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 					Window.draw(DirtSprite);
 					++BodyCount;
 				}
-				else if (BodyIterator->GetUserData() == "grass"){
+				else if (BodyIterator->GetUserData() == "topStraight"){
 					sf::Sprite grassSprite;
-					grassSprite.setTexture(grasstexture);
-					grassSprite.setOrigin(10, 10);
+					grassSprite.setTexture(topStraighttex);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "leftStraight"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(leftStraighttex);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "topLeftCorner"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(topLeftCornertex);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "topRightCorner"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(topRightCornertex);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "rightStraight"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(rightStraight);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "bottomStraight"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(bottomStraight);
+					grassSprite.setOrigin(0, 0);
+					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+					Window.draw(grassSprite);
+					++BodyCount;
+				}
+				else if (BodyIterator->GetUserData() == "bottomLeftCorner"){
+					sf::Sprite grassSprite;
+					grassSprite.setTexture(bottomLeftCorner);
+					grassSprite.setOrigin(0, 0);
 					grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 					grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 					Window.draw(grassSprite);
@@ -334,11 +345,13 @@ int main()
 			{
 				if (Player1Turn == true)
 				{
+					player1Fire = true;
 					Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
 					Rockets.push_back(tempRocket);
 				}
 				else
 				{
+					player2Fire = true;
 					Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
 					Rockets.push_back(tempRocket);
 				}
@@ -391,10 +404,12 @@ int main()
 
 				if (Player1Turn == true)
 				{
+					player1Fire = false;
 					Player1Turn = false;
 				}
 				else if (Player1Turn == false)
 				{
+					player2Fire = false;
 					Player1Turn = true;
 				}
 			}
@@ -405,7 +420,48 @@ int main()
 		player1.UpdateSprite();
 		player2.UpdateSprite();
 	
+		sf::View player1View,player2View, bulletView;
+	    
+		player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
 
+		for (int i = 0; i < Rockets.size(); i++)
+		{
+			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+		}
+
+		player1View.setSize(500, 500);
+		player2View.setCenter(sf::Vector2f(player2.getPosition()));
+		player2View.setSize(500, 500);
+		
+		if (Player1Turn == true)
+		{
+			Window.setView(player1View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player1Fire == true)
+				{
+					Window.setView(bulletView);
+				}
+			}
+		}
+		else if (Player1Turn == false)
+		{
+			Window.setView(player2View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player2Fire == true)
+				{
+					Window.setView(bulletView);
+				}
+			}
+		}
+	
+		
+	
+
+		//player1View.setViewport(sf::FloatRect(0.25f, 0.25, 0.5f, 0.5f));
+
+		
 		Window.draw(player1.getSprite());
 		Window.draw(player2.getSprite());
 		Window.draw(cross.getSprite());
@@ -416,7 +472,7 @@ int main()
 		{
 
 			Rockets[i].Update(World);
-			if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x -22 > 800 || Rockets[i].getPosition().y > 600)
+			if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x -22 > (width * 20) || Rockets[i].getPosition().y > 600)
 			{
 				destroyRocket = true;
 
@@ -458,7 +514,7 @@ int main()
 
 		
 
-		Window.draw(boundingbox);
+		//Window.draw(boundingbox);
 	//	Window.draw(boundingbox);
 		//for (int i = 0; i < blocks.size(); i++)
 		//{
