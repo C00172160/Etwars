@@ -1,6 +1,9 @@
 #include "Crosshair.h"
 
+Crosshair::Crosshair()
+{
 
+}
 
 Crosshair::Crosshair(sf::Texture& tex,sf::Vector2f pos)
 {
@@ -10,8 +13,13 @@ Crosshair::Crosshair(sf::Texture& tex,sf::Vector2f pos)
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
 
-	
+}
+void Crosshair::Init(sf::Texture& tex, sf::Vector2f pos)
+{
+	m_position = sf::Vector2f(pos.x + 30, pos.y + 30);
 
+	tex.setSmooth(true);
+	Sprite.setTexture(tex);
 }
 
 void Crosshair::Update(sf::Vector2f playerPos)
