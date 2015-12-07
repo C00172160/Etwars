@@ -54,7 +54,7 @@ private:
 	bool Player1Turn;
 	sf::Text player1health;
 	sf::Text player2health;
-	Water water1;
+	Water water1, water2, water3;
 	vector<Block> blocks;
 
 	//sf::Texture grasstexture;

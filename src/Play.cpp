@@ -91,7 +91,9 @@ Play::Play(Game* game)
 	game->window.setFramerateLimit(60);
     wormcount = 0;
 	Player1Turn = true;
-	water1.setPositon(sf::Vector2f(100, 100));
+	water1.setPositon(sf::Vector2f(0, 575));
+	water2.setPositon(sf::Vector2f(707, 575));
+	water3.setPositon(sf::Vector2f(1414, 575));
 	player1health.setFont(font);
 	player1health.setStyle(sf::Text::Bold);
 	player1health.setPosition(0, 0);
@@ -177,6 +179,8 @@ void Play::update()
 {
 	World.Step(1 / 60.f, 8, 3);
 	water1.Update();
+	water2.Update();
+	water3.Update();
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
 	UpdateStaticBodies();
@@ -207,6 +211,8 @@ void Play::update()
 	game->window.draw(player2health);
 	game->window.draw(boundingbox);
 	water1.Draw(game);
+	water2.Draw(game);
+	water3.Draw(game);
 	game->window.display();
 
 	return;
