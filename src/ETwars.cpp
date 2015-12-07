@@ -145,7 +145,6 @@ int main()
 	int wormcount = 0;
 	/** Prepare the world */
 	bool Player1Turn = true;
-
 	sf::Text player1health;
 	player1health.setFont(font);
 	
@@ -163,36 +162,6 @@ int main()
 	player2health.setColor(sf::Color::Black);
 
 	vector<Block> blocks;
-
-	//sf::String map[] = {"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"00000000000000000000000000000000000000000000",
-	//					"22222222222222222222222222222222222222222222",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111",
-	//					"11111111111111111111111111111111111111111111" };
 
 	sf::String map[] = {    "00000000000000000000000000000000000000000000",
 							"00000000000000000000000000000000000000000000",
@@ -243,24 +212,17 @@ int main()
 	grasstexture.loadFromFile("Resources/grass1.png");
 	CharacterTexture.loadFromFile("Resources/weird.png");
 	numFootContacts = 0;
-	//sf::RectangleShape boundingbox(sf::Vector2f(100, 100));
-	//boundingbox.setPosition(position);
 	Player player1(World, position, CharacterTexture,1);
 	Player player2(World, position + sf::Vector2f(100,0), CharacterTexture,2);
 
 	Crosshair cross(CrosshairTexture,position);
-//	Rocket Rock(World, sf::Vector2f(300, 0), RocketTexture, position);
+	bool player1Fire = false , player2Fire = false;
 	std::vector<Rocket> Rockets;
 	sf::Sprite background;
 	background.setTexture(backGroundTexture);
 	background.setPosition(sf::Vector2f(0, 00));
 
 	World.SetContactListener(&myContactListenerInstance);
-	//sf::RectangleShape boundingbox(sf::Vector2f(100, 100));
-	//boundingbox.setPosition(-500,-500);
-	//boundingbox.setFillColor(sf::Color::Transparent);
-	//boundingbox.setOutlineThickness(5.f);
-	//boundingbox.setOutlineColor(sf::Color::Black);
 	sf::CircleShape boundingbox(50);
 	boundingbox.setPosition(-500, -500);
 	boundingbox.setFillColor(sf::Color::Transparent);
@@ -334,11 +296,13 @@ int main()
 			{
 				if (Player1Turn == true)
 				{
+					player1Fire = true;
 					Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
 					Rockets.push_back(tempRocket);
 				}
 				else
 				{
+					player2Fire = true;
 					Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
 					Rockets.push_back(tempRocket);
 				}
@@ -391,10 +355,12 @@ int main()
 
 				if (Player1Turn == true)
 				{
+					player1Fire = false;
 					Player1Turn = false;
 				}
 				else if (Player1Turn == false)
 				{
+					player2Fire = false;
 					Player1Turn = true;
 				}
 			}
@@ -405,7 +371,48 @@ int main()
 		player1.UpdateSprite();
 		player2.UpdateSprite();
 	
+		sf::View player1View,player2View, bulletView;
+	    
+		player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
 
+		for (int i = 0; i < Rockets.size(); i++)
+		{
+			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+		}
+
+		player1View.setSize(500, 500);
+		player2View.setCenter(sf::Vector2f(player2.getPosition()));
+		player2View.setSize(500, 500);
+		
+		if (Player1Turn == true)
+		{
+			Window.setView(player1View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player1Fire == true)
+				{
+					Window.setView(bulletView);
+				}
+			}
+		}
+		else if (Player1Turn == false)
+		{
+			Window.setView(player2View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player2Fire == true)
+				{
+					Window.setView(bulletView);
+				}
+			}
+		}
+	
+		
+	
+
+		//player1View.setViewport(sf::FloatRect(0.25f, 0.25, 0.5f, 0.5f));
+
+		
 		Window.draw(player1.getSprite());
 		Window.draw(player2.getSprite());
 		Window.draw(cross.getSprite());
@@ -458,7 +465,7 @@ int main()
 
 		
 
-		Window.draw(boundingbox);
+		//Window.draw(boundingbox);
 	//	Window.draw(boundingbox);
 		//for (int i = 0; i < blocks.size(); i++)
 		//{

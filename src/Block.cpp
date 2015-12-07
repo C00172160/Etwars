@@ -68,13 +68,6 @@ void Block::createBlock(b2World& world, sf::Vector2f position) {
 
 void Block::Update(sf::CircleShape& circle2)
 {
-	/*if (m_position.x   > rect.getPosition().x  &&
-		m_position.x  < (rect.getPosition().x  + rect.getSize().x ) &&
-		m_position.y  > rect.getPosition().y  &&
-		m_position.y  < (rect.getPosition().y  + rect.getSize().y))
-	{
-		alive = false;
-	}*/
 	if (CollisionManager::CircleDetectCollision(circle, circle2) == true)
 	{
 		alive = false;
