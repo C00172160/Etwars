@@ -9,15 +9,15 @@ Crosshair::Crosshair(sf::Texture& tex,sf::Vector2f pos)
 {
 
 	m_position = sf::Vector2f( pos.x +30,pos.y + 30);
-
+//	m_position = sf::Vector2f(pos.x , pos.y );
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
 
 }
 void Crosshair::Init(sf::Texture& tex, sf::Vector2f pos)
 {
-	m_position = sf::Vector2f(pos.x + 30, pos.y + 30);
-
+	//m_position = sf::Vector2f(pos.x + 30, pos.y + 30);
+	m_position = sf::Vector2f(pos.x, pos.y);
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
 }

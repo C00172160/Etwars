@@ -12,7 +12,7 @@ public:
 	Block();
 	Block(int c, sf::Vector2f position, b2World& world);
 	void createBlock(b2World& world, sf::Vector2f position, int type);
-	void Update(sf::CircleShape& circle2);
+	void Block::CheckLives();
 	bool getAlive();
 	b2Body* getBody();
 	sf::CircleShape& getCircle();

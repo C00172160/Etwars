@@ -689,7 +689,7 @@ void Play::UpdateBlocks()
 {
 	for (int i = 0; i < blocks.size(); i++)
 	{
-		blocks[i].Update(boundingbox);
+	//	blocks[i].Update(boundingbox);
 		if (blocks[i].getAlive() == false && World.IsLocked() == false)
 		{
 			World.DestroyBody(blocks[i].getBody());
@@ -701,8 +701,17 @@ void Play::UpdateBlocks()
 
 	if (Groundhit == true)
 	{
+		
+		boundingbox.setPosition(sf::Vector2f(lastbulletpos.x -50 , lastbulletpos.y-50));
+		for (int i = 0; i < blocks.size(); i++)
+		{
+			if (CollisionManager::CircleDetectCollision(blocks[i].getCircle(), boundingbox) ==true)
+			{
+				blocks[i].CheckLives();
+			}
+		
 
-		boundingbox.setPosition(sf::Vector2f(lastbulletpos.x - 50, lastbulletpos.y - 50));
+		}
 		boundingbox.setPosition(-500, -500);
 
 		Groundhit = false;
