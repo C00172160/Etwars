@@ -19,6 +19,7 @@ public:
 
 private:
 	int type;
+	int lives;
 	sf::Vector2f m_position;
 	b2Fixture* SensorFixture;
 	bool alive = true;

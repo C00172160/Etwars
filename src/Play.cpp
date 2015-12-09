@@ -87,25 +87,19 @@ Play::Play(Game* game)
 	 position = sf::Vector2f(400, 50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
-	
+	 BuildMode = true;
+	 PlaceMode = false;
+	 mousereleased = true;
 	game->window.setFramerateLimit(60);
     wormcount = 0;
 	Player1Turn = true;
 	water1.setPositon(sf::Vector2f(0, 575));
 	water2.setPositon(sf::Vector2f(707, 575));
 	water3.setPositon(sf::Vector2f(1414, 575));
-	player1health.setFont(font);
-	player1health.setStyle(sf::Text::Bold);
-	player1health.setPosition(0, 0);
-	player1health.setCharacterSize(20);
-	player1health.setColor(sf::Color::Black);
+	game->window.setKeyRepeatEnabled(false);
 
-	player2health.setFont(font);
-	player2health.setStyle(sf::Text::Bold);
-	player2health.setPosition(0, 0);
-	player2health.setCharacterSize(20);
-	player2health.setColor(sf::Color::Black);
 
+	buildView.setSize(800, 600);
 	dirttex.loadFromFile("Resources/grass/7.png");
 	topStraighttex.loadFromFile("Resources/grass/6.png");
 	leftStraighttex.loadFromFile("Resources/grass/8.png");
@@ -115,17 +109,16 @@ Play::Play(Game* game)
 	bottomStraight.loadFromFile("Resources/grass/1.png");
 	bottomLeftCorner.loadFromFile("Resources/grass/2.png");
 
+
     sizeofmap = 0;
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
 	backGroundTexture.loadFromFile("Resources/background.jpg");
 	CharacterTexture.loadFromFile("Resources/weird.png");
 
+	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
-   player1.Init(World, position, CharacterTexture, 1);
-   player2.Init(World, position + sf::Vector2f(100, 0), CharacterTexture, 2);
 
-     cross.Init(CrosshairTexture, position);
 	player1Fire = false;
 	player2Fire = false;
 
@@ -138,9 +131,33 @@ Play::Play(Game* game)
 	boundingbox.setFillColor(sf::Color::Transparent);
 	boundingbox.setOutlineThickness(5.f);
 	boundingbox.setOutlineColor(sf::Color::Black);
-	 //width = 200;
-	 //height = 30;
 
+	
+	////////HUD
+	hudPanelTex.loadFromFile("Resources/hudPanel.png");
+	FinishButtonTexture.loadFromFile("Resources/finish.png");
+	HudSprite.setTexture(hudPanelTex);
+	HudSpritePosition = sf::Vector2f(0, 450);
+	DirtBlockHud.setTexture(dirttex);
+	FinishButtonSprite.setTexture(FinishButtonTexture);
+    CurrentPlayer1Money = 1000;
+	CurrentPlayer2Money = 1000;
+	dirtPrice.setFont(font);
+	dirtPrice.setStyle(sf::Text::Bold);
+	dirtPrice.setCharacterSize(10);
+	dirtPrice.setColor(sf::Color::Black);
+	dirtPrice.setString("100");
+	currentPlayer.setFont(font);
+	currentPlayer.setStyle(sf::Text::Bold);
+	currentPlayer.setCharacterSize(20);
+	currentPlayer.setColor(sf::Color::Black);
+
+	Money.setFont(font);
+	Money.setStyle(sf::Text::Bold);
+	Money.setCharacterSize(20);
+	Money.setColor(sf::Color::Black);
+
+	///////////////////////////////////
 	int map[30][200] = {
       #include "testtest.txt"
 	};
@@ -153,7 +170,7 @@ Play::Play(Game* game)
 			int c = map[y][x];
 			if (c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 10)
 			{
-				Block temp = Block(map[y][x], sf::Vector2f(x, y), World);
+				Block temp = Block(map[y][x], sf::Vector2f(x*20, y*20), World);
 				blocks.push_back(temp);
 			}
 		}
@@ -178,31 +195,44 @@ void Play::draw()
 void Play::update()
 {
 	World.Step(1 / 60.f, 8, 3);
+
+
 	water1.Update();
 	water2.Update();
 	water3.Update();
+
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
 	UpdateStaticBodies();
+	UpdateCamera();
 
-	if (Player1Turn == true)
+	if (BuildMode == false)
 	{
-		cross.Update(player1.getPosition());
-		player1.Update(numFootContacts);
+		if (Player1Turn == true)
+		{
+			cross.Update(player1.getPosition());
+			player1.Update(numFootContacts);
+		}
+		else
+		{
+			cross.Update(player2.getPosition());
+			player2.Update(numFootContacts2);
+		}
+
+
+		player1.UpdateSprite();
+		player2.UpdateSprite();
+		
+		UpdateRockets();
+		UpdateHealth();
+
+		UpdateBlocks();
+
 	}
 	else
 	{
-		cross.Update(player2.getPosition());
-		player2.Update(numFootContacts2);
+		BuildModeUpdate();
 	}
-
-
-	player1.UpdateSprite();
-	player2.UpdateSprite();
-	UpdateCamera();
-	UpdateRockets();
-	UpdateHealth();
-	UpdateBlocks();
 	
 	game->window.draw(player1.getSprite());
 	game->window.draw(player2.getSprite());
@@ -213,6 +243,19 @@ void Play::update()
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
+	if (BuildMode == true)
+	{
+		game->window.draw(HudSprite);
+		game->window.draw(DirtBlockHud);
+		game->window.draw(FinishButtonSprite);
+		game->window.draw(currentPlayer);
+		game->window.draw(Money);
+		game->window.draw(dirtPrice);
+		if (PlaceMode == true)
+		{
+			game->window.draw(placingSprite);
+		}
+	}
 	game->window.display();
 
 	return;
@@ -240,34 +283,66 @@ void Play::handleInput()
 
 			if (event.key.code == sf::Keyboard::E)
 			{
-				if (Rockets.size() < 1)
+				if (BuildMode == false)
 				{
-					if (Player1Turn == true)
+					if (Rockets.size() < 1)
 					{
-						player1Fire = true;
-						Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
-						Rockets.push_back(tempRocket);
+						if (Player1Turn == true)
+						{
+							player1Fire = true;
+							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
+							Rockets.push_back(tempRocket);
+						}
+						else
+						{
+							player2Fire = true;
+							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
+							Rockets.push_back(tempRocket);
+						}
 					}
-					else
-					{
-						player2Fire = true;
-						Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
-						Rockets.push_back(tempRocket);
-					}
-				}
 
+				}
 			}
-			if (event.key.code == sf::Keyboard::L)
+		/*	if (event.key.code == sf::Keyboard::L)
 			{
 				Player1Turn = false;
 			}
 			if (event.key.code == sf::Keyboard::K)
 			{
 				Player1Turn = true;
+			}*/
+			if (event.key.code == sf::Keyboard::Left && BuildMode == true)
+			{
+				buildViewenter.x -= 20;
+				HudSpritePosition.x -= 20;
+			}
+			if (event.key.code == sf::Keyboard::Right && BuildMode == true)
+			{
+				buildViewenter.x += 20;
+				HudSpritePosition.x += 20;
+			}
+			if (event.key.code == sf::Keyboard::Up && BuildMode == true)
+			{
+				buildViewenter.y -= 20;
+				HudSpritePosition.y -= 20;
+			}
+			if (event.key.code == sf::Keyboard::Down && BuildMode == true)
+			{
+				buildViewenter.y += 20;
+				HudSpritePosition.y += 20;
 			}
 
 			break;
 		}
+		case sf::Event::MouseButtonReleased:
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					mousereleased = true;
+				}
+				break;
+			}
+
 		default: break;
 		}
 	}
@@ -375,42 +450,192 @@ void Play::SwitchTurn()
 	}
 
 }
-void Play::UpdateCamera()
+void Play::BuildModeUpdate()
 {
+	HudSprite.setPosition(HudSpritePosition);
+	DirtBlockHud.setPosition(HudSpritePosition + sf::Vector2f(100, 50));
+	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
+	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
+	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
 
-	player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
 
-	for (int i = 0; i < Rockets.size(); i++)
-	{
-		bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
-	}
-
-	player1View.setSize(500, 500);
-	player2View.setCenter(sf::Vector2f(player2.getPosition()));
-	player2View.setSize(500, 500);
+	dirtPrice.setPosition(DirtBlockHud.getPosition() + sf::Vector2f(0,20));
 
 	if (Player1Turn == true)
 	{
-		game->window.setView(player1View);
-		for (int i = 0; i < Rockets.size(); i++)
-		{
-			if (player1Fire == true)
-			{
-				game->window.setView(bulletView);
-			}
-		}
+	
+		currentPlayer.setString("PLAYER 1  ");
+		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
+		Money.setString(std::to_string(CurrentPlayer1Money) + " Credits Remaining");
+		Money.setPosition(HudSpritePosition + sf::Vector2f(110, 10));
+
+
 	}
 	else if (Player1Turn == false)
 	{
-		game->window.setView(player2View);
-		for (int i = 0; i < Rockets.size(); i++)
+
+		currentPlayer.setString("PLAYER 2  ");
+		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
+		Money.setString(std::to_string(CurrentPlayer2Money) + " Credits Remaining");
+		Money.setPosition(HudSpritePosition + sf::Vector2f(110, 10));
+
+	}
+
+	if (PlaceMode == true)
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true)
 		{
-			if (player2Fire == true)
+			PlaceMode = false;
+		}
+
+		if (currentType == 5)
+		{
+			placingSprite.setTexture(dirttex);
+			price = 100;
+		}
+
+		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
+
+
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
+		{
+			if ( Player1Turn == true && CurrentPlayer1Money >= price)
 			{
-				game->window.setView(bulletView);
+				mousereleased = false;
+				Block temp = Block(currentType, sf::Vector2f(position.x - 10, position.y - 10), World);
+				blocks.push_back(temp); Block temp2 = blocks[3356];
+				CurrentPlayer1Money -= price;
+			}
+			else if (Player1Turn == false && CurrentPlayer2Money >= price)
+			{
+				mousereleased = false;
+				Block temp = Block(currentType, sf::Vector2f(position.x - 10, position.y - 10), World);
+				blocks.push_back(temp); Block temp2 = blocks[3356];
+				CurrentPlayer2Money -= price;
+			}
+
+		}
+
+	}
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
+	{
+	
+		mousereleased = false;
+
+		if (CheckClicked(DirtBlockHud, position) == true)
+		{
+			{
+				currentType = 5;
+				PlaceMode = true;
 			}
 		}
+	
+		else if (CheckClicked(FinishButtonSprite, position)==true)
+		{
+			if (Player1Turn == true)
+			{
+				Player1Turn = false;
+
+			}
+			else if (Player1Turn == false)
+			{
+				GameStart();
+			}
+
+		}
+		
+
+
+
 	}
+
+
+
+	
+}
+void Play::GameStart()
+{
+	Player1Turn = true;
+	BuildMode = false;
+	player1health.setFont(font);
+	player1health.setStyle(sf::Text::Bold);
+	player1health.setPosition(0, 0);
+	player1health.setCharacterSize(20);
+	player1health.setColor(sf::Color::Black);
+
+	player2health.setFont(font);
+	player2health.setStyle(sf::Text::Bold);
+	player2health.setPosition(0, 0);
+	player2health.setCharacterSize(20);
+	player2health.setColor(sf::Color::Black);
+	
+	player1.Init(World, position, CharacterTexture, 1);
+	player2.Init(World, position + sf::Vector2f(100, 0), CharacterTexture, 2);
+	cross.Init(CrosshairTexture, position);
+
+
+}
+bool Play::CheckClicked(sf::Sprite sprite, sf::Vector2i position)
+{
+
+	if (position.x > sprite.getGlobalBounds().left
+		&& position.x < (sprite.getGlobalBounds().left + sprite.getGlobalBounds().width)
+		&& position.y > sprite.getGlobalBounds().top
+		&& position.y < (sprite.getGlobalBounds().top + sprite.getGlobalBounds().height))
+	{
+		return true;
+	}
+	else
+		return false;
+}
+void Play::UpdateCamera()
+{
+	if (BuildMode == false)
+	{
+
+		player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
+
+		for (int i = 0; i < Rockets.size(); i++)
+		{
+			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+		}
+
+		player1View.setSize(500, 500);
+		player2View.setCenter(sf::Vector2f(player2.getPosition()));
+		player2View.setSize(500, 500);
+
+		if (Player1Turn == true)
+		{
+			game->window.setView(player1View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player1Fire == true)
+				{
+					game->window.setView(bulletView);
+				}
+			}
+		}
+		else if (Player1Turn == false)
+		{
+			game->window.setView(player2View);
+			for (int i = 0; i < Rockets.size(); i++)
+			{
+				if (player2Fire == true)
+				{
+					game->window.setView(bulletView);
+				}
+			}
+		}
+
+	}
+	else
+	{
+		buildView.setCenter(buildViewenter);
+		game->window.setView(buildView);
+	}
+
 }
 void Play::UpdateRockets()
 {
@@ -478,8 +703,12 @@ void Play::UpdateBlocks()
 	{
 
 		boundingbox.setPosition(sf::Vector2f(lastbulletpos.x - 50, lastbulletpos.y - 50));
+		boundingbox.setPosition(-500, -500);
 
 		Groundhit = false;
 	}
 
 }
+
+
+

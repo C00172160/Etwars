@@ -5,7 +5,7 @@ Block::Block(){
 Block::Block(int c ,sf::Vector2f position,b2World& world){
 
 	m_position = position;
-	m_position = sf::Vector2f(position.x * 20, position.y * 20);
+	m_position = sf::Vector2f(position.x , position.y );
 	type = c;
 	createBlock(world, m_position,type);
 	circle.setOrigin(10, 10);
@@ -66,40 +66,48 @@ void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 	if (type == 5){
 
 		BlockBody->SetUserData("dirt");
+		lives = 1;
 	}
     else if (type == 4){
 
 		BlockBody->SetUserData("topStraight");
+		lives = 1;
 
 	}
 	else if (type == 6){
 
 		BlockBody->SetUserData("leftStraight");
+		lives = 1;
 
 	}
 	else if (type == 3){
 
 		BlockBody->SetUserData("topLeftCorner");
+		lives = 1;
 
 	}
 	else if (type == 2){
 
 		BlockBody->SetUserData("topRightCorner");
+		lives = 1;
 
 	}
 	else if (type == 10){
 
 		BlockBody->SetUserData("rightStraight");
+		lives = 1;
 
 	}
 	else if (type == 8){
 
 		BlockBody->SetUserData("bottomStraight");
+		lives = 1;
 
 	}
 	else if (type == 7){
 
 		BlockBody->SetUserData("bottomLeftCorner");
+		lives = 1;
 
 	}
 
@@ -110,7 +118,11 @@ void Block::Update(sf::CircleShape& circle2)
 {
 	if (CollisionManager::CircleDetectCollision(circle, circle2) == true)
 	{
-		alive = false;
+		lives -= 1;
+		if (lives <= 0)
+		{
+			alive = false;
+		}
 	}
 
 }

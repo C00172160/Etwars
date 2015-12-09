@@ -39,6 +39,7 @@
 #include "Crosshair.h"
 #include "Rocket.h"
 #include "Water.h"
+#include <math.h>
 
 using namespace std;
 
@@ -52,20 +53,24 @@ private:
     int wormcount;
 	/** Prepare the world */
 	bool Player1Turn;
+	bool BuildMode;
+	bool PlaceMode;
+	bool mousereleased;
+	sf::Sprite placingSprite;
 	sf::Text player1health;
 	sf::Text player2health;
 	Water water1, water2, water3;
 	vector<Block> blocks;
-
+	int currentType;
 	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
 	sf::Texture CharacterTexture;
 	//sf::Texture DirtTexture;
 	sf::Texture CrosshairTexture;
+	sf::Texture FinishButtonTexture;
+	sf::Sprite FinishButtonSprite;
 	sf::Texture RocketTexture;
-
-	sf::Texture dirttex;
-	
+	sf::Texture dirttex;	
 	sf::Texture topStraighttex;
 	sf::Texture leftStraighttex;
 	sf::Texture topLeftCornertex;
@@ -73,12 +78,13 @@ private:
 	sf::Texture rightStraight;
 	sf::Texture bottomStraight;
 	sf::Texture bottomLeftCorner;
+	sf::Texture hudPanelTex;
 
-	sf::View player1View, player2View, bulletView;
+	sf::View player1View, player2View, bulletView,  buildView;
 
 	int sizeofmap;
 	
-
+	sf::Vector2f buildViewenter;
 	
 	Player player1;
 	Player player2;
@@ -94,6 +100,18 @@ private:
 	 int width=200;
 	 int heigh30;
 
+	 ///Hud Variables
+	 sf::Sprite DirtBlockHud;
+	 sf::Vector2f DirtBlockPosition;
+	 sf::Sprite HudSprite;
+	 sf::Vector2f HudSpritePosition;
+	 sf::Text currentPlayer;
+	 sf::Text Money;
+	 sf::Text dirtPrice;
+	 int price;
+	 int CurrentPlayer1Money;
+	 int CurrentPlayer2Money;
+	 
 
 public:
 
@@ -107,6 +125,10 @@ public:
 	void UpdateHealth();
 	void UpdateBlocks();
 	void UpdateWater();
+	void BuildModeUpdate();
+	void GameStart();
+	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
+	void CreateBlock(int type, sf::Vector2i position);
 	Play(Game* game);
 };
 
