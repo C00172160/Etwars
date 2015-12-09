@@ -27,8 +27,6 @@ Menu::Menu(Game* game)
 void Menu::draw()
 {
 	this->game->window.setView(this->view);
-
-	this->game->window.clear(sf::Color::White);
 	this->game->window.draw(text);
 
 	return;

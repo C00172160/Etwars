@@ -37,7 +37,7 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 
 	//add  sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox(((Width / 2)+1.f) / SCALE, ((Height / 2)+1.f) / SCALE); //a 2x4 rectangle
+	polygonShape2.SetAsBox(((Width)) / SCALE, ((Height)) / SCALE); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 
@@ -50,6 +50,7 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 	Sprite.setTexture(tex);
 	//Sprite.setOrigin(Width / 2 + 3, Height / 2 + 3);
 	Sprite.setOrigin(0,0);
+
 	sf::Vector2f Direction = pos - PlayerPos;
 	float length = sqrt((Direction.x * Direction.x) + (Direction.y * Direction.y));
 	Direction = Direction / length;
