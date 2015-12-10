@@ -26,10 +26,10 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-		if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
-		{
-			destroyRocket = true;
-		}
+		//if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
+		//{
+		////	destroyRocket = true;
+		//}
 
 		if (fixtureUserDataA == "player1" || fixtureUserDataB == "player1")
 		{
@@ -361,7 +361,7 @@ void Play::UpdateStaticBodies()
 			if (BodyIterator->GetUserData() == "dirt"){
 				sf::Sprite DirtSprite;
 				DirtSprite.setTexture(dirttex);
-				DirtSprite.setOrigin(0, 0);
+				DirtSprite.setOrigin(10, 10);
 				DirtSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				DirtSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(DirtSprite);
@@ -370,7 +370,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "topStraight"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(topStraighttex);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -379,7 +379,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "leftStraight"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(leftStraighttex);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10,10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -388,7 +388,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "topLeftCorner"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(topLeftCornertex);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -397,7 +397,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "topRightCorner"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(topRightCornertex);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -406,7 +406,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "rightStraight"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(rightStraight);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -415,7 +415,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "bottomStraight"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(bottomStraight);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -424,7 +424,7 @@ void Play::UpdateStaticBodies()
 			else if (BodyIterator->GetUserData() == "bottomLeftCorner"){
 				sf::Sprite grassSprite;
 				grassSprite.setTexture(bottomLeftCorner);
-				grassSprite.setOrigin(0, 0);
+				grassSprite.setOrigin(10, 10);
 				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
 				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
 				game->window.draw(grassSprite);
@@ -645,13 +645,14 @@ void Play::UpdateRockets()
 		Rockets[i].Update(World);
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (width * 20) || Rockets[i].getPosition().y > 600)
 		{
+
 			destroyRocket = true;
 		}
 
 		game->window.draw(Rockets[i].getSprite());
 	}
 
-	if (destroyRocket == true && World.IsLocked() == false)
+	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
 		for (int i = 0; i < Rockets.size(); i++)
 		{

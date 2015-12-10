@@ -73,7 +73,7 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 	m_body = world.CreateBody(&myBodyDef);
 
 	b2PolygonShape Shape;
-	Shape.SetAsBox((playerWidth / 2) / SCALE, (playerHeight / 2) / SCALE);
+	Shape.SetAsBox((16) / SCALE, (16) / SCALE);
 	b2FixtureDef FixtureDef;
 	FixtureDef.density = 1.f;
 	FixtureDef.friction = 0.7f;
@@ -104,8 +104,8 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	//Sprite.setOrigin(16.f, 16.f);
-	Sprite.setOrigin(0, 0);
+	Sprite.setOrigin(16.f, 16.f);
+	//Sprite.setOrigin(0, 0);
 	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
 }
 void Player::Update(int numFootContacts)
@@ -159,8 +159,9 @@ void Player::Update(int numFootContacts)
 }
 void Player::UpdateSprite()
 {
-	Sprite.setPosition(m_body->GetPosition().x * SCALE, m_body->GetPosition().y* SCALE);
-	Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
+	
+	Sprite.setPosition(m_body->GetPosition().x * SCALE  , m_body->GetPosition().y* SCALE );
+	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
 
 	timer++;

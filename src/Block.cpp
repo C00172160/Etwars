@@ -43,7 +43,7 @@ void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 
 
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox(((20 / 2)+2.f) / SCALE, ((20 / 2)+2.f) / SCALE); //a 2x4 rectangle
+	polygonShape2.SetAsBox(((20 / 2)) / SCALE, ((20 / 2)) / SCALE); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 
