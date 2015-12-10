@@ -26,10 +26,10 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-		//if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
-		//{
-		////	destroyRocket = true;
-		//}
+		if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
+		{
+		//	destroyRocket = true;
+		}
 
 		if (fixtureUserDataA == "player1" || fixtureUserDataB == "player1")
 		{
@@ -243,6 +243,7 @@ void Play::update()
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
+	soundManager.update();
 	if (BuildMode == true)
 	{
 		game->window.draw(HudSprite);

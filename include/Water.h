@@ -37,6 +37,7 @@ private:
 	int source7;
 
 	sf::Texture watertex;
+	sf::Texture seatex
 	sf::Sprite sprite1;
 	sf::Sprite sprite2;
 	sf::Sprite sprite3;
@@ -44,6 +45,7 @@ private:
 	sf::Sprite sprite5;
 	sf::Sprite sprite6;
 	sf::Sprite sprite7;
+	sf::Sprite sea;
 	
 };
 

@@ -40,6 +40,7 @@
 #include "Rocket.h"
 #include "Water.h"
 #include <math.h>
+#include "SoundManager.h"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ class Play : public GameState
 {
 private:
 
+	SoundManager soundManager;
 	sf::Vector2f position;
 	sf::Font font;
     int wormcount;
