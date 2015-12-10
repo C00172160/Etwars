@@ -15,7 +15,8 @@ Water::Water()
 	source6 = 5;
 	source7 = 6;
 	watertex.loadFromFile("Resources/water.png");
-
+	seatex.loadFromFile("Resources/sea.png");
+	sea.setTexture(seatex);
 	sprite1.setTexture(watertex);
 	sprite2.setTexture(watertex);
 	sprite3.setTexture(watertex);
@@ -29,6 +30,8 @@ Water::Water()
 void Water::setPositon(sf::Vector2f pos)
 {
 	position = pos;
+	sea.setPosition(pos + sf::Vector2f(0,46));
+		
 }
 
 void Water::Update()
@@ -127,6 +130,7 @@ void Water::Draw(Game* game)
 	game->window.draw(sprite5);
 	game->window.draw(sprite6);
 	game->window.draw(sprite7);
+	game->window.draw(sea);
 
 
 }

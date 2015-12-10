@@ -93,9 +93,9 @@ Play::Play(Game* game)
 	game->window.setFramerateLimit(60);
     wormcount = 0;
 	Player1Turn = true;
-	water1.setPositon(sf::Vector2f(0, 575));
-	water2.setPositon(sf::Vector2f(707, 575));
-	water3.setPositon(sf::Vector2f(1414, 575));
+	water1.setPositon(sf::Vector2f(0, 555));
+	water2.setPositon(sf::Vector2f(707, 555));
+	water3.setPositon(sf::Vector2f(1414, 555));
 	game->window.setKeyRepeatEnabled(false);
 
 
