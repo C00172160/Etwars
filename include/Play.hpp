@@ -85,7 +85,7 @@ private:
 	sf::Texture bottomStraight;
 	sf::Texture bottomLeftCorner;
 	sf::Texture hudPanelTex;
-
+	sf::Vector2f cameraposition;
 	sf::View player1View, player2View, bulletView, buildView, standardView;
 
 	int sizeofmap;

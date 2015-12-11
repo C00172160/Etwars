@@ -101,7 +101,7 @@ Play::Play(Game* game)
 	blockWidth = 20;
 	blockAmount = 100;
 	offset = 310;
-	gameSize = blockAmount * blockWidth;
+	gameSize = blockAmount * blockWidth +50;
 	gameSize = gameSize - offset;
 	panTimer = 2;
 	buildView.setSize(800, 600);
@@ -130,8 +130,8 @@ Play::Play(Game* game)
 	player2Fire = false;
 
 	background.setTexture(backGroundTexture);
-	background.scale(1.2,1);
-	background.setPosition(sf::Vector2f(-200,-500));
+	background.scale(1.5,1.3);
+	background.setPosition(sf::Vector2f(-300,-500));
 
 	World.SetContactListener(&myContactListenerInstance);
 	boundingbox = sf::CircleShape(50);
@@ -214,7 +214,7 @@ void Play::update()
 	UpdateCamera();
 	sf::Event event;
 
-
+	
 
 	if (BuildMode == false)
 	{
@@ -653,11 +653,10 @@ void Play::UpdateCamera()
 	if (BuildMode == false)
 	{
 		
-
 		if (overview == true && Player1Turn == true)
 		{
 			standardView.setCenter(player1.getPosition().x, player1.getPosition().y);
-			standardView.setSize(1500, 800);
+			standardView.setSize(1500, 1125);
 			game->window.setView(standardView);
 		}
 
@@ -665,7 +664,7 @@ void Play::UpdateCamera()
 		if (overview == true && Player1Turn == false)
 		{
 			standardView.setCenter(player2.getPosition().x, player2.getPosition().y);
-			standardView.setSize(1500, 800);
+			standardView.setSize(1500, 1125);
 			game->window.setView(standardView);
 		}
 		player1View.setSize(600, 450);
@@ -696,11 +695,6 @@ void Play::UpdateCamera()
 			player2View.setCenter(sf::Vector2f(offset, player2.getPosition().y));
 		}
 
-		for (int i = 0; i < Rockets.size(); i++)
-		{
-			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
-		}
-
 		
 
 		if (Player1Turn == true && overview == false)
@@ -710,6 +704,11 @@ void Play::UpdateCamera()
 			{
 				if (player1Fire == true && overview == false)
 				{
+					if (Rockets[i].getPosition().x < gameSize - offset)
+					{
+						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+						bulletView.setSize(900, 675);
+					}
 					game->window.setView(bulletView);
 				}
 			}
@@ -721,11 +720,15 @@ void Play::UpdateCamera()
 			{
 				if (player2Fire == true && overview == false)
 				{
+					if (Rockets[i].getPosition().x < gameSize - offset)
+					{
+						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+						bulletView.setSize(900, 675);
+					}
 					game->window.setView(bulletView);
 				}
 			}
 		}
-
 	}
 	else
 	{
