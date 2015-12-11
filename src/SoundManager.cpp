@@ -13,6 +13,8 @@ void SoundManager::init()
 	//setup FMOD
 	result = FMOD::System_Create(&FMODsys);     // Create the main system object.
 
+    prop1 = FMOD_PRESET_AUDITORIUM;
+//	FMODsys->setReverbAmbientProperties(&prop1);
 
 	if (result != FMOD_OK)
 	{
@@ -50,7 +52,26 @@ void SoundManager::init()
 
 
 		result = FMODsys->createStream("Resources/rocket.wav", FMOD_LOOP_NORMAL | FMOD_3D, 0, &RocketSound);
+		result = FMODsys->createSound("Resources/fire.mp3", FMOD_DEFAULT, 0, &fireSound);
 
+
+		result = FMODsys->createReverb(&reverb);
+		reverb->setProperties(&prop1);
+		reverbpos = {100, 0, 100 };
+		float mindist = 1000.0f;
+		float maxdist = 1500.0f;
+		reverb->set3DAttributes(&reverbpos, mindist, maxdist);
+
+		reverb->setActive(true);
+
+}
+void SoundManager::playFireSound(){
+	FMODsys->playSound(FMOD_CHANNEL_FREE, fireSound, false, &fireChannel);
+
+}
+
+void SoundManager::UpdateReverb()
+{
 
 }
 //void SoundManager::PlayRocket()

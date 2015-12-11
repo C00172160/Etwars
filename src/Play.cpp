@@ -306,6 +306,8 @@ void Play::handleInput()
 							player1Fire = true;
 							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
 							Rockets.push_back(tempRocket);
+							soundManager.playFireSound();
+
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
@@ -314,6 +316,8 @@ void Play::handleInput()
 							player2Fire = true;
 							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
 							Rockets.push_back(tempRocket);
+							soundManager.playFireSound();
+
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
@@ -612,16 +616,35 @@ void Play::UpdateCamera()
 {
 	if (BuildMode == false)
 	{
+		standardView.setCenter(2480 / 2, 500);
+		standardView.setSize(1240, 250);
+		if (player1.getPosition().x  > 240)
+		{
+			player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
+		}
+		else if (player1.getPosition().x  < 240)
+		{
+			player1View.setCenter(sf::Vector2f(240, player1.getPosition().y));
+		}
 
-		player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
+		if (player2.getPosition().x  > 240)
+		{
+			player2View.setCenter(sf::Vector2f(player2.getPosition()));// , sf::Vector2f(500, 500));#
+		}
+		else if (player2.getPosition().x  < 240)
+		{
+			player2View.setCenter(sf::Vector2f(240, player2.getPosition().y));
+		}
 
 		for (int i = 0; i < Rockets.size(); i++)
 		{
 			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+
 		}
 
 		player1View.setSize(500, 500);
-		player2View.setCenter(sf::Vector2f(player2.getPosition()));
+
+		//player2View.setCenter(sf::Vector2f(player2.getPosition()));
 		player2View.setSize(500, 500);
 
 		if (Player1Turn == true)

@@ -19,6 +19,8 @@ public:
 	void updatRocketSound(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos);
 	void PlayRocket();
 	void StopRocket();
+	void UpdateReverb();
+	void playFireSound();
 
 private:
 	FMOD::System *FMODsys; //will point to the FMOD system
@@ -33,7 +35,12 @@ private:
 	FMOD_VECTOR  playerPos;
 	FMOD_VECTOR  sourcePos;
 	FMOD_VECTOR  sourceVel;
+	FMOD::Sound *fireSound;
+	FMOD::Channel *fireChannel;
 
+	FMOD_REVERB_PROPERTIES prop1;
+	FMOD::Reverb *reverb;
+	FMOD_VECTOR reverbpos;
 	float volume;
 
 };
