@@ -63,48 +63,54 @@ void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 
 	//}
 
-	if (type == 5){
+	if (type == 8){
 
 		BlockBody->SetUserData("dirt");
 		lives = 1;
 	}
-    else if (type == 4){
+    else if (type == 6){
 
 		BlockBody->SetUserData("topStraight");
 		lives = 1;
 
 	}
-	else if (type == 6){
+	else if (type == 9){
 
 		BlockBody->SetUserData("leftStraight");
 		lives = 1;
 
 	}
-	else if (type == 3){
+	else if (type == 7){
 
 		BlockBody->SetUserData("topLeftCorner");
 		lives = 1;
 
 	}
-	else if (type == 2){
+	else if (type == 4){
 
 		BlockBody->SetUserData("topRightCorner");
 		lives = 1;
 
 	}
-	else if (type == 10){
+	else if (type == 5){
 
 		BlockBody->SetUserData("rightStraight");
 		lives = 1;
 
 	}
-	else if (type == 8){
+	else if (type == 2){
 
 		BlockBody->SetUserData("bottomStraight");
 		lives = 1;
 
 	}
-	else if (type == 7){
+	else if (type == 3){
+
+		BlockBody->SetUserData("bottomRightCorner");
+		lives = 1;
+
+	}
+	else if (type == 1){
 
 		BlockBody->SetUserData("bottomLeftCorner");
 		lives = 1;

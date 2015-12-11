@@ -84,7 +84,7 @@ Play::Play(Game* game)
 {
 	this->game = game;
 
-	 position = sf::Vector2f(100, 50);
+	 position = sf::Vector2f(500, -50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
 	 BuildMode = true;
@@ -92,26 +92,28 @@ Play::Play(Game* game)
 	 mousereleased = true;
 	game->window.setFramerateLimit(60);
     wormcount = 0;
+	zoomed = false;
 	Player1Turn = true;
 	RocketFired = false;
 	water1.setPositon(sf::Vector2f(0, 555));
 	water2.setPositon(sf::Vector2f(707, 555));
 	water3.setPositon(sf::Vector2f(1414, 555));
-	game->window.setKeyRepeatEnabled(false);
 	blockWidth = 20;
-	blockAmount = 200;
+	blockAmount = 100;
 	offset = 310;
 	gameSize = blockAmount * blockWidth;
 	gameSize = gameSize - offset;
+	panTimer = 2;
 	buildView.setSize(800, 600);
-	dirttex.loadFromFile("Resources/snow/7.png");
+	dirttex.loadFromFile("Resources/snow/8.png");
 	topStraighttex.loadFromFile("Resources/snow/6.png");
-	leftStraighttex.loadFromFile("Resources/snow/8.png");
-	topLeftCornertex.loadFromFile("Resources/snow/5.png");
+	leftStraighttex.loadFromFile("Resources/snow/9.png");
+	topLeftCornertex.loadFromFile("Resources/snow/7.png");
 	topRightCornertex.loadFromFile("Resources/snow/4.png");
-	rightStraight.loadFromFile("Resources/snow/3.png");
-	bottomStraight.loadFromFile("Resources/snow/1.png");
-	bottomLeftCorner.loadFromFile("Resources/snow/2.png");
+	bottomRightCornertex.loadFromFile("Resources/snow/3.png");
+	rightStraight.loadFromFile("Resources/snow/5.png");
+	bottomStraight.loadFromFile("Resources/snow/2.png");
+	bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 
 
     sizeofmap = 0;
@@ -123,11 +125,13 @@ Play::Play(Game* game)
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
 
+
 	player1Fire = false;
 	player2Fire = false;
 
 	background.setTexture(backGroundTexture);
-	background.setPosition(sf::Vector2f(0, 00));
+	background.scale(1.2,1);
+	background.setPosition(sf::Vector2f(-200,-500));
 
 	World.SetContactListener(&myContactListenerInstance);
 	boundingbox = sf::CircleShape(50);
@@ -155,24 +159,23 @@ Play::Play(Game* game)
 	currentPlayer.setStyle(sf::Text::Bold);
 	currentPlayer.setCharacterSize(20);
 	currentPlayer.setColor(sf::Color::Black);
-
 	Money.setFont(font);
 	Money.setStyle(sf::Text::Bold);
 	Money.setCharacterSize(20);
 	Money.setColor(sf::Color::Black);
-
+	overview = false;
 	///////////////////////////////////
-	int map[30][200] = {
-      #include "testtest.txt"
+	int map[30][100] = {
+      #include "testlevel.txt"
 	};
 
 
 	for (int y = 0; y < 30; y++)
 	{
-		for (int x = 0; x < 200; x++)
+		for (int x = 0; x < 100; x++)
 		{
 			int c = map[y][x];
-			if (c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 10)
+			if (c == 1 || c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c ==9)
 			{
 				Block temp = Block(map[y][x], sf::Vector2f(x*20, y*20), World);
 				blocks.push_back(temp);
@@ -201,15 +204,17 @@ void Play::update()
 	World.Step(1 / 60.f, 8, 3);
 
 	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 500));
-
 	water1.Update();
 	water2.Update();
 	water3.Update();
-
+	updateTime();
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
 	UpdateStaticBodies();
 	UpdateCamera();
+	sf::Event event;
+
+
 
 	if (BuildMode == false)
 	{
@@ -223,9 +228,11 @@ void Play::update()
 			//{
 			//	//soundManager.updatRocketSound(Rockets[0].getPosition(), Rockets[0].getVelocity(),playerPosition);
 			//}
+			game->window.setKeyRepeatEnabled(true);
 		}
 		else
 		{
+			game->window.setKeyRepeatEnabled(false);
 			cross.Update(player2.getPosition());
 			player2.Update(numFootContacts2);
 	/*		if (RocketFired == true)
@@ -327,6 +334,19 @@ void Play::handleInput()
 					}
 
 				}
+			}
+			if (event.key.code == sf::Keyboard::Z)
+			{
+				if (zoomed == false)
+				{
+					overview = true;
+				}
+			}
+
+			if (event.key.code == sf::Keyboard::X)
+			{
+
+				overview = false;
 			}
 		/*	if (event.key.code == sf::Keyboard::L)
 			{
@@ -455,7 +475,15 @@ void Play::UpdateStaticBodies()
 				game->window.draw(grassSprite);
 				++BodyCount;
 			}
-
+			else if (BodyIterator->GetUserData() == "bottomRightCorner"){
+				sf::Sprite grassSprite;
+				grassSprite.setTexture(bottomRightCornertex);
+				grassSprite.setOrigin(10, 10);
+				grassSprite.setPosition(BodyIterator->GetPosition().x*SCALE, BodyIterator->GetPosition().y*SCALE);
+				grassSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
+				game->window.draw(grassSprite);
+				++BodyCount;
+			}
 		}
 
 
@@ -463,15 +491,18 @@ void Play::UpdateStaticBodies()
 }
 void Play::SwitchTurn()
 {
-	if (Player1Turn == true)
+	
+	if (Player1Turn == true && panTimer <=0 )
 	{
 		player1Fire = false;
 		Player1Turn = false;
+		panTimer = 2;
 	}
-	else if (Player1Turn == false)
+	else if (Player1Turn == false  && panTimer <= 0)
 	{
 		player2Fire = false;
 		Player1Turn = true;
+		panTimer = 2;
 	}
 
 }
@@ -582,8 +613,10 @@ void Play::BuildModeUpdate()
 }
 void Play::GameStart()
 {
-	Player1Turn = true;
+	
 	BuildMode = false;
+	updateTime();
+	Player1Turn = true;
 	player1health.setFont(font);
 	player1health.setStyle(sf::Text::Bold);
 	player1health.setPosition(0, 0);
@@ -619,8 +652,22 @@ void Play::UpdateCamera()
 {
 	if (BuildMode == false)
 	{
-		standardView.setCenter(2480 / 2, 500);
-		standardView.setSize(1240, 250);
+		
+
+		if (overview == true && Player1Turn == true)
+		{
+			standardView.setCenter(player1.getPosition().x, player1.getPosition().y);
+			standardView.setSize(1500, 800);
+			game->window.setView(standardView);
+		}
+
+
+		if (overview == true && Player1Turn == false)
+		{
+			standardView.setCenter(player2.getPosition().x, player2.getPosition().y);
+			standardView.setSize(1500, 800);
+			game->window.setView(standardView);
+		}
 		player1View.setSize(600, 450);
 		player2View.setSize(600, 450);
 		if (player1.getPosition().x  > offset)
@@ -652,28 +699,27 @@ void Play::UpdateCamera()
 		for (int i = 0; i < Rockets.size(); i++)
 		{
 			bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
-
 		}
 
 		
 
-		if (Player1Turn == true)
+		if (Player1Turn == true && overview == false)
 		{
 			game->window.setView(player1View);
 			for (int i = 0; i < Rockets.size(); i++)
 			{
-				if (player1Fire == true)
+				if (player1Fire == true && overview == false)
 				{
 					game->window.setView(bulletView);
 				}
 			}
 		}
-		else if (Player1Turn == false)
+		else if (Player1Turn == false && overview == false)
 		{
 			game->window.setView(player2View);
 			for (int i = 0; i < Rockets.size(); i++)
 			{
-				if (player2Fire == true)
+				if (player2Fire == true && overview == false)
 				{
 					game->window.setView(bulletView);
 				}
@@ -709,16 +755,19 @@ void Play::UpdateRockets()
 	{
 		for (int i = 0; i < Rockets.size(); i++)
 		{
+			updateTime();
 			lastbulletpos = Rockets[i].getPosition();
 			World.DestroyBody(Rockets[i].getBody());
 			Rockets.pop_back();
 			destroyRocket = false;
 			RocketFired = false;
-		//	soundManager.StopRocket();
-
 			SwitchTurn();
 		}
 	}
+}
+
+void Play::updateTime(){
+	panTimer -= clock.restart().asSeconds();
 }
 void Play::UpdateHealth()
 {

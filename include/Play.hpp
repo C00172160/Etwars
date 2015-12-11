@@ -80,6 +80,7 @@ private:
 	sf::Texture leftStraighttex;
 	sf::Texture topLeftCornertex;
 	sf::Texture topRightCornertex;
+	sf::Texture bottomRightCornertex;
 	sf::Texture rightStraight;
 	sf::Texture bottomStraight;
 	sf::Texture bottomLeftCorner;
@@ -104,9 +105,13 @@ private:
 	int blockWidth;
 	int offset;
 	sf::CircleShape  boundingbox;
+	sf::Clock clock;
+	float panTimer;
+	void updateTime();
 	 int width=200;
 	 int heigh30;
-
+	 bool overview;
+	 bool zoomed;
 	 ///Hud Variables
 	 sf::Sprite DirtBlockHud;
 	 sf::Vector2f DirtBlockPosition;
