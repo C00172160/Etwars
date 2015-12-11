@@ -14,9 +14,13 @@ public:
 	void Update(int numFootContacts);
 	sf::Sprite getSprite();
 	sf::Vector2f getPosition();
+	sf::Vector2f getVelocity();
 	void setHealth(int damage);
 	void UpdateSprite();
 	int getHealth();
+	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id);
+
+	
 
 
 private:
@@ -35,6 +39,7 @@ private:
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity;
 	sf::Sprite Sprite;
+
 };
 
 #endif

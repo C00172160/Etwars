@@ -1,5 +1,10 @@
 #include "Player.h"
 
+Player::Player()
+{
+
+}
+
 Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 {
 	
@@ -47,13 +52,62 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	Sprite.setOrigin(16.f, 16.f);
-
+	//Sprite.setOrigin(16.f, 16.f);
+	Sprite.setOrigin(0, 0);
 	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
 
 	  
 }
+void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
+{
+	m_position = pos;
+	m_texture = tex;
 
+
+
+	b2BodyDef myBodyDef;
+	myBodyDef.type = b2_dynamicBody;
+	myBodyDef.fixedRotation = true;
+	myBodyDef.position = b2Vec2(m_position.x / SCALE, m_position.y / SCALE);
+
+	m_body = world.CreateBody(&myBodyDef);
+
+	b2PolygonShape Shape;
+	Shape.SetAsBox((16) / SCALE, (16) / SCALE);
+	b2FixtureDef FixtureDef;
+	FixtureDef.density = 1.f;
+	FixtureDef.friction = 0.7f;
+	FixtureDef.shape = &Shape;
+
+	m_body->CreateFixture(&FixtureDef);
+
+
+	//add foot sensor fixture
+	b2PolygonShape polygonShape2;
+	polygonShape2.SetAsBox((30.f / 2) / SCALE, (40.f / 2) / SCALE); //a 2x4 rectangle
+
+	b2FixtureDef myFixtureDef2;
+
+	myFixtureDef2.shape = &polygonShape2;
+	myFixtureDef2.isSensor = true;
+	b2Fixture* footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
+	if (id == 1)
+	{
+		footSensorFixture->SetUserData("player1");
+	}
+	else if (id == 2)
+	{
+		footSensorFixture->SetUserData("player2");
+	}
+
+
+
+	tex.setSmooth(true);
+	Sprite.setTexture(tex);
+	Sprite.setOrigin(16.f, 16.f);
+	//Sprite.setOrigin(0, 0);
+	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
+}
 void Player::Update(int numFootContacts)
 
 {
@@ -105,8 +159,9 @@ void Player::Update(int numFootContacts)
 }
 void Player::UpdateSprite()
 {
-	Sprite.setPosition(m_body->GetPosition().x * SCALE, m_body->GetPosition().y* SCALE);
-	Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
+	
+	Sprite.setPosition(m_body->GetPosition().x * SCALE  , m_body->GetPosition().y* SCALE );
+	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
 
 	timer++;
@@ -138,6 +193,10 @@ sf::Vector2f Player::getPosition()
 {
 
 	return sf::Vector2f(m_body->GetPosition().x * SCALE, m_body->GetPosition().y * SCALE);
+}
+sf::Vector2f Player::getVelocity()
+{
+	return sf::Vector2f(m_body->GetLinearVelocity().x * SCALE, m_body->GetLinearVelocity().y * SCALE);
 }
 
 void Player::setHealth(int damage)
