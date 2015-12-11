@@ -15,7 +15,7 @@ public:
 	void Update(sf::Vector2f playerPos);
 	sf::Sprite getSprite();
 	sf::Vector2f getPosition();
-
+	void Init(sf::Texture& tex, sf::Vector2f pos);
 
 private:
 	sf::Sprite Sprite;

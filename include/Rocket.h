@@ -18,6 +18,7 @@ class Rocket{
 		sf::Vector2f getPosition();
 		b2Body* Rocket::getBody();
 		void setAlive(bool boolean);
+		sf::Vector2f getVelocity();
 
 
 
