@@ -7,54 +7,54 @@ Player::Player()
 
 Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 {
-	
-	m_position = pos;
-	m_texture = tex;
+	//
+	//m_position = pos;
+	//m_texture = tex;
 
-	
+	//
 
-	b2BodyDef myBodyDef;
-	myBodyDef.type = b2_dynamicBody;
-	myBodyDef.fixedRotation = true;
-	myBodyDef.position = b2Vec2(m_position.x / SCALE, m_position.y / SCALE);
+	//b2BodyDef myBodyDef;
+	//myBodyDef.type = b2_dynamicBody;
+	//myBodyDef.fixedRotation = true;
+	//myBodyDef.position = b2Vec2(m_position.x / SCALE, m_position.y / SCALE);
 
-	m_body = world.CreateBody(&myBodyDef);
+	//m_body = world.CreateBody(&myBodyDef);
 
-	b2PolygonShape Shape;
-	Shape.SetAsBox((playerWidth / 2) / SCALE, (playerHeight / 2) / SCALE);
-	b2FixtureDef FixtureDef;
-	FixtureDef.density = 1.f;
-	FixtureDef.friction = 0.7f;
-	FixtureDef.shape = &Shape;
+	//b2PolygonShape Shape;
+	//Shape.SetAsBox((playerWidth / 2) / SCALE, (playerHeight / 2) / SCALE);
+	//b2FixtureDef FixtureDef;
+	//FixtureDef.density = 1.f;
+	//FixtureDef.friction = 0.7f;
+	//FixtureDef.shape = &Shape;
 
-	m_body->CreateFixture(&FixtureDef);
-	
+	//m_body->CreateFixture(&FixtureDef);
+	//
 
-	//add foot sensor fixture
-	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox((30.f / 2) / SCALE, (40.f / 2) / SCALE); //a 2x4 rectangle
+	////add foot sensor fixture
+	//b2PolygonShape polygonShape2;
+	//polygonShape2.SetAsBox((30.f / 2) / SCALE, (40.f / 2) / SCALE); //a 2x4 rectangle
 
-	b2FixtureDef myFixtureDef2;
+	//b2FixtureDef myFixtureDef2;
 
-	myFixtureDef2.shape = &polygonShape2;
-	myFixtureDef2.isSensor = true;
-	b2Fixture* footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
-	if (id ==1)
-	{
-		footSensorFixture->SetUserData("player1");
-	}
-	else if (id == 2)
-	{
-		footSensorFixture->SetUserData("player2");
-	}
-	
+	//myFixtureDef2.shape = &polygonShape2;
+	//myFixtureDef2.isSensor = true;
+	//b2Fixture* footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
+	//if (id ==1)
+	//{
+	//	footSensorFixture->SetUserData("player1");
+	//}
+	//else if (id == 2)
+	//{
+	//	footSensorFixture->SetUserData("player2");
+	//}
+	//
 
 
-	tex.setSmooth(true);
-	Sprite.setTexture(tex);
-	//Sprite.setOrigin(16.f, 16.f);
-	Sprite.setOrigin(0, 0);
-	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
+	//tex.setSmooth(true);
+	//Sprite.setTexture(tex);
+	////Sprite.setOrigin(16.f, 16.f);
+	//Sprite.setOrigin(0, 0);
+	//Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
 
 	  
 }
@@ -63,7 +63,7 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 	m_position = pos;
 	m_texture = tex;
 
-
+	health = 20;
 
 	b2BodyDef myBodyDef;
 	myBodyDef.type = b2_dynamicBody;
@@ -73,18 +73,33 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 	m_body = world.CreateBody(&myBodyDef);
 
 	b2PolygonShape Shape;
-	Shape.SetAsBox((16) / SCALE, (16) / SCALE);
+	Shape.SetAsBox((12) / SCALE, (15) / SCALE);
 	b2FixtureDef FixtureDef;
 	FixtureDef.density = 1.f;
 	FixtureDef.friction = 0.7f;
 	FixtureDef.shape = &Shape;
-
 	m_body->CreateFixture(&FixtureDef);
 
+	b2PolygonShape polygonShape3;
+	polygonShape3.SetAsBox(((12.f / 2) / SCALE), ((15.f / 2) / SCALE)); //a 2x4 rectangle
+
+	b2FixtureDef myFixtureDef3;
+
+	myFixtureDef3.shape = &polygonShape3;
+	myFixtureDef3.isSensor = true;
+	b2Fixture* RocketSensorFixture = m_body->CreateFixture(&myFixtureDef3);
+	if (id == 1)
+	{
+		RocketSensorFixture->SetUserData("player1Sensor");
+	}
+	else if (id == 2)
+	{
+		RocketSensorFixture->SetUserData("player2Sensor");
+	}
 
 	//add foot sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox((30.f / 2) / SCALE, (40.f / 2) / SCALE); //a 2x4 rectangle
+	polygonShape2.SetAsBox(((25.f / 2)  / SCALE), ((32.f / 2) / SCALE)); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 

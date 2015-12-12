@@ -51,6 +51,8 @@
 #include <math.h>
 #include "SoundManager.h"
 #include "SFMLDebugDraw.h"
+#include "Menu.hpp"
+#include "GameOver.hpp"
 
 using namespace std;
 
@@ -93,7 +95,8 @@ private:
 	int currentType;
 	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
-	sf::Texture CharacterTexture;
+	sf::Texture playerTexture;
+	sf::Texture player2Texture;
 	//sf::Texture DirtTexture;
 	sf::Texture CrosshairTexture;
 	sf::Texture Explosion;
@@ -115,7 +118,7 @@ private:
 	sf::Vector2f cameraposition;
 	sf::View player1View, player2View, bulletView, buildView, standardView;
 	int sizeofmap;
-	
+	bool outOfBounds;
 	sf::Vector2f buildViewenter;
 	
 	Player player1;

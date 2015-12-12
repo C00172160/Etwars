@@ -25,7 +25,7 @@ public:
 
 private:
 
-	int health = 100;
+	int health = 20;
 	b2Body* m_body;
 	int numberOfFootContacts;
 	bool isInair;

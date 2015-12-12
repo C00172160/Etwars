@@ -39,6 +39,18 @@ class MyContactListener : public b2ContactListener
 		{
 			numFootContacts2++;
 		}
+		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
+			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
+		{
+			destroyRocket = true;
+			player1hit = true;
+		}
+		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
+			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2Sensor"))//if A ROCKET HITS Player2
+		{
+			destroyRocket = true;
+			player2hit = true;
+		}
 
 	}
 
@@ -57,18 +69,18 @@ class MyContactListener : public b2ContactListener
 			numFootContacts2--;
 		}
 
-		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1"))//if A ROCKET HITS Player1
-		{
-			destroyRocket = true;
-			player1hit = true;
-		}
-		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2"))//if A ROCKET HITS Player2
-		{
-			destroyRocket = true;
-			player2hit = true;
-		}
+		//else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1"))//if A ROCKET HITS Player1
+		//{
+		//	destroyRocket = true;
+		//	player1hit = true;
+		//}
+		//else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2"))//if A ROCKET HITS Player2
+		//{
+		//	destroyRocket = true;
+		//	player2hit = true;
+		//}
 		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "blocksensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "blocksensor"))//if A ROCKET HITS ground
 		{
@@ -126,7 +138,7 @@ Play::Play(Game* game)
 	bottomStraight.loadFromFile("Resources/snow/2.png");
 	bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 	Explosion.loadFromFile("Resources/explosion.png");
-
+	outOfBounds = false;
 	Explosion.setSmooth(true);
 	ExplosionSprite.setTexture(Explosion);
 	//Sprite.setOrigin(16.f, 16.f);
@@ -137,7 +149,8 @@ Play::Play(Game* game)
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
 	backGroundTexture.loadFromFile("Resources/background.jpg");
-	CharacterTexture.loadFromFile("Resources/player.png");
+	playerTexture.loadFromFile("Resources/player.png");
+	player2Texture.loadFromFile("Resources/player2.png");
 
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
@@ -754,8 +767,8 @@ void Play::GameStart()
 	player2health.setCharacterSize(20);
 	player2health.setColor(sf::Color::Black);
 	
-	player1.Init(World, position, CharacterTexture, 1);
-	player2.Init(World, position + sf::Vector2f(100, 0), CharacterTexture, 2);
+	player1.Init(World, position, playerTexture, 1);
+	player2.Init(World, position + sf::Vector2f(100, 0), player2Texture, 2);
 	cross.Init(CrosshairTexture, position);
 
 
@@ -767,7 +780,7 @@ bool Play::CheckClicked(sf::Sprite sprite, sf::Vector2i position)
 		&& position.x < (sprite.getGlobalBounds().left + sprite.getGlobalBounds().width)
 		&& position.y > sprite.getGlobalBounds().top
 		&& position.y < (sprite.getGlobalBounds().top + sprite.getGlobalBounds().height))
-	{
+	{			
 		return true;
 	}
 	else
@@ -908,13 +921,18 @@ void Play::UpdateRockets()
 	{
 
 		Rockets[i].Update(World);
-		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (width * 20) || Rockets[i].getPosition().y > 600)
+		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (gameSize) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
-			bullerTimer = 1.5f;
+		//	bullerTimer = 1.5f;
 			RocketFired = false;
+			outOfBounds = true;
 			//soundManager.StopRocket();
 
+		}
+		else
+		{
+			outOfBounds = false;
 		}
 
 		game->window.draw(Rockets[i].getSprite());
@@ -924,7 +942,12 @@ void Play::UpdateRockets()
 	{
 		bullerTimer = 1.5f;
 		startExplosion = true;
-		CountDown = true;
+		if (outOfBounds == false)
+		{
+			CountDown = true;
+		}
+
+		
 		for (int i = 0; i < Rockets.size(); i++)
 		{
 
@@ -958,6 +981,16 @@ void Play::UpdateHealth()
 
 	player2health.setPosition(player2.getPosition().x - 10, player2.getPosition().y - 40);
 	player2health.setString(std::to_string(player2.getHealth()));
+
+	if (player1.getHealth() == 0)
+	{
+	    
+		game->pushState(new GameOver(this->game,"Player 2 Wins"));
+	}
+	else if (player2.getHealth() == 0)
+	{
+		game->pushState(new GameOver(this->game, "Player 1 Wins"));
+	}
 
 }
 void Play::UpdateBlocks()

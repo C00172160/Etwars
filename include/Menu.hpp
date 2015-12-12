@@ -23,6 +23,7 @@ private:
 
 	sf::View view;
 	sf::Text text;
+
 	sf::Texture buttonTexture;
 	sf::Sprite buttonSprite;
 	sf::Vector2i windowPosition;

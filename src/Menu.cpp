@@ -8,7 +8,12 @@ Menu::Menu(Game* game)
 {
 	this->game = game;
 	sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
-	this->view.setSize(pos);
+	sf::View DefaultView;
+	DefaultView.setCenter(400, 300);
+	DefaultView.setSize(800, 600);
+	game->window.setView(DefaultView);
+
+	//this->view.setSize(pos);
 	buttonTexture.loadFromFile("Resources/startbutton.png");
 	//buttonSprite.setTexture(buttonTexture);
 	buttonSprite.setTexture(buttonTexture);
@@ -17,17 +22,7 @@ Menu::Menu(Game* game)
 	//windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
 
 
-	texture.loadFromFile("Resources/fire.png");
-	system.setTexture(texture);
-	emitter.setEmissionRate(1000);
-	emitter.setParticleLifetime(thor::Distributions::uniform(sf::seconds(0.1), sf::seconds(0.2)));
-	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(300,200), 5));   // Emit particles in given circle
-	emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(300,500), 5.f)); // Emit towards direction with deviation of 15°
-	emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
-	system.addEmitter(thor::refEmitter(emitter));
 
-
-	sf::Vector2f p(10, 10);
 }
 void Menu::draw()
 {
@@ -39,7 +34,7 @@ void Menu::draw()
 
 void Menu::update()
 {
-	system.update(clock.restart());
+
 
 
 
@@ -66,7 +61,7 @@ void Menu::update()
 	}
 
 	game->window.draw(buttonSprite);
-	game->window.draw(system);
+	
 		game->window.display();
 
 		return;
