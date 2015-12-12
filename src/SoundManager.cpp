@@ -36,15 +36,21 @@ void SoundManager::init()
 		BackgroundMusic,
 		true,
 		&Backgroundchannel);
-	    Backgroundchannel->setVolume(0.05f);       // Set the volume while it is paused.
+	    Backgroundchannel->setVolume(0.5f);       // Set the volume while it is paused.
 	    Backgroundchannel->setPaused(false);
 
-		result = FMODsys->createStream("Resources/wave.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &WaveSound);
+		result = FMODsys->createSound("Resources/wave.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &WaveSound);
 
 
-		Backgroundchannel = 0;
+		WaveChannel = 0;
 		volume = 0.5f;
-		FMODsys->playSound(FMOD_CHANNEL_FREE, WaveSound, false, &WaveChannel);
+		FMODsys->playSound(
+			FMOD_CHANNEL_FREE,
+			WaveSound,
+			true,
+			&WaveChannel);
+		// Set the volume while it is paused.
+		WaveChannel->setPaused(false);
 		result = WaveChannel->setVolume(volume);
 		//need this for sound fall off
 		WaveChannel->set3DMinMaxDistance(50, 10000);
@@ -52,7 +58,7 @@ void SoundManager::init()
 
 
 		result = FMODsys->createStream("Resources/rocket.wav", FMOD_LOOP_NORMAL | FMOD_3D, 0, &RocketSound);
-		result = FMODsys->createSound("Resources/fire.mp3", FMOD_DEFAULT, 0, &fireSound);
+		result = FMODsys->createStream("Resources/gun.mp3", FMOD_DEFAULT, 0, &fireSound);
 
 
 		result = FMODsys->createReverb(&reverb);
@@ -63,9 +69,10 @@ void SoundManager::init()
 		reverb->set3DAttributes(&reverbpos, mindist, maxdist);
 
 		reverb->setActive(true);
-
+	
 }
 void SoundManager::playFireSound(){
+
 	FMODsys->playSound(FMOD_CHANNEL_FREE, fireSound, false, &fireChannel);
 
 }

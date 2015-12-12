@@ -32,8 +32,8 @@ private:
 	int timer = 0; 
 	bool move = false;
 	const float SCALE = 30.f;
-	float playerHeight= 32;
-	float playerWidth =32;
+	float playerHeight= 30;
+	float playerWidth =24;
 	sf::Vector2f source = sf::Vector2f(0, 0);
 	sf::Vector2f m_position;
 	sf::Texture m_texture;

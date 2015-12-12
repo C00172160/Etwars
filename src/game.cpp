@@ -77,6 +77,7 @@ void Game::gameLoop()
 	//	this->window.clear(sf::Color::Black);
 		peekState()->draw();
 	//	this->window.display();
+	
 	}
 }
 

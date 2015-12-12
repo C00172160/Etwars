@@ -18,6 +18,9 @@ bool Groundhit = false;
 sf::Vector2f lastbulletpos;
 bool destroyRocket = false;
 
+
+
+
 class MyContactListener : public b2ContactListener
 {
 	void BeginContact(b2Contact* contact) {
@@ -26,10 +29,7 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-		if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
-		{
-		//	destroyRocket = true;
-		}
+
 
 		if (fixtureUserDataA == "player1" || fixtureUserDataB == "player1")
 		{
@@ -75,6 +75,15 @@ class MyContactListener : public b2ContactListener
 			Groundhit = true;
 			destroyRocket = true;
 		}
+		else if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
+		{
+			//	destroyRocket = true;
+		}
+	}
+	void PreSolve(b2Contact* contact)
+	{
+
+
 	}
 };
 
@@ -83,7 +92,7 @@ MyContactListener myContactListenerInstance;
 Play::Play(Game* game)
 {
 	this->game = game;
-
+	
 	 position = sf::Vector2f(500, -50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
@@ -103,7 +112,9 @@ Play::Play(Game* game)
 	offset = 310;
 	gameSize = blockAmount * blockWidth +50;
 	gameSize = gameSize - offset;
-	panTimer = 2;
+	bullerTimer = 10.f;
+	CountDown = false;
+	explosiontimer = 5.0f;
 	buildView.setSize(800, 600);
 	dirttex.loadFromFile("Resources/snow/8.png");
 	topStraighttex.loadFromFile("Resources/snow/6.png");
@@ -114,13 +125,19 @@ Play::Play(Game* game)
 	rightStraight.loadFromFile("Resources/snow/5.png");
 	bottomStraight.loadFromFile("Resources/snow/2.png");
 	bottomLeftCorner.loadFromFile("Resources/snow/1.png");
+	Explosion.loadFromFile("Resources/explosion.png");
 
+	Explosion.setSmooth(true);
+	ExplosionSprite.setTexture(Explosion);
+	//Sprite.setOrigin(16.f, 16.f);
+	ExplosionSprite.setOrigin(0, 0);
+	ExplosionSprite.setTextureRect(sf::IntRect(Explosionsource.x * 128, Explosionsource.y * 128, 128, 128));
 
     sizeofmap = 0;
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
 	backGroundTexture.loadFromFile("Resources/background.jpg");
-	CharacterTexture.loadFromFile("Resources/weird.png");
+	CharacterTexture.loadFromFile("Resources/player.png");
 
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
@@ -183,38 +200,58 @@ Play::Play(Game* game)
 		}
 
 	}
+	SFMLDebugDraw debugDraw(game->window);
+	World.SetDebugDraw(&debugDraw);
+	debugDraw.SetFlags(b2Draw::e_shapeBit);
+	//textures.loadFromFile("Resources/grass1.jpg");
+	//system.setTexture(textures);
+	emitter.setEmissionRate(30);
+	emitter.setParticleLifetime(sf::seconds(5));
+	system.addEmitter(emitter);
+	emitter.setParticleLifetime(thor::Distributions::uniform(sf::seconds(5), sf::seconds(7)));
+	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(100,100), 10.f));   // Emit particles in given circle
+	emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 1), 15.f)); // Emit towards direction with deviation of 15°
+	emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+
 	
-
-
-
-	
-
 }
 
 
 void Play::draw()
 {
-
-
+ 	game->window.draw(system);
+	//World.DrawDebugData();
 	return;
 }
 
 void Play::update()
 {
+	system.update(Pclock.restart());
 	World.Step(1 / 60.f, 8, 3);
 
-	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 500));
+	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 555));
 	water1.Update();
 	water2.Update();
 	water3.Update();
-	updateTime();
+
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
 	UpdateStaticBodies();
 	UpdateCamera();
 	sf::Event event;
 
-	
+	if (CountDown == true )
+	{
+		
+		bulletView.setCenter(lastbulletpos);
+		game->window.setView(bulletView);
+		bullerTimer -= clock.restart().asSeconds();
+		if (bullerTimer <= 0)
+		{
+			bullerTimer = 10.f;
+			CountDown = false;
+		}
+	}
 
 	if (BuildMode == false)
 	{
@@ -265,7 +302,7 @@ void Play::update()
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
-
+	
 	if (BuildMode == true)
 	{
 		game->window.draw(HudSprite);
@@ -279,12 +316,43 @@ void Play::update()
 			game->window.draw(placingSprite);
 		}
 	}
-	
+	if (startExplosion == true)
+	{
+		PlayExplosion();
+		game->window.draw(ExplosionSprite);
+	}
+	//game->window.draw(system);
 	game->window.display();
 
 	return;
 }
+void Play::PlayExplosion()
+{
+	ExplosionSprite.setPosition(lastbulletpos.x -64 , lastbulletpos.y-64);
+	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
+
+	explosiontimer++;
+	if (explosiontimer >= 2)
+	{
+		Explosionsource.x++;
+		if (Explosionsource.x > 4){
+
+			Explosionsource.x = 0;
+			Explosionsource.y++;
+		}
+		if (Explosionsource.y > 4)
+		{
+			Explosionsource.x = 0;
+			Explosionsource.y = 0;
+			startExplosion = false;
+		}
+		explosiontimer = 0;
+	}
+
+	ExplosionSprite.setTextureRect(sf::IntRect(Explosionsource.x * 128, Explosionsource.y * 128, 128, 128));
+
+}
 void Play::handleInput()
 {
 	sf::Event event;
@@ -313,21 +381,25 @@ void Play::handleInput()
 					{
 						if (Player1Turn == true)
 						{
-							player1Fire = true;
-							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
-							Rockets.push_back(tempRocket);
-							soundManager.playFireSound();
-
+							if (CountDown == false)
+							{
+								player1Fire = true;
+								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
+								Rockets.push_back(tempRocket);
+								soundManager.playFireSound();
+							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
 						else
 						{
-							player2Fire = true;
-							Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
-							Rockets.push_back(tempRocket);
-							soundManager.playFireSound();
-
+							if (CountDown == false)
+							{
+								player2Fire = true;
+								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
+								Rockets.push_back(tempRocket);
+								soundManager.playFireSound();
+							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
@@ -492,17 +564,17 @@ void Play::UpdateStaticBodies()
 void Play::SwitchTurn()
 {
 	
-	if (Player1Turn == true && panTimer <=0 )
+	if (Player1Turn == true )
 	{
 		player1Fire = false;
 		Player1Turn = false;
-		panTimer = 2;
+		
 	}
-	else if (Player1Turn == false  && panTimer <= 0)
+	else if (Player1Turn == false  )
 	{
 		player2Fire = false;
 		Player1Turn = true;
-		panTimer = 2;
+		
 	}
 
 }
@@ -544,7 +616,7 @@ void Play::BuildModeUpdate()
 			PlaceMode = false;
 		}
 
-		if (currentType == 5)
+		if (currentType == 8)
 		{
 			placingSprite.setTexture(dirttex);
 			price = 100;
@@ -559,15 +631,15 @@ void Play::BuildModeUpdate()
 			if ( Player1Turn == true && CurrentPlayer1Money >= price)
 			{
 				mousereleased = false;
-				Block temp = Block(currentType, sf::Vector2f(position.x - 10, position.y - 10), World);
-				blocks.push_back(temp); Block temp2 = blocks[3356];
+				Block temp = Block(currentType, sf::Vector2f(position.x , position.y), World);
+				blocks.push_back(temp);
 				CurrentPlayer1Money -= price;
 			}
 			else if (Player1Turn == false && CurrentPlayer2Money >= price)
 			{
 				mousereleased = false;
-				Block temp = Block(currentType, sf::Vector2f(position.x - 10, position.y - 10), World);
-				blocks.push_back(temp); Block temp2 = blocks[3356];
+				Block temp = Block(currentType, sf::Vector2f(position.x , position.y ), World);
+				blocks.push_back(temp); 
 				CurrentPlayer2Money -= price;
 			}
 
@@ -583,7 +655,7 @@ void Play::BuildModeUpdate()
 		if (CheckClicked(DirtBlockHud, position) == true)
 		{
 			{
-				currentType = 5;
+				currentType = 8;
 				PlaceMode = true;
 			}
 		}
@@ -615,7 +687,7 @@ void Play::GameStart()
 {
 	
 	BuildMode = false;
-	updateTime();
+
 	Player1Turn = true;
 	player1health.setFont(font);
 	player1health.setStyle(sf::Text::Bold);
@@ -697,9 +769,13 @@ void Play::UpdateCamera()
 
 		
 
-		if (Player1Turn == true && overview == false)
+		if (Player1Turn == true && overview == false )
 		{
-			game->window.setView(player1View);
+			
+			
+				game->window.setView(player1View);
+			
+			
 			for (int i = 0; i < Rockets.size(); i++)
 			{
 				if (player1Fire == true && overview == false)
@@ -713,9 +789,12 @@ void Play::UpdateCamera()
 				}
 			}
 		}
-		else if (Player1Turn == false && overview == false)
+		else if (Player1Turn == false && overview == false )
 		{
-			game->window.setView(player2View);
+			
+				game->window.setView(player2View);
+			
+			
 			for (int i = 0; i < Rockets.size(); i++)
 			{
 				if (player2Fire == true && overview == false)
@@ -746,6 +825,7 @@ void Play::UpdateRockets()
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (width * 20) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
+			
 			RocketFired = false;
 			//soundManager.StopRocket();
 
@@ -756,9 +836,11 @@ void Play::UpdateRockets()
 
 	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
+		startExplosion = true;
+		CountDown = true;
 		for (int i = 0; i < Rockets.size(); i++)
 		{
-			updateTime();
+
 			lastbulletpos = Rockets[i].getPosition();
 			World.DestroyBody(Rockets[i].getBody());
 			Rockets.pop_back();
@@ -769,9 +851,7 @@ void Play::UpdateRockets()
 	}
 }
 
-void Play::updateTime(){
-	panTimer -= clock.restart().asSeconds();
-}
+
 void Play::UpdateHealth()
 {
 

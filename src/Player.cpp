@@ -106,7 +106,7 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 	Sprite.setTexture(tex);
 	Sprite.setOrigin(16.f, 16.f);
 	//Sprite.setOrigin(0, 0);
-	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
+	Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
 }
 void Player::Update(int numFootContacts)
 
@@ -141,7 +141,7 @@ void Player::Update(int numFootContacts)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && numberOfFootContacts >0) {
 
 
-		m_body->ApplyForceToCenter(b2Vec2(0,- 50), true);
+		m_body->ApplyForceToCenter(b2Vec2(0,- 100), true);
 	}
 
 
@@ -177,7 +177,7 @@ void Player::UpdateSprite()
 
 	if (move == true)
 	{
-		Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
+		Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
 	}
 
 

@@ -3,6 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 #include "game_state.hpp"
+#include "Thor\Particles\Particle.hpp"
+#include "Thor\Particles\Affectors.hpp"
+#include "Thor\Particles\EmissionInterface.hpp"
+#include "Thor\Particles\Emitters.hpp"
+#include "Thor\Particles\ParticleSystem.hpp"
+#include "Thor\Particles.hpp"
+#include "Thor\Vectors\VectorAlgebra3D.hpp"
+#include "Thor\Math\Distributions.hpp"
+#include "SFML\OpenGL.hpp"
 
 #ifdef _DEBUG 
 #pragma comment(lib,"sfml-graphics-d.lib") 
@@ -41,6 +50,7 @@
 #include "Water.h"
 #include <math.h>
 #include "SoundManager.h"
+#include "SFMLDebugDraw.h"
 
 using namespace std;
 
@@ -48,7 +58,12 @@ using namespace std;
 class Play : public GameState
 {
 private:
+	
 
+	thor::UniversalEmitter emitter;
+
+	sf::Clock Pclock;
+	thor::ParticleSystem system;
 	SoundManager soundManager;
 	sf::Vector2f position;
 	sf::Font font;
@@ -69,9 +84,13 @@ private:
 	int currentType;
 	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
+	//sf::Texture textures;
 	sf::Texture CharacterTexture;
 	//sf::Texture DirtTexture;
 	sf::Texture CrosshairTexture;
+	sf::Texture Explosion;
+	sf::Vector2f Explosionsource = sf::Vector2f(0, 0);
+	sf::Sprite ExplosionSprite;
 	sf::Texture FinishButtonTexture;
 	sf::Sprite FinishButtonSprite;
 	sf::Texture RocketTexture;
@@ -87,7 +106,6 @@ private:
 	sf::Texture hudPanelTex;
 	sf::Vector2f cameraposition;
 	sf::View player1View, player2View, bulletView, buildView, standardView;
-
 	int sizeofmap;
 	
 	sf::Vector2f buildViewenter;
@@ -106,8 +124,8 @@ private:
 	int offset;
 	sf::CircleShape  boundingbox;
 	sf::Clock clock;
-	float panTimer;
-	void updateTime();
+	float bullerTimer;
+	bool CountDown;
 	 int width=200;
 	 int heigh30;
 	 bool overview;
@@ -120,16 +138,18 @@ private:
 	 sf::Text currentPlayer;
 	 sf::Text Money;
 	 sf::Text dirtPrice;
+	 bool startExplosion;
 	 int price;
 	 int CurrentPlayer1Money;
 	 int CurrentPlayer2Money;
-	 
+	 float explosiontimer;
 
 public:
 
 	virtual void draw();
 	virtual void update();
 	virtual void handleInput();
+	void PlayExplosion();
 	void UpdateStaticBodies();
 	void SwitchTurn();
 	void UpdateCamera();
