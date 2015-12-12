@@ -60,10 +60,19 @@ class Play : public GameState
 private:
 	
 
-	thor::UniversalEmitter emitter;
-
-	sf::Clock Pclock;
+	sf::Texture Snowtexture;
 	thor::ParticleSystem system;
+	sf::Clock Particleclock;
+	thor::UniversalEmitter Snowemitter1;
+	thor::UniversalEmitter Snowemitter2;
+	thor::UniversalEmitter Snowemitter3;
+
+	sf::Clock RocketParticleclock;
+	sf::Texture Firetexture;
+	thor::ParticleSystem Rocketsystem;
+	thor::UniversalEmitter RocketEmitter;
+
+	int bulletOffset;
 	SoundManager soundManager;
 	sf::Vector2f position;
 	sf::Font font;
@@ -84,7 +93,6 @@ private:
 	int currentType;
 	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
-	//sf::Texture textures;
 	sf::Texture CharacterTexture;
 	//sf::Texture DirtTexture;
 	sf::Texture CrosshairTexture;
@@ -159,6 +167,8 @@ public:
 	void UpdateWater();
 	void BuildModeUpdate();
 	void GameStart();
+	void InitRocketParticle();
+	void UpdateRocketParticle();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
 	void CreateBlock(int type, sf::Vector2i position);
 	Play(Game* game);

@@ -49,7 +49,7 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	Sprite.setOrigin(Width / 2 , Height / 2 );
+	Sprite.setOrigin(10.5 , 5 );
 	//Sprite.setOrigin(0,0);
 
 	sf::Vector2f Direction = pos - (sf::Vector2f(PlayerPos.x,PlayerPos.y));

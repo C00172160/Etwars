@@ -110,9 +110,9 @@ Play::Play(Game* game)
 	blockWidth = 20;
 	blockAmount = 100;
 	offset = 310;
-	gameSize = blockAmount * blockWidth +50;
-	gameSize = gameSize - offset;
-	bullerTimer = 10.f;
+	gameSize = blockAmount * blockWidth;
+
+	bullerTimer = 1.5f;
 	CountDown = false;
 	explosiontimer = 5.0f;
 	buildView.setSize(800, 600);
@@ -142,7 +142,7 @@ Play::Play(Game* game)
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
 
-
+	bulletOffset = 450;
 	player1Fire = false;
 	player2Fire = false;
 
@@ -181,6 +181,7 @@ Play::Play(Game* game)
 	Money.setCharacterSize(20);
 	Money.setColor(sf::Color::Black);
 	overview = false;
+	
 	///////////////////////////////////
 	int map[30][100] = {
       #include "testlevel.txt"
@@ -200,35 +201,73 @@ Play::Play(Game* game)
 		}
 
 	}
-	SFMLDebugDraw debugDraw(game->window);
-	World.SetDebugDraw(&debugDraw);
-	debugDraw.SetFlags(b2Draw::e_shapeBit);
-	//textures.loadFromFile("Resources/grass1.jpg");
-	//system.setTexture(textures);
-	emitter.setEmissionRate(30);
-	emitter.setParticleLifetime(sf::seconds(5));
-	system.addEmitter(emitter);
-	emitter.setParticleLifetime(thor::Distributions::uniform(sf::seconds(5), sf::seconds(7)));
-	emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(100,100), 10.f));   // Emit particles in given circle
-	emitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 1), 15.f)); // Emit towards direction with deviation of 15°
-	emitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+
+
+	Firetexture.loadFromFile("Resources/fire.png");
+	Snowtexture.loadFromFile("Resources/snow.png");
+	system.setTexture(Snowtexture);
+	Snowemitter1.setEmissionRate(100);
+	Snowemitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+	Snowemitter1.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1000, -1000), 100));   // Emit particles in given circle
+	Snowemitter1.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+	Snowemitter1.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+	system.addEmitter(Snowemitter1);
+
+	Snowemitter2.setEmissionRate(100);
+	Snowemitter2.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+	Snowemitter2.setParticlePosition(thor::Distributions::circle(sf::Vector2f(200, -1000), 100));   // Emit particles in given circle
+	Snowemitter2.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+	Snowemitter2.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+	system.addEmitter(Snowemitter2);
+
+	Snowemitter3.setEmissionRate(100);
+	Snowemitter3.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+	Snowemitter3.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1800, -1000), 100));   // Emit particles in given circle
+	Snowemitter3.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+	Snowemitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+	system.addEmitter(Snowemitter3);
+
 
 	
 }
 
+void Play::InitRocketParticle()
+{
+	Rocketsystem.setTexture(Firetexture);
+	RocketEmitter.setEmissionRate(1000);
+	RocketEmitter.setParticleLifetime(thor::Distributions::uniform(sf::seconds(0.1), sf::seconds(0.2)));
+	RocketEmitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(300, 200), 5));   // Emit particles in given circle
+	RocketEmitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(300, 500), 5.f)); // Emit towards direction with deviation of 15°
+	RocketEmitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+	Rocketsystem.addEmitter(thor::refEmitter(RocketEmitter));
+
+}
+void Play::UpdateRocketParticle()
+{
+
+	RocketEmitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(Rockets[0].getPosition().x, Rockets[0].getPosition().y), 5));
+	RocketEmitter.setParticleVelocity(thor::Distributions::deflect(-(Rockets[0].getVelocity()), 10.f));
+
+
+	Rocketsystem.update(RocketParticleclock.restart());
+	game->window.draw(Rocketsystem);
+}
 
 void Play::draw()
 {
- 	game->window.draw(system);
-	//World.DrawDebugData();
+ 	//game->window.draw(system);
 	return;
 }
 
 void Play::update()
 {
-	system.update(Pclock.restart());
+
+	system.update(Particleclock.restart());
+
 	World.Step(1 / 60.f, 8, 3);
 
+	
+	World.DrawDebugData();
 	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 555));
 	water1.Update();
 	water2.Update();
@@ -236,19 +275,26 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
+	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
-	sf::Event event;
 
+	if (Rockets.size() > 0)
+	{
+		UpdateRocketParticle();
+	}
+	bullerTimer -= clock.restart().asSeconds();
 	if (CountDown == true )
 	{
 		
 		bulletView.setCenter(lastbulletpos);
 		game->window.setView(bulletView);
-		bullerTimer -= clock.restart().asSeconds();
+
+		
+
 		if (bullerTimer <= 0)
 		{
-			bullerTimer = 10.f;
+			bullerTimer = 1.5f;
 			CountDown = false;
 		}
 	}
@@ -302,6 +348,7 @@ void Play::update()
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
+
 	
 	if (BuildMode == true)
 	{
@@ -321,7 +368,9 @@ void Play::update()
 		PlayExplosion();
 		game->window.draw(ExplosionSprite);
 	}
+
 	//game->window.draw(system);
+	
 	game->window.display();
 
 	return;
@@ -387,6 +436,8 @@ void Play::handleInput()
 								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
 								Rockets.push_back(tempRocket);
 								soundManager.playFireSound();
+								InitRocketParticle();
+								overview = false;
 							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
@@ -399,6 +450,8 @@ void Play::handleInput()
 								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
 								Rockets.push_back(tempRocket);
 								soundManager.playFireSound();
+								InitRocketParticle();
+								overview = false;
 							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
@@ -724,7 +777,7 @@ void Play::UpdateCamera()
 {
 	if (BuildMode == false)
 	{
-		
+
 		if (overview == true && Player1Turn == true)
 		{
 			standardView.setCenter(player1.getPosition().x, player1.getPosition().y);
@@ -741,70 +794,101 @@ void Play::UpdateCamera()
 		}
 		player1View.setSize(600, 450);
 		player2View.setSize(600, 450);
-		if (player1.getPosition().x  > offset)
+		if (player1.getPosition().x > offset)
 		{
 			player1View.setCenter(sf::Vector2f(player1.getPosition()));// , sf::Vector2f(500, 500));#
 		}
-		else if (player1.getPosition().x  < offset)
+		else if (player1.getPosition().x  < offset&& player1.getPosition().x < gameSize - offset)
 		{
 			player1View.setCenter(sf::Vector2f(offset, player1.getPosition().y));
 		}
-		if (player1.getPosition().x  > gameSize)
+		if (player1.getPosition().x  > gameSize - offset)
 		{
-			player1View.setCenter(sf::Vector2f(gameSize, player1.getPosition().y));// , sf::Vector2f(500, 500));#
+			player1View.setCenter(sf::Vector2f(gameSize - offset, player1.getPosition().y));// , sf::Vector2f(500, 500));#
 		}
-		if (player2.getPosition().x  > gameSize)
+		if (player2.getPosition().x > gameSize - offset)
 		{
-			player2View.setCenter(sf::Vector2f(gameSize, player2.getPosition().y));// , sf::Vector2f(500, 500));#
+			player2View.setCenter(sf::Vector2f(gameSize - offset, player2.getPosition().y));// , sf::Vector2f(500, 500));#
 		}
 
-		if (player2.getPosition().x  > offset && player2.getPosition().x < gameSize)
+		if (player2.getPosition().x > offset && player2.getPosition().x < gameSize - offset)
 		{
 			player2View.setCenter(sf::Vector2f(player2.getPosition()));// , sf::Vector2f(500, 500));#
 		}
-		else if (player2.getPosition().x  < offset && player2.getPosition().x < gameSize)
+		else if (player2.getPosition().x < offset )
 		{
 			player2View.setCenter(sf::Vector2f(offset, player2.getPosition().y));
 		}
 
-		
 
-		if (Player1Turn == true && overview == false )
+
+		if (Player1Turn == true && overview == false)
 		{
-			
-			
-				game->window.setView(player1View);
-			
-			
+			game->window.setView(player1View);
+
 			for (int i = 0; i < Rockets.size(); i++)
 			{
 				if (player1Fire == true && overview == false)
 				{
-					if (Rockets[i].getPosition().x < gameSize - offset)
+					/*if (Rockets[i].getPosition().x < 450 || Rockets[i].getPosition().x > 1545)
+					{
+					bullerTimer = 0;
+					}*/
+
+					if (Rockets[i].getPosition().x  < bulletOffset)
+					{
+						bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
+						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
+					}
+					if (Rockets[i].getPosition().x  > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
 					{
 						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
 						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
 					}
-					game->window.setView(bulletView);
+					if (Rockets[i].getPosition().x  > gameSize  - bulletOffset)
+					{
+						
+						bulletView.setCenter(gameSize-bulletOffset, Rockets[i].getPosition().y);
+						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
+					}
+
 				}
 			}
 		}
-		else if (Player1Turn == false && overview == false )
+		else if (Player1Turn == false && overview == false)
 		{
-			
-				game->window.setView(player2View);
-			
-			
+			game->window.setView(player2View);
+
 			for (int i = 0; i < Rockets.size(); i++)
 			{
 				if (player2Fire == true && overview == false)
 				{
-					if (Rockets[i].getPosition().x < gameSize - offset)
+					/*      if (Rockets[i].getPosition().x < 450 || Rockets[i].getPosition().x > 1545)
+					{
+					bullerTimer = 0;
+					}*/
+					if (Rockets[i].getPosition().x  < bulletOffset)
+					{
+						bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
+						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
+					}
+					if (Rockets[i].getPosition().x  > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
 					{
 						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
 						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
 					}
-					game->window.setView(bulletView);
+					if (Rockets[i].getPosition().x  > gameSize - bulletOffset)
+					{
+
+						bulletView.setCenter(gameSize - bulletOffset, Rockets[i].getPosition().y);
+						bulletView.setSize(900, 675);
+						game->window.setView(bulletView);
+					}
 				}
 			}
 		}
@@ -814,6 +898,8 @@ void Play::UpdateCamera()
 		buildView.setCenter(buildViewenter);
 		game->window.setView(buildView);
 	}
+
+
 
 }
 void Play::UpdateRockets()
@@ -825,7 +911,7 @@ void Play::UpdateRockets()
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (width * 20) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
-			
+			bullerTimer = 1.5f;
 			RocketFired = false;
 			//soundManager.StopRocket();
 
@@ -836,6 +922,7 @@ void Play::UpdateRockets()
 
 	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
+		bullerTimer = 1.5f;
 		startExplosion = true;
 		CountDown = true;
 		for (int i = 0; i < Rockets.size(); i++)
