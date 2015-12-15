@@ -1,5 +1,8 @@
 
 
+
+
+
 #include "SoundManager.h"
 
 
@@ -10,11 +13,12 @@ SoundManager::SoundManager()
 
 void SoundManager::init()
 {
+
 	//setup FMOD
 	result = FMOD::System_Create(&FMODsys);     // Create the main system object.
 
-    prop1 = FMOD_PRESET_AUDITORIUM;
-//	FMODsys->setReverbAmbientProperties(&prop1);
+	prop1 = FMOD_PRESET_AUDITORIUM;
+	//      FMODsys->setReverbAmbientProperties(&prop1);
 
 	if (result != FMOD_OK)
 	{
@@ -29,6 +33,8 @@ void SoundManager::init()
 		std::cout << "FMOD error! (%d) %s\n" << result;// << FMOD_ErrorString(result);
 		exit(-1);
 	}
+
+////////////////////////////////////////////////////////BACKGROUND SETUP ////////////////////////////////////////////////////////////////////////////////
 	result = FMODsys->createStream("Resources/song.mp3", FMOD_LOOP_NORMAL, 0, &BackgroundMusic);
 
 	FMODsys->playSound(
@@ -36,115 +42,151 @@ void SoundManager::init()
 		BackgroundMusic,
 		true,
 		&Backgroundchannel);
-	    Backgroundchannel->setVolume(0.5f);       // Set the volume while it is paused.
-	    Backgroundchannel->setPaused(false);
+	Backgroundchannel->setVolume(0.5f);       // Set the volume while it is paused.
+	Backgroundchannel->setPaused(false);
 
-		result = FMODsys->createSound("Resources/wave.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &WaveSound);
-
-
-		WaveChannel = 0;
-		volume = 0.5f;
-		FMODsys->playSound(
-			FMOD_CHANNEL_FREE,
-			WaveSound,
-			true,
-			&WaveChannel);
-		// Set the volume while it is paused.
-		WaveChannel->setPaused(false);
-		result = WaveChannel->setVolume(volume);
-		//need this for sound fall off
-		WaveChannel->set3DMinMaxDistance(50, 10000);
-		WaveChannel->set3DDopplerLevel(0);
+///////////////////////////////////////////////////////////WAVE SOUND SETUP///////////////////////////////////////////////////////////////////////////////////
+	result = FMODsys->createSound("Resources/wave.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &WaveSound);
 
 
-		result = FMODsys->createStream("Resources/rocket.wav", FMOD_LOOP_NORMAL | FMOD_3D, 0, &RocketSound);
-		result = FMODsys->createStream("Resources/gun.mp3", FMOD_DEFAULT, 0, &fireSound);
+	WaveChannel = 0;
+	volume = 0.5f;
+	FMODsys->playSound(
+		FMOD_CHANNEL_FREE,
+		WaveSound,
+		true,
+		&WaveChannel);
+	// Set the volume while it is paused.
+	WaveChannel->setPaused(false);
+	result = WaveChannel->setVolume(volume);
+	//need this for sound fall off
+	WaveChannel->set3DMinMaxDistance(50, 10000);
+	WaveChannel->set3DDopplerLevel(0);
+
+////////////////////////////////////////////////////////TEST SETUP ////////////////////////////////////////////////////////////////////////////////
+	result = FMODsys->createSound("Resources/test.wav", FMOD_LOOP_NORMAL | FMOD_3D, 0, &TestSound);
 
 
-		result = FMODsys->createReverb(&reverb);
-		reverb->setProperties(&prop1);
-		reverbpos = {100, 0, 100 };
-		float mindist = 1000.0f;
-		float maxdist = 1500.0f;
-		reverb->set3DAttributes(&reverbpos, mindist, maxdist);
+	TestChannel = 0;
+	volume = 0.5f;
+	FMODsys->playSound(
+		FMOD_CHANNEL_FREE,
+		TestSound,
+		true,
+		&TestChannel);
+	// Set the volume while it is paused.
+	TestChannel->setPaused(false);
+	result = TestChannel->setVolume(volume);
+	//need this for sound fall off
+	TestChannel->set3DMinMaxDistance(50, 1000);
+	TestChannel->set3DDopplerLevel(1000);
+	TestPos = {1000, 0, 0};
 
-		reverb->setActive(true);
+	///////////////////////////////////////////////////////////////////// ////////////////////////////////////////////////////////////////////////////////
 	
+	
+	result = FMODsys->createStream("Resources/gun.mp3", FMOD_DEFAULT | FMOD_3D, 0, &fireSound);
+	result = FMODsys->createStream("Resources/explosion.mp3", FMOD_DEFAULT, 0, &explosionSound);
+
+	////////////////////////////////////////////////////////REVERB SETUP ////////////////////////////////////////////////////////////////////////////////
+			reverbpos = sf::Vector2f(1000, 300);
+			reverbActive = false;
+			result = FMODsys->createReverb(&reverb);
+			FMOD_REVERB_PROPERTIES prop = FMOD_PRESET_SEWERPIPE;
+		
+			reverb->setProperties(&prop);
+			reverbPosition = {reverbpos.x, reverbpos.y, 0 };
+			 mindistance = 10.0f;
+			 maxdistance = 300.0f;
+			
+			 reverb->set3DAttributes(&reverbPosition, mindistance, maxdistance);
+
 }
+
 void SoundManager::playFireSound(){
 
 	FMODsys->playSound(FMOD_CHANNEL_FREE, fireSound, false, &fireChannel);
 
-}
-
-void SoundManager::UpdateReverb()
-{
 
 }
-//void SoundManager::PlayRocket()
-//{
-//	RocketChannel = 0;
-//	volume = 0.9f;
-//
-//	FMODsys->playSound(
-//		FMOD_CHANNEL_FREE,
-//		RocketSound,
-//		true,
-//		&RocketChannel);
-//
-//	RocketChannel->setVolume(1.0f);       // Set the volume while it is paused.
-//	RocketChannel->setPaused(false);
-//
-//	result = RocketChannel->setVolume(volume);
-//	//need this for sound fall off
-//	RocketChannel->set3DMinMaxDistance(50, 1000);
-//	
-//}
-//void SoundManager::StopRocket()
-//{
-//	RocketSound->release();
-//}
+void SoundManager::playExplosionSound(sf::Vector2f rocketpos){
 
-//void SoundManager::updatRocketSound(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos)
-//{
-//	playerVelocity = { playervel.x, 0.0f, playervel.y };
-//	//update position & velocity of listener
-//	//position of listener needed for spatial & reverb effects
-//	//velocity of listener needed for dopper effects
-//	FMOD_VECTOR  playerPos = { playerpos.x, 0.0f, playerpos.y };
-//	//final pair of parameters are forward direction and up direction of listener (not needed in 2D)
-//	FMODsys->set3DListenerAttributes(0, &playerPos, &playerVelocity, 0, 0);
-//
-//	//update position of sound
-//	if (RocketChannel){
-//		sourcePos = { sourcepos.x, 0.0f, sourcepos.y };
-//		
-//		//source is fixed so velocity is zero
-//		RocketChannel->set3DAttributes(&sourcePos, 0);
-//	}
-//	
-//}
+	explosionChannel = 0;
+	volume = 0.5f;
+	FMODsys->playSound(FMOD_CHANNEL_FREE,explosionSound,true,&explosionChannel);
+	explosionChannel->setPaused(false);
+	result = explosionChannel->setVolume(volume);
+	explosionChannel->set3DMinMaxDistance(50, 1000);
+	explosionChannel->set3DDopplerLevel(0);
+	rocketPosition = { rocketpos.x, 0.0f, rocketpos.y };
+}
+
+
+
 
 void SoundManager::update(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos)
 {
 
+	playerVelocity = { playervel.x, 0.0f, playervel.y };
+	playerPos = { playerpos.x, 0.0, playerpos.y };
+	FMODsys->set3DListenerAttributes(0, &playerPos, &playerVelocity, 0, 0);
 
-		playerVelocity = { playervel.x, 0.0f, playervel.y };
-		//update position & velocity of listener
-		//position of listener needed for spatial & reverb effects
-		//velocity of listener needed for dopper effects
-		FMOD_VECTOR  playerPos = { playerpos.x, 0.0f, playerpos.y };
-		//final pair of parameters are forward direction and up direction of listener (not needed in 2D)
-		FMODsys->set3DListenerAttributes(0, &playerPos, &playerVelocity, 0, 0);
-
-		//update position of sound
-		if (WaveChannel){
-			sourcePos = { sourcepos.x, 0.0f, sourcepos.y };
-			//source is fixed so velocity is zero
-			WaveChannel->set3DAttributes(&sourcePos, 0);
-		}
 	
+	//update position of sound
+	if (WaveChannel){
+		sourcePos = { sourcepos.x, 0.0f, sourcepos.y };
+		//source is fixed so velocity is zero
+		WaveChannel->set3DAttributes(&sourcePos, 0);
+	}
+	if (explosionChannel){
+
+		explosionChannel->set3DAttributes(&rocketPosition, 0);
+
+	}
+	if (TestChannel){
+
+		TestChannel->set3DAttributes(&TestPos, 0);
+
+	}
+	
+
+	reverb->setActive(reverbActive);
+
 	FMODsys->update();
 
 }
 
+
+sf::Vector2f SoundManager::getReverbPosition()
+{
+
+	return reverbpos;
+}
+bool SoundManager::getReverbActive()
+{
+
+	return reverbActive;
+}
+void SoundManager::pauseBackground(bool toggle)
+{
+	Backgroundchannel->setPaused(toggle);
+}
+void  SoundManager::ToggleReverb(bool toggle)
+{
+	reverbActive = toggle;
+}
+void  SoundManager::pauseWave(bool toggle)
+{
+	WaveChannel->setPaused(toggle);
+
+}
+void  SoundManager::ToggleTest(bool toggle)
+{
+	TestChannel->setPaused(toggle);
+}
+void SoundManager::ToggleDoppler(int level)
+{
+
+		TestChannel->set3DDopplerLevel(level);
+	
+}

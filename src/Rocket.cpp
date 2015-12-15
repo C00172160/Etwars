@@ -38,7 +38,7 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 
 	//add  sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox((Width / SCALE) + 0.5f, (Height / SCALE) + 0.5f); //a 2x4 rectangle
+	polygonShape2.SetAsBox((Width / SCALE) + 0.1f, (Height / SCALE) + 0.1f); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 

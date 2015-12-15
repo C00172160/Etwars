@@ -16,11 +16,20 @@ public:
 	SoundManager();
 	void init();
 	void update(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos);
-	void updatRocketSound(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos);
-	void PlayRocket();
+	void updateRocketSound(sf::Vector2f RocketPos);
+	void PlayRocket(bool toggle);
 	void StopRocket();
 	void UpdateReverb();
+	void playExplosionSound(sf::Vector2f rocketPos);
 	void playFireSound();
+	bool getReverbActive();
+	void ToggleReverb(bool toggle);
+	void pauseBackground(bool toggle);
+	void pauseWave(bool toggle);
+	void ToggleTest(bool toggle);
+	void ToggleDoppler(int level);
+
+	sf::Vector2f getReverbPosition();
 
 private:
 	FMOD::System *FMODsys; //will point to the FMOD system
@@ -30,6 +39,8 @@ private:
 	FMOD::Channel *RocketChannel;
 	FMOD::Sound *WaveSound;
 	FMOD::Channel *WaveChannel;
+	FMOD::Sound *TestSound;
+	FMOD::Channel *TestChannel;
 	FMOD::Channel *Backgroundchannel;
 	FMOD_VECTOR  playerVelocity;
 	FMOD_VECTOR  playerPos;
@@ -37,11 +48,21 @@ private:
 	FMOD_VECTOR  sourceVel;
 	FMOD::Sound *fireSound;
 	FMOD::Channel *fireChannel;
+	FMOD_VECTOR reverbPosition;
+	FMOD::Sound *explosionSound;
+	FMOD::Channel *explosionChannel;
+	FMOD_VECTOR rocketPosition;
+	FMOD_VECTOR TestPos;
 
+	
+	float mindistance;
+	float maxdistance;
 	FMOD_REVERB_PROPERTIES prop1;
 	FMOD::Reverb *reverb;
-	FMOD_VECTOR reverbpos;
+	FMOD_VECTOR pos;
+	sf::Vector2f reverbpos;
 	float volume;
+	bool reverbActive;
 
 };
 

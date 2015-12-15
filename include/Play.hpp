@@ -62,6 +62,11 @@ class Play : public GameState
 private:
 	
 
+	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle,DopplerToggle;
+	sf::Text turn;
+	sf::Clock turnCLock;
+	double turnTimer;
+
 	sf::Texture Snowtexture;
 	thor::ParticleSystem system;
 	sf::Clock Particleclock;
@@ -154,10 +159,13 @@ private:
 	 int CurrentPlayer1Money;
 	 int CurrentPlayer2Money;
 	 float explosiontimer;
+	 sf::CircleShape reverbCircle;
+	 sf::CircleShape reverbCircle2;
 
 public:
 
 	virtual void draw();
+	void DrawDebug();
 	virtual void update();
 	virtual void handleInput();
 	void PlayExplosion();

@@ -105,6 +105,13 @@ Play::Play(Game* game)
 {
 	this->game = game;
 	
+	turn.setPosition(sf::Vector2f(300, -100));
+	turn.setColor(sf::Color::Red);
+	turn.setFont(font);
+	turn.setStyle(sf::Text::Bold);
+	turn.setCharacterSize(15);
+	turnTimer = 10;
+
 	 position = sf::Vector2f(500, -50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
@@ -170,7 +177,13 @@ Play::Play(Game* game)
 	boundingbox.setOutlineThickness(5.f);
 	boundingbox.setOutlineColor(sf::Color::Black);
 
-	
+	effectToggle = true;
+	spacialToggle = false;
+	backgroundToggle = false;
+	reverbToggle = false;
+	waveToggle = false;
+	DopplerToggle = true;
+
 	////////HUD
 	hudPanelTex.loadFromFile("Resources/hudPanel.png");
 	FinishButtonTexture.loadFromFile("Resources/finish.png");
@@ -194,7 +207,14 @@ Play::Play(Game* game)
 	Money.setCharacterSize(20);
 	Money.setColor(sf::Color::Black);
 	overview = false;
+	reverbCircle.setPosition(soundManager.getReverbPosition().x - 300, soundManager.getReverbPosition().y - 300);
 	
+	reverbCircle.setRadius(300);
+	reverbCircle.setFillColor(sf::Color::Transparent);
+	reverbCircle.setOutlineThickness(5.f);
+	reverbCircle.setOutlineColor(sf::Color::Black);
+
+
 	///////////////////////////////////
 	int map[30][100] = {
       #include "testlevel.txt"
@@ -216,7 +236,7 @@ Play::Play(Game* game)
 	}
 
 
-	Firetexture.loadFromFile("Resources/fire.png");
+	Firetexture.loadFromFile("Resources/smoke.png");
 	Snowtexture.loadFromFile("Resources/snow.png");
 	system.setTexture(Snowtexture);
 	Snowemitter1.setEmissionRate(100);
@@ -241,6 +261,8 @@ Play::Play(Game* game)
 	system.addEmitter(Snowemitter3);
 
 
+
+	
 	
 }
 
@@ -253,6 +275,13 @@ void Play::InitRocketParticle()
 	RocketEmitter.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(300, 500), 5.f)); // Emit towards direction with deviation of 15°
 	RocketEmitter.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
 	Rocketsystem.addEmitter(thor::refEmitter(RocketEmitter));
+	sf::IntRect rect0(0, 0, 10, 10);
+	sf::IntRect rect1(10, 0, 10, 10);
+	unsigned int index0 = system.addTextureRect(rect0);
+	unsigned int index1 = system.addTextureRect(rect1);
+	thor::UniversalEmitter emitter;
+	emitter.setParticleTextureIndex(thor::Distributions::uniform(0, 2));
+	//emitter.setParticleTextureIndex(index1);
 
 }
 void Play::UpdateRocketParticle()
@@ -268,19 +297,55 @@ void Play::UpdateRocketParticle()
 
 void Play::draw()
 {
- 	//game->window.draw(system);
+	
 	return;
 }
+void Play::DrawDebug()
+{
+	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
+	{
+		if (BodyIterator->IsActive())
+		{
+			for (b2Fixture* b2Fixture = BodyIterator->GetFixtureList(); b2Fixture != 0; b2Fixture = b2Fixture->GetNext())
+			{
+				b2Shape::Type shapeType = b2Fixture->GetType();
 
+				if (shapeType == b2Shape::e_polygon)
+				{
+					b2PolygonShape* polygonShape = (b2PolygonShape*)b2Fixture->GetShape();
+
+					sf::ConvexShape sprite;
+					int lenght = polygonShape->GetVertexCount();
+					sprite.setPointCount(lenght);
+					for (int i = 0; i < lenght; i++){
+						sprite.setPoint(i, sf::Vector2f(polygonShape->GetVertex(i).x, polygonShape->GetVertex(i).y));
+					}
+					sprite.setFillColor(sf::Color(0, 0, 0, 0));
+					sprite.setOutlineColor(sf::Color(0, 0, 0, 180));
+					sprite.setOutlineThickness(-0.025f);
+					sprite.setScale(30.f, 30.f);
+					sprite.setOrigin(0, 0);
+					sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
+					sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
+					game->window.draw(sprite);
+				}
+				
+			}
+		}
+	}
+}
 void Play::update()
 {
+
+
+
 
 	system.update(Particleclock.restart());
 
 	World.Step(1 / 60.f, 8, 3);
 
 	
-	World.DrawDebugData();
+//	World.DrawDebugData();
 	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 555));
 	water1.Update();
 	water2.Update();
@@ -320,24 +385,35 @@ void Play::update()
 			player1.Update(numFootContacts);
 			playerVelocity = player1.getVelocity();
 			playerPosition = player1.getPosition();
-			//if (RocketFired == true)
-			//{
-			//	//soundManager.updatRocketSound(Rockets[0].getPosition(), Rockets[0].getVelocity(),playerPosition);
-			//}
+			turnTimer -= turnCLock.restart().asSeconds();
+			turn.setString(" Player 1's turn, time remaining = " + std::to_string(turnTimer));
+
 			game->window.setKeyRepeatEnabled(true);
 		}
 		else
 		{
+			turnTimer -= turnCLock.restart().asSeconds();
 			game->window.setKeyRepeatEnabled(false);
 			cross.Update(player2.getPosition());
 			player2.Update(numFootContacts2);
-	/*		if (RocketFired == true)
-			{
-				soundManager.updatRocketSound(playerPosition, playerVelocity, Rockets[0].getPosition());
-			}*/
+			playerPosition = player2.getPosition();
+			turn.setString("Player 2's turn, time remaining = " + std::to_string(turnTimer));
+
+		}
+		if (turnTimer <= 0 && player1Fire == false && player2Fire == false)
+		{
+			SwitchTurn();
+		}
+		if (player1.getPosition().x < 0 || player1.getPosition().x > 2000)
+		{
+			player1.setHealth(100);
+		}
+		else if (player2.getPosition().x < 0 || player2.getPosition().x > 2000)
+		{
+			player2.setHealth(100);
 		}
 
-
+		turn.setPosition(game->window.getView().getCenter().x - game->window.getView().getSize().x / 2, game->window.getView().getCenter().y - game->window.getView().getSize().y / 2);
 		player1.UpdateSprite();
 		player2.UpdateSprite();
 		
@@ -383,7 +459,14 @@ void Play::update()
 	}
 
 	//game->window.draw(system);
-	
+
+	//DrawDebug();
+	if (soundManager.getReverbActive() == true)
+	{
+		game->window.draw(reverbCircle);
+		game->window.draw(reverbCircle2);
+	}
+	game->window.draw(turn);
 	game->window.display();
 
 	return;
@@ -448,8 +531,13 @@ void Play::handleInput()
 								player1Fire = true;
 								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1.getPosition());
 								Rockets.push_back(tempRocket);
-								soundManager.playFireSound();
+								if (effectToggle == true)
+								{
+									soundManager.playFireSound();
+								}
+								
 								InitRocketParticle();
+								//soundManager.PlayRocket();
 								overview = false;
 							}
 							//soundManager.PlayRocket();
@@ -462,9 +550,14 @@ void Play::handleInput()
 								player2Fire = true;
 								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2.getPosition());
 								Rockets.push_back(tempRocket);
-								soundManager.playFireSound();
+								if (effectToggle == true)
+								{
+									soundManager.playFireSound();
+								}
 								InitRocketParticle();
+								//soundManager.PlayRocket();
 								overview = false;
+								//soundManager.PlayRocket();
 							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
@@ -473,6 +566,87 @@ void Play::handleInput()
 
 				}
 			}
+			if (event.key.code == sf::Keyboard::M)
+			{
+				if (effectToggle == true)
+				{
+					effectToggle = false;
+					
+				}
+				else if (effectToggle == false)
+				{
+					effectToggle = true;
+				}
+				
+
+			}
+			if (event.key.code == sf::Keyboard::N)
+			{
+				if (backgroundToggle == true)
+				{
+					backgroundToggle = false;
+					soundManager.pauseBackground(backgroundToggle);
+				}
+				else if (backgroundToggle == false)
+				{
+					backgroundToggle = true;
+					soundManager.pauseBackground(backgroundToggle);
+				}
+
+
+			}
+			if (event.key.code == sf::Keyboard::V)
+			{
+				if (waveToggle == true)
+				{
+					waveToggle = false;
+					soundManager.pauseWave(waveToggle);
+				}
+				else if (waveToggle == false)
+				{
+					waveToggle = true;
+					soundManager.pauseWave(waveToggle);
+				}
+
+
+			}
+			if (event.key.code == sf::Keyboard::B)
+			{
+				if (reverbToggle == true)
+				{
+					reverbToggle = false;
+					soundManager.ToggleReverb(reverbToggle);
+				}
+				else if (reverbToggle == false)
+				{
+					reverbToggle = true;
+					soundManager.ToggleReverb(reverbToggle);
+				}
+
+
+			}
+			if (event.key.code == sf::Keyboard::C)
+			{
+				if (spacialToggle == true)
+				{
+					spacialToggle = false;
+					soundManager.ToggleReverb(spacialToggle);
+				}
+				else if (spacialToggle == false)
+				{
+					spacialToggle = true;
+					soundManager.ToggleReverb(spacialToggle);
+				}
+
+
+			}
+			if (event.key.code == sf::Keyboard::L)
+			{
+					soundManager.ToggleDoppler(0);
+
+			}
+
+			
 			if (event.key.code == sf::Keyboard::Z)
 			{
 				if (zoomed == false)
@@ -486,14 +660,7 @@ void Play::handleInput()
 
 				overview = false;
 			}
-		/*	if (event.key.code == sf::Keyboard::L)
-			{
-				Player1Turn = false;
-			}
-			if (event.key.code == sf::Keyboard::K)
-			{
-				Player1Turn = true;
-			}*/
+		
 			if (event.key.code == sf::Keyboard::Left && BuildMode == true)
 			{
 				buildViewenter.x -= 20;
@@ -630,18 +797,21 @@ void Play::UpdateStaticBodies()
 void Play::SwitchTurn()
 {
 	
-	if (Player1Turn == true )
+	if (Player1Turn == true)
 	{
 		player1Fire = false;
 		Player1Turn = false;
-		
+		overview = false;
+		turnTimer = 10;
 	}
-	else if (Player1Turn == false  )
+	else if (Player1Turn == false)
 	{
 		player2Fire = false;
 		Player1Turn = true;
-		
+		overview = false;
+		turnTimer = 10;
 	}
+
 
 }
 void Play::BuildModeUpdate()
@@ -940,6 +1110,11 @@ void Play::UpdateRockets()
 
 	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
+		if (effectToggle == true)
+		{
+			soundManager.playExplosionSound(Rockets[0].getPosition());
+		}
+		
 		bullerTimer = 1.5f;
 		startExplosion = true;
 		if (outOfBounds == false)

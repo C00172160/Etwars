@@ -63,7 +63,7 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 	m_position = pos;
 	m_texture = tex;
 
-	health = 20;
+	health = 100;
 
 	b2BodyDef myBodyDef;
 	myBodyDef.type = b2_dynamicBody;
@@ -72,13 +72,24 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	m_body = world.CreateBody(&myBodyDef);
 
+	b2Vec2 vertices[6];
+	vertices[0].Set(-0.4, -0.5);
+	vertices[1].Set(0.4, -0.5);
+	vertices[2].Set(0.4, 0.3);
+	vertices[3].Set(0.2, 0.5);
+	vertices[4].Set(-0.2,0.5 );
+	vertices[5].Set(-0.4, 0.3);
+
 	b2PolygonShape Shape;
-	Shape.SetAsBox((12) / SCALE, (15) / SCALE);
+	Shape.Set(vertices, 6); //pass array to the shape
+	//b2PolygonShape Shape;
+	//Shape.SetAsBox((12) / SCALE, (15) / SCALE);
 	b2FixtureDef FixtureDef;
 	FixtureDef.density = 1.f;
 	FixtureDef.friction = 0.7f;
 	FixtureDef.shape = &Shape;
 	m_body->CreateFixture(&FixtureDef);
+
 
 	b2PolygonShape polygonShape3;
 	polygonShape3.SetAsBox(((12.f / 2) / SCALE), ((15.f / 2) / SCALE)); //a 2x4 rectangle
@@ -99,7 +110,7 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	//add foot sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox(((25.f / 2)  / SCALE), ((32.f / 2) / SCALE)); //a 2x4 rectangle
+	polygonShape2.SetAsBox(((15.f / 2)  / SCALE), ((32.f / 2) / SCALE)); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 
