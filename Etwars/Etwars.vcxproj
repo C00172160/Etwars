@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\CollisionManager.cpp" />
+    <ClCompile Include="src\Crosshair.cpp" />
+    <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\GameOver.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
+    <ClCompile Include="src\Play.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\pugixml\pugixml.cpp" />
+    <ClCompile Include="src\Rocket.cpp" />
+    <ClCompile Include="src\SFMLDebugDraw.cpp" />
+    <ClCompile Include="src\SoundManager.cpp" />
+    <ClCompile Include="src\tmx\DebugShape.cpp" />
+    <ClCompile Include="src\tmx\MapLayer.cpp" />
+    <ClCompile Include="src\tmx\MapLoaderPrivate.cpp" />
+    <ClCompile Include="src\tmx\MapLoaderPublic.cpp" />
+    <ClCompile Include="src\tmx\MapObject.cpp" />
+    <ClCompile Include="src\tmx\QuadTreeNode.cpp" />
+    <ClCompile Include="src\Water.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Block.h" />
+    <ClInclude Include="include\Crosshair.h" />
+    <ClInclude Include="include\game.hpp" />
+    <ClInclude Include="include\GameOver.hpp" />
+    <ClInclude Include="include\game_state.hpp" />
+    <ClInclude Include="include\Menu.hpp" />
+    <ClInclude Include="include\Play.hpp" />
+    <ClInclude Include="include\Player.h" />
+    <ClInclude Include="include\pugixml\pugiconfig.hpp" />
+    <ClInclude Include="include\pugixml\pugixml.hpp" />
+    <ClInclude Include="include\Rocket.h" />
+    <ClInclude Include="include\SFMLDebugDraw.h" />
+    <ClInclude Include="include\SoundManager.h" />
+    <ClInclude Include="include\tmx\DebugShape.h" />
+    <ClInclude Include="include\tmx\Helpers.h" />
+    <ClInclude Include="include\tmx\Log.h" />
+    <ClInclude Include="include\tmx\MapLayer.h" />
+    <ClInclude Include="include\tmx\MapLoader.h" />
+    <ClInclude Include="include\tmx\MapObject.h" />
+    <ClInclude Include="include\tmx\QuadTreeNode.h" />
+    <ClInclude Include="include\tmx\tmx2box2d.h" />
+    <ClInclude Include="include\Water.h" />
+    <ClInclude Include="include\zconf.h" />
+    <ClInclude Include="include\zlib.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D8DDD38C-0EA6-4896-825D-1053F6C56DD7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Etwars</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\include;$(FMOD_SDK)\inc;$(THOR_SDK)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\lib;$(FMOD_SDK)\lib;$(THOR_SDK)\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SFML_SDK)\include;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\maps;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\Box2D;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\include;$(THOR_SDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\lib;$(THOR_SDK)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;zlibwapi.lib;thor-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SFML_SDK)\include;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\Box2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

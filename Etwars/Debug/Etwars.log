@@ -1,0 +1,58 @@
+﻿Build started 16/12/2015 10:10:46.
+     1>Project "C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\Etwars.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\SFML-2.3.2\include" /I"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\maps" /I"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\Box2D" /I"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\include" /I"C:\thor-v2.0-msvc2013\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D ZLIB_WINAPI /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt src\Play.cpp src\SoundManager.cpp
+         SoundManager.cpp
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\soundmanager.cpp(188): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         Play.cpp
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(153): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(170): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(231): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(273): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(498): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(822): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(861): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(870): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(877): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(986): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(990): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(994): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1003): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1012): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1023): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1036): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1048): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1058): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1071): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1090): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1126): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1173): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\josh cunningham\desktop\et wars\etwars\etwars\src\play.cpp(1189): warning C4018: '<' : signed/unsigned mismatch
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Debug\Etwars.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\SFML-2.3.2\lib" /LIBPATH:"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\lib" /LIBPATH:"C:\thor-v2.0-msvc2013\lib" Box2D.lib zlibwapi.lib "thor-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Debug\Etwars.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Debug\Etwars.lib" /MACHINE:X86 Debug\Block.obj
+         Debug\CollisionManager.obj
+         Debug\Crosshair.obj
+         Debug\game.obj
+         Debug\GameOver.obj
+         Debug\main.obj
+         Debug\Menu.obj
+         Debug\Play.obj
+         Debug\Player.obj
+         Debug\pugixml.obj
+         Debug\Rocket.obj
+         Debug\SFMLDebugDraw.obj
+         Debug\SoundManager.obj
+         Debug\DebugShape.obj
+         Debug\MapLayer.obj
+         Debug\MapLoaderPrivate.obj
+         Debug\MapLoaderPublic.obj
+         Debug\MapObject.obj
+         Debug\QuadTreeNode.obj
+         Debug\Water.obj
+         Etwars.vcxproj -> C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Debug\Etwars.exe
+     1>Done Building Project "C:\Users\Josh Cunningham\Desktop\ET Wars\Etwars\Etwars\Etwars.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.12

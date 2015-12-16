@@ -1,0 +1,10 @@
+﻿Build started 08/10/2015 19:27:45.
+     1>Project "C:\Box2D-master\Box2D\Build\ALL_BUILD.vcxproj" on node 2 (Build target(s)).
+     1>CustomBuild:
+         Building Custom Rule C:/Box2D-master/Box2D/CMakeLists.txt
+         CMake does not need to re-run because C:\Box2D-master\Box2D\Build\CMakeFiles\generate.stamp is up-to-date.
+     1>Done Building Project "C:\Box2D-master\Box2D\Build\ALL_BUILD.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.07

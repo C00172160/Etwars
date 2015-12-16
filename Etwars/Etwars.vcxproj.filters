@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\tmx">
+      <UniqueIdentifier>{91f9c4f7-0d66-47d3-a00b-9e2ccd7f030c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tmx">
+      <UniqueIdentifier>{df460c6b-90b3-4969-84db-f9fd7507305f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\QuadTreeNode.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pugixml\pugixml.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\MapObject.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\MapLoaderPublic.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\MapLoaderPrivate.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\MapLayer.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tmx\DebugShape.cpp">
+      <Filter>Source Files\tmx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Crosshair.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Play.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollisionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SFMLDebugDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameOver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zlib.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zconf.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\tmx2box2d.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\QuadTreeNode.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pugixml\pugixml.hpp">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pugixml\pugiconfig.hpp">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\MapObject.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\MapLoader.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\MapLayer.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\Helpers.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\Log.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tmx\DebugShape.h">
+      <Filter>Header Files\tmx</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Crosshair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game_state.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Menu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Play.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SoundManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SFMLDebugDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GameOver.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
