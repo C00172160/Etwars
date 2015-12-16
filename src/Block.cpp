@@ -2,12 +2,12 @@
 
 Block::Block(){
 }
-Block::Block(char c ,sf::Vector2f position,b2World& world){
+Block::Block(int c ,sf::Vector2f position,b2World& world){
 
 	m_position = position;
-	m_position = sf::Vector2f(position.x * 20, position.y * 20);
+	m_position = sf::Vector2f(position.x , position.y );
 	type = c;
-	createBlock(world, m_position);
+	createBlock(world, m_position,type);
 	circle.setOrigin(10, 10);
 	circle.setRadius(10);
 	circle.setPosition(m_position.x , m_position.y );
@@ -19,7 +19,7 @@ Block::Block(char c ,sf::Vector2f position,b2World& world){
 	
 	
 
-void Block::createBlock(b2World& world, sf::Vector2f position) {
+void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 
 	
 	
@@ -43,7 +43,7 @@ void Block::createBlock(b2World& world, sf::Vector2f position) {
 
 
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox(((20 / 2) + 2.f) / SCALE, ((20 / 2) + 2.f) / SCALE); //a 2x4 rectangle
+	polygonShape2.SetAsBox(((20 / 2)) / SCALE, ((20 / 2)) / SCALE); //a 2x4 rectangle
 
 	b2FixtureDef myFixtureDef2;
 
@@ -53,25 +53,81 @@ void Block::createBlock(b2World& world, sf::Vector2f position) {
 	SensorFixture->SetUserData("blocksensor");
 
 
-	if (GrassSymbols.find(type)){
+	//if (type == 2){
 
-		BlockBody->SetUserData("grass");
-	}
-	else if (DirtSymbols.find(type)){
+	//	BlockBody->SetUserData("grass");
+	//}
+	//else if (type == 1){
+
+	//	BlockBody->SetUserData("dirt");
+
+	//}
+
+	if (type == 8){
 
 		BlockBody->SetUserData("dirt");
+		lives = 1;
+	}
+    else if (type == 6){
+
+		BlockBody->SetUserData("topStraight");
+		lives = 1;
+
+	}
+	else if (type == 9){
+
+		BlockBody->SetUserData("leftStraight");
+		lives = 1;
+
+	}
+	else if (type == 7){
+
+		BlockBody->SetUserData("topLeftCorner");
+		lives = 1;
+
+	}
+	else if (type == 4){
+
+		BlockBody->SetUserData("topRightCorner");
+		lives = 1;
+
+	}
+	else if (type == 5){
+
+		BlockBody->SetUserData("rightStraight");
+		lives = 1;
+
+	}
+	else if (type == 2){
+
+		BlockBody->SetUserData("bottomStraight");
+		lives = 1;
+
+	}
+	else if (type == 3){
+
+		BlockBody->SetUserData("bottomRightCorner");
+		lives = 1;
+
+	}
+	else if (type == 1){
+
+		BlockBody->SetUserData("bottomLeftCorner");
+		lives = 1;
 
 	}
 
 
 }
 
-void Block::Update(sf::CircleShape& circle2)
+void Block::CheckLives()
 {
-	if (CollisionManager::CircleDetectCollision(circle, circle2) == true)
-	{
-		alive = false;
-	}
+		lives -= 1;
+
+		if (lives <= 0)
+		{
+			alive = false;
+		}
 
 }
 bool Block::getAlive()

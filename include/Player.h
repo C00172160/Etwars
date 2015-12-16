@@ -14,27 +14,32 @@ public:
 	void Update(int numFootContacts);
 	sf::Sprite getSprite();
 	sf::Vector2f getPosition();
+	sf::Vector2f getVelocity();
 	void setHealth(int damage);
 	void UpdateSprite();
 	int getHealth();
+	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id);
+
+	
 
 
 private:
 
-	int health = 100;
+	int health = 20;
 	b2Body* m_body;
 	int numberOfFootContacts;
 	bool isInair;
 	int timer = 0; 
 	bool move = false;
 	const float SCALE = 30.f;
-	float playerHeight= 32;
-	float playerWidth =32;
+	float playerHeight= 30;
+	float playerWidth =24;
 	sf::Vector2f source = sf::Vector2f(0, 0);
 	sf::Vector2f m_position;
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity;
 	sf::Sprite Sprite;
+
 };
 
 #endif
