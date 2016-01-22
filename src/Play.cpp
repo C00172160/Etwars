@@ -116,7 +116,8 @@ Play::Play(Game* game)
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
 	 BuildMode = true;
-	 PlaceMode = false;
+	 PlaceBlockMode = false;
+	 PlacePlayerMode = false;
 	 mousereleased = true;
 	game->window.setFramerateLimit(60);
     wormcount = 0;
@@ -187,9 +188,12 @@ Play::Play(Game* game)
 	////////HUD
 	hudPanelTex.loadFromFile("Resources/hudPanel.png");
 	FinishButtonTexture.loadFromFile("Resources/finish.png");
+	RocketPlayerTexture.loadFromFile("Resources/RocketPlayerTexture.png");
 	HudSprite.setTexture(hudPanelTex);
 	HudSpritePosition = sf::Vector2f(0, 450);
+	
 	DirtBlockHud.setTexture(dirttex);
+	RocketPlayerSprite.setTexture(RocketPlayerTexture);
 	FinishButtonSprite.setTexture(FinishButtonTexture);
     CurrentPlayer1Money = 1000;
 	CurrentPlayer2Money = 1000;
@@ -198,6 +202,11 @@ Play::Play(Game* game)
 	dirtPrice.setCharacterSize(10);
 	dirtPrice.setColor(sf::Color::Black);
 	dirtPrice.setString("100");
+	RocketPlayerPrice.setFont(font);
+	RocketPlayerPrice.setStyle(sf::Text::Bold);
+	RocketPlayerPrice.setCharacterSize(10);
+	RocketPlayerPrice.setColor(sf::Color::Black);
+	RocketPlayerPrice.setString("100");
 	currentPlayer.setFont(font);
 	currentPlayer.setStyle(sf::Text::Bold);
 	currentPlayer.setCharacterSize(20);
@@ -260,16 +269,22 @@ Play::Play(Game* game)
 	Snowemitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
 	system.addEmitter(Snowemitter3);
 
-
+	
+	 players1Teamselected = false;//if player one has bought any players
+	 players2TeamSeleced = false;
 
 	player1team.push_back(player1);
-	player1team.push_back(player3);
+   // player1team.push_back(player3);
 	player2team.push_back(player2);
 	player1Number = 0;
 	player2Number = 0;
-	
-}
 
+	player1team[0].Init(World, position, playerTexture, 1, 1);
+//	player1team[0].Update(numFootContacts);
+	player2team[0].Init(World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
+//	player1team[0].Update(numFootContacts);
+	//player2team[0].Update(numFootContacts2);
+} 
 void Play::InitRocketParticle()
 {
 	Rocketsystem.setTexture(Firetexture);
@@ -298,12 +313,12 @@ void Play::UpdateRocketParticle()
 	Rocketsystem.update(RocketParticleclock.restart());
 	game->window.draw(Rocketsystem);
 }
-
 void Play::draw()
 {
 	
 	return;
 }
+
 void Play::DrawDebug()
 {
 	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
@@ -338,11 +353,9 @@ void Play::DrawDebug()
 		}
 	}
 }
+
 void Play::update()
 {
-
-
-
 
 	system.update(Particleclock.restart());
 
@@ -432,9 +445,16 @@ void Play::update()
 		BuildModeUpdate();
 	}
 	
-	game->window.draw(player1team[0].getSprite());
-	game->window.draw(player1team[1].getSprite());
-	game->window.draw(player2team[0].getSprite());
+	for (int i = 0; i < player1team.size(); i++)
+	{
+		game->window.draw(player1team[i].getSprite());
+	}
+	for (int i = 0; i < player2team.size(); i++)
+	{
+		game->window.draw(player2team[i].getSprite());
+	}
+	
+
 	game->window.draw(cross.getSprite());
 	game->window.draw(player1health);
 	game->window.draw(player2health);
@@ -443,16 +463,34 @@ void Play::update()
 	water2.Draw(game);
 	water3.Draw(game);
 
-	
+	for (int i = 0; i < player1team.size(); i++)
+	{
+		player1team[i].UpdateSprite();
+	}
+	for (int i = 0; i < player2team.size(); i++)
+	{
+		player2team[i].UpdateSprite();
+	}
 	if (BuildMode == true)
 	{
+
+		for (int i = 0; i < player1team.size(); i++)
+		{
+			game->window.draw(player1team[i].getSprite());
+		}
+		for (int i = 0; i < player2team.size(); i++)
+		{
+			game->window.draw(player2team[i].getSprite());
+		}
 		game->window.draw(HudSprite);
+		game->window.draw(RocketPlayerSprite);
 		game->window.draw(DirtBlockHud);
 		game->window.draw(FinishButtonSprite);
 		game->window.draw(currentPlayer);
 		game->window.draw(Money);
 		game->window.draw(dirtPrice);
-		if (PlaceMode == true)
+		game->window.draw(RocketPlayerPrice);
+		if (PlaceBlockMode == true || PlacePlayerMode == true)
 		{
 			game->window.draw(placingSprite);
 		}
@@ -476,6 +514,7 @@ void Play::update()
 
 	return;
 }
+
 void Play::PlayExplosion()
 {
 	ExplosionSprite.setPosition(lastbulletpos.x -64 , lastbulletpos.y-64);
@@ -503,6 +542,7 @@ void Play::PlayExplosion()
 	ExplosionSprite.setTextureRect(sf::IntRect(Explosionsource.x * 128, Explosionsource.y * 128, 128, 128));
 
 }
+
 void Play::handleInput()
 {
 	sf::Event event;
@@ -704,6 +744,7 @@ void Play::handleInput()
 
 	return;
 }
+
 void Play::UpdateStaticBodies()
 {
 	int BodyCount = 0;
@@ -799,6 +840,7 @@ void Play::UpdateStaticBodies()
 
 	}
 }
+
 void Play::SwitchTurn()
 {
 	
@@ -837,16 +879,38 @@ void Play::SwitchTurn()
 
 
 }
+
+void Play::CreatePlayer(sf::Vector2f pos, int team,int type)
+{
+	Player temp;
+	if (team == 1)
+	{
+		temp.Init(World, pos, playerTexture, 1,type);
+		player1team.push_back(temp);
+	}
+	else if (team == 2)
+	{
+		temp.Init(World, pos, player2Texture, 2,type);
+		player2team.push_back(temp);
+	}
+	
+}
+
 void Play::BuildModeUpdate()
 {
+
 	HudSprite.setPosition(HudSpritePosition);
-	DirtBlockHud.setPosition(HudSpritePosition + sf::Vector2f(100, 50));
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
+	
 	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
 	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
 
 
+	DirtBlockHud.setPosition(HudSpritePosition + sf::Vector2f(100, 50));
 	dirtPrice.setPosition(DirtBlockHud.getPosition() + sf::Vector2f(0,20));
+
+	RocketPlayerSprite.setPosition(HudSpritePosition + sf::Vector2f(150, 50));
+	RocketPlayerPrice.setPosition(RocketPlayerSprite.getPosition() + sf::Vector2f(0, 30));
 
 	if (Player1Turn == true)
 	{
@@ -868,11 +932,11 @@ void Play::BuildModeUpdate()
 
 	}
 
-	if (PlaceMode == true)
+	if (PlaceBlockMode == true)
 	{
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true)
 		{
-			PlaceMode = false;
+			PlaceBlockMode = false;
 		}
 
 		if (currentType == 8)
@@ -906,40 +970,80 @@ void Play::BuildModeUpdate()
 
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
+
+
+	if (PlacePlayerMode == true)//////////////////////////////////////////////////////////////////////////////////
 	{
-	
-		mousereleased = false;
-
-		if (CheckClicked(DirtBlockHud, position) == true)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true)
 		{
-			{
-				currentType = 8;
-				PlaceMode = true;
-			}
+			PlacePlayerMode = false;
 		}
-	
-		else if (CheckClicked(FinishButtonSprite, position)==true)
+
+		if (playerType == 1)
 		{
-			if (Player1Turn == true)
-			{
-				Player1Turn = false;
+			placingSprite.setTexture(RocketPlayerTexture);
+			price = 100;
+		}
 
-			}
-			else if (Player1Turn == false)
+		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
+
+
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
+		{
+			if (Player1Turn == true && CurrentPlayer1Money >= price)
 			{
-				GameStart();
+				mousereleased = false;
+				CreatePlayer(sf::Vector2f(position.x, position.y), 1, playerType);
+				CurrentPlayer1Money -= price;
+			}
+			else if (Player1Turn == false && CurrentPlayer2Money >= price)
+			{
+				mousereleased = false;
+				CreatePlayer(sf::Vector2f(position.x, position.y), 2, playerType);
+				CurrentPlayer2Money -= price;
 			}
 
 		}
-		
-
-
 
 	}
 
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
+		{
+
+			mousereleased = false;
+
+			if (CheckClicked(DirtBlockHud, position) == true)
+			{
+				{
+					currentType = 8;
+					PlaceBlockMode = true;
+				}
+			}
+
+			else if (CheckClicked(FinishButtonSprite, position) == true)
+			{
+				if (Player1Turn == true)
+				{
+					Player1Turn = false;
+
+				}
+				else if (Player1Turn == false)
+				{
+					GameStart();
+				}
+
+			}
+			else if (CheckClicked(RocketPlayerSprite, position) == true)
+			{
+				playerType = 1;
+				PlacePlayerMode = true;
+			}
+
+		}
 
 
+	
 	
 }
 void Play::GameStart()
@@ -959,14 +1063,7 @@ void Play::GameStart()
 	player2health.setPosition(0, 0);
 	player2health.setCharacterSize(20);
 	player2health.setColor(sf::Color::Black);
-	
-	
 
-	player1team[0].Init(World, position, playerTexture, 1);
-	player1team[1].Init(World, position + sf::Vector2f(100, 0), playerTexture, 1);
-	player2team[0].Init(World, position + sf::Vector2f(1200, 0), player2Texture, 2);
-
-	
 	cross.Init(CrosshairTexture, position);
 
 
@@ -1165,8 +1262,6 @@ void Play::UpdateRockets()
 		}
 	}
 }
-
-
 void Play::UpdateHealth()
 {
 

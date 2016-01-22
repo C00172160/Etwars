@@ -93,7 +93,8 @@ private:
 	sf::Vector2f playerPosition;
 	bool RocketFired;
 	bool BuildMode;
-	bool PlaceMode;
+	bool PlaceBlockMode;
+	bool PlacePlayerMode;
 	bool mousereleased;
 	sf::Sprite placingSprite;
 	sf::Text player1health;
@@ -101,6 +102,7 @@ private:
 	Water water1, water2, water3;
 	vector<Block> blocks;
 	int currentType;
+	int playerType;
 	//sf::Texture grasstexture;
 	sf::Texture backGroundTexture;
 	sf::Texture playerTexture;
@@ -124,6 +126,7 @@ private:
 	sf::Texture bottomLeftCorner;
 	sf::Texture hudPanelTex;
 	sf::Vector2f cameraposition;
+	sf::Texture RocketPlayerTexture;
 	sf::View player1View, player2View, bulletView, buildView, standardView;
 	int sizeofmap;
 	bool outOfBounds;
@@ -131,7 +134,6 @@ private:
 	
 	Player player1;
 	Player player2;
-	Player player3;
 
 	Crosshair cross;
 	bool player1Fire;
@@ -151,13 +153,18 @@ private:
 	 bool overview;
 	 bool zoomed;
 	 ///Hud Variables
+	 bool players1Teamselected;
+	 bool players2TeamSeleced;
 	 sf::Sprite DirtBlockHud;
 	 sf::Vector2f DirtBlockPosition;
 	 sf::Sprite HudSprite;
 	 sf::Vector2f HudSpritePosition;
+	 sf::Sprite RocketPlayerSprite;
+	 sf::Vector2f RocketPlayerSpritePosition;
 	 sf::Text currentPlayer;
 	 sf::Text Money;
 	 sf::Text dirtPrice;
+	 sf::Text RocketPlayerPrice;
 	 bool startExplosion;
 	 int price;
 	 int CurrentPlayer1Money;
@@ -182,6 +189,7 @@ public:
 	void UpdateWater();
 	void BuildModeUpdate();
 	void GameStart();
+	void CreatePlayer(sf::Vector2f pos, int team,int type);
 	void InitRocketParticle();
 	void UpdateRocketParticle();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);

@@ -10,7 +10,7 @@ class Player {
 
 public:
 	Player();
-	Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id);
+	Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type);
 	void Update(int numFootContacts);
 	sf::Sprite getSprite();
 	sf::Vector2f getPosition();
@@ -18,7 +18,7 @@ public:
 	void setHealth(int damage);
 	void UpdateSprite();
 	int getHealth();
-	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id);
+	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type);
 
 	
 
