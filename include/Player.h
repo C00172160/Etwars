@@ -4,7 +4,7 @@
 
 #include <Box2D\Box2D.h>
 #include "SFML/Graphics.hpp"
-
+using namespace std;
 
 class Player {
 
@@ -18,13 +18,14 @@ public:
 	void setHealth(int damage);
 	void UpdateSprite();
 	int getHealth();
-	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type);
-
+	void Init(int playerNumber,b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type);
+	int getID();
 	
 
 
 private:
 
+	int playernum;
 	int health = 20;
 	b2Body* m_body;
 	int numberOfFootContacts;

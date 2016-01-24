@@ -10,11 +10,18 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int
 
 	  
 }
-void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type)
+void Player::Init(int playerNumber,b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
 {
 	m_position = pos;
 	m_texture = tex;
-
+	if (team == 1)
+	{
+		playernum = playerNumber;
+	}
+	else if (team == 2)
+	{
+		playernum = playerNumber*100;
+	}
 	health = 100;
 
 	b2BodyDef myBodyDef;
@@ -69,14 +76,17 @@ void Player::Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,i
 	myFixtureDef2.isSensor = true;
 	
 	b2Fixture * footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
-	if (team == 1)
-	{
-		footSensorFixture->SetUserData("player1foot");
-	}
-	else if (team == 2)
-	{
-		footSensorFixture->SetUserData("player2foot");
-	}
+	//if (team == 1)
+	//{
+	//	footSensorFixture->SetUserData("player1foot");
+	//}
+	//else if (team == 2)
+	//{
+	//	footSensorFixture->SetUserData("player2foot");
+	//}
+
+		footSensorFixture->SetUserData((void*)playernum);
+	
 
 
 
@@ -188,4 +198,8 @@ int Player::getHealth()
 {
 	return health;
 
+}
+int  Player::getID()
+{
+	return playernum;
 }

@@ -1,5 +1,5 @@
 
-
+using namespace std;
 #include "game_state.hpp"
 #include "Play.hpp"
 
@@ -8,9 +8,14 @@ b2Vec2 Gravity(0.f, 10.0f);
 b2World World(Gravity);
 int numFootContacts;
 int numFootContacts2;
+int player1footid;
+int player2footid;
+int numberPlayersTeam1 = 1;
+int numberPlayersTeam2 = 1;
 bool player1hit = false;
 bool player2hit = false;
 bool Groundhit = false;
+
 
 
 
@@ -31,14 +36,25 @@ class MyContactListener : public b2ContactListener
 
 
 
-		if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+		//if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+		//{
+		//	numFootContacts++;
+		//}
+		//if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		//{
+		//	numFootContacts2++;
+		//}
+
+		if (fixtureUserDataA == (void*)player1footid || fixtureUserDataB == (void*)player1footid)
 		{
 			numFootContacts++;
 		}
-		if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		if (fixtureUserDataA == (void*)player2footid || fixtureUserDataB == (void*)player2footid)
 		{
 			numFootContacts2++;
 		}
+
+
 		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
 		{
@@ -60,11 +76,20 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-		if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+		//if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+		//{
+		//	numFootContacts--;
+		//}
+		//else if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		//{
+		//	numFootContacts2--;
+		//}
+
+		if (fixtureUserDataA == (void*)player1footid || fixtureUserDataB == (void*)player1footid)
 		{
 			numFootContacts--;
 		}
-		else if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		if (fixtureUserDataA == (void*)player2footid || fixtureUserDataB == (void*)player2footid)
 		{
 			numFootContacts2--;
 		}
@@ -274,16 +299,15 @@ Play::Play(Game* game)
 	 players2TeamSeleced = false;
 
 	player1team.push_back(player1);
-   // player1team.push_back(player3);
+
 	player2team.push_back(player2);
 	player1Number = 0;
 	player2Number = 0;
 
-	player1team[0].Init(World, position, playerTexture, 1, 1);
-//	player1team[0].Update(numFootContacts);
-	player2team[0].Init(World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
-//	player1team[0].Update(numFootContacts);
-	//player2team[0].Update(numFootContacts2);
+	player1team[0].Init(numberPlayersTeam1, World, position, playerTexture, 1, 1);
+
+	player2team[0].Init(numberPlayersTeam2,World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
+
 } 
 void Play::InitRocketParticle()
 {
@@ -311,7 +335,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	game->window.draw(Rocketsystem);
+	//game->window.draw(Rocketsystem);
 }
 void Play::draw()
 {
@@ -356,7 +380,10 @@ void Play::DrawDebug()
 
 void Play::update()
 {
+	player1footid = player1team[player1Number].getID();
+	player2footid = player2team[player2Number].getID();
 
+	cout << std::to_string(numFootContacts2) << endl;
 	system.update(Particleclock.restart());
 
 	World.Step(1 / 60.f, 8, 3);
@@ -370,7 +397,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	game->window.draw(system);
+	//game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -415,8 +442,7 @@ void Play::update()
 			player2team[player2Number].Update(numFootContacts2);
 			playerPosition = player2team[player2Number].getPosition();
 			turn.setString("Player 2's turn, time remaining = " + std::to_string(turnTimer));
-
-		}
+	}
 		if (turnTimer <= 0 && player1Fire == false && player2Fire == false)
 		{
 			SwitchTurn();
@@ -843,9 +869,12 @@ void Play::UpdateStaticBodies()
 
 void Play::SwitchTurn()
 {
-	
+	numFootContacts = 2;
+	numFootContacts2 = 2;
+
 	if (Player1Turn == true)
 	{
+
 		player1Fire = false;
 		Player1Turn = false;
 		overview = false;
@@ -858,10 +887,11 @@ void Play::SwitchTurn()
 		{
 			player1Number = 0;
 		}
-	
+
 	}
 	else if (Player1Turn == false)
 	{
+		
 		player2Fire = false;
 		Player1Turn = true;
 		overview = false;
@@ -882,18 +912,24 @@ void Play::SwitchTurn()
 
 void Play::CreatePlayer(sf::Vector2f pos, int team,int type)
 {
+
+
 	Player temp;
 	if (team == 1)
 	{
-		temp.Init(World, pos, playerTexture, 1,type);
+		temp.Init(numberPlayersTeam1+1, World, pos, playerTexture, 1, type);
 		player1team.push_back(temp);
 	}
 	else if (team == 2)
 	{
-		temp.Init(World, pos, player2Texture, 2,type);
+		temp.Init(numberPlayersTeam2+1,World, pos, player2Texture, 2, type);
 		player2team.push_back(temp);
 	}
 	
+
+	numberPlayersTeam1 = player1team.size();
+	numberPlayersTeam2 = player2team.size();
+
 }
 
 void Play::BuildModeUpdate()
