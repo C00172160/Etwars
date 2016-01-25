@@ -237,7 +237,8 @@ Play::Play(Game* game)
 	reverbCircle.setFillColor(sf::Color::Transparent);
 	reverbCircle.setOutlineThickness(5.f);
 	reverbCircle.setOutlineColor(sf::Color::Black);
-
+	captain1placed = false; 
+	capatain2placed = false;
 
 	///////////////////////////////////
 	int map[30][100] = {
@@ -378,8 +379,18 @@ void Play::update()
 	system.update(Particleclock.restart());
 
 	World.Step(1 / 60.f, 8, 3);
-
-	
+	if (captain1placed == true)
+	{
+		captain1.UpdateSprite();
+	}
+	if (capatain2placed == true)
+	{
+		captain2.UpdateSprite();
+	}
+	if (BuildMode == true)
+	{
+		turnCLock.restart().asSeconds();
+	}
 //	World.DrawDebugData();
 	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 555));
 	water1.Update();
@@ -451,8 +462,7 @@ void Play::update()
 		turn.setPosition(game->window.getView().getCenter().x - game->window.getView().getSize().x / 2, game->window.getView().getCenter().y - game->window.getView().getSize().y / 2);
 		player1team[player1Number].UpdateSprite();
 		player2team[player2Number].UpdateSprite();
-		captain1.UpdateSprite();
-		captain2.UpdateSprite();
+		
 		UpdateRockets();
 		UpdateHealth();
 
@@ -518,7 +528,7 @@ void Play::update()
 			game->window.draw(placingSprite);	
 		}
 		
-	   
+	 
 	}
 	if (startExplosion == true)
 	{
@@ -983,6 +993,7 @@ void Play::BuildModeUpdate()
 			{
 				placingSprite.setTexture(captainTexture1);
 				mousereleased = false;
+				captain1placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
 				Player1Turn = false;
 				
@@ -991,6 +1002,7 @@ void Play::BuildModeUpdate()
 			{
 				placingSprite.setTexture(captaintexture2);
 				mousereleased = false;
+				capatain2placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 2, playerType);
 				captainplacemode = false;
 			}
@@ -1121,7 +1133,7 @@ void Play::GameStart()
 {
 	
 	BuildMode = false;
-
+	
 	Player1Turn = true;
 	player1health.setFont(font);
 	player1health.setStyle(sf::Text::Bold);
