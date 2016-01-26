@@ -98,7 +98,7 @@ private:
 	vector<Block> blocks;
 	int currentType;
 	int playerType;
-
+	
 	//sf::Texture grasstexture;
 	
 	//sf::Texture DirtTexture;

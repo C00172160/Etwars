@@ -8,13 +8,16 @@ b2Vec2 Gravity(0.f, 10.0f);
 b2World World(Gravity);
 int numFootContacts;
 int numFootContacts2;
+int player1footid;
+int player2footid;
+int numberPlayersTeam1 = 1;
+int numberPlayersTeam2 = 1;
 bool player1hit = false;
 bool player2hit = false;
-bool Groundhit = false; 
+bool Groundhit = false;
+
 bool captain1hit = false;
 bool captain2hit = false;
-
-
 
 
 sf::Vector2f lastbulletpos;
@@ -31,35 +34,35 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-
-
-		if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+		if (fixtureUserDataA == (void*)player1footid || fixtureUserDataB == (void*)player1footid)
 		{
 			numFootContacts++;
 		}
-		if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		if (fixtureUserDataA == (void*)player2footid || fixtureUserDataB == (void*)player2footid)
 		{
 			numFootContacts2++;
 		}
-		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
+		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain1sensor") ||
+			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain1sensor"))//if A ROCKET HITS Player1
+		{
+			destroyRocket = true;
+			captain1hit = true;
+		}
+		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain2sensor") ||
+			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain2sensor"))//if A ROCKET HITS Player1
+		{
+			destroyRocket = true;
+			captain2hit = true;
+		}
+
+
+		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
 		{
 			destroyRocket = true;
 			player1hit = true;
 		}
-		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain1sensor") ||
-			 (fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain1sensor"))//if A ROCKET HITS Player1
-		 {
-			 destroyRocket = true;
-			 captain1hit = true;
-		 }
-		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain2sensor") ||
-			 (fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain2sensor"))//if A ROCKET HITS Player1
-		 {
-			 destroyRocket = true;
-			 captain2hit = true;
-		 }
-		 if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
+		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2Sensor"))//if A ROCKET HITS Player2
 		{
 			destroyRocket = true;
@@ -74,27 +77,16 @@ class MyContactListener : public b2ContactListener
 		void* fixtureUserDataB = contact->GetFixtureB()->GetUserData();
 
 
-		if (fixtureUserDataA == "player1foot" || fixtureUserDataB == "player1foot")
+
+		if (fixtureUserDataA == (void*)player1footid || fixtureUserDataB == (void*)player1footid)
 		{
 			numFootContacts--;
 		}
-		else if (fixtureUserDataA == "player2foot" || fixtureUserDataB == "player2foot")
+		if (fixtureUserDataA == (void*)player2footid || fixtureUserDataB == (void*)player2footid)
 		{
 			numFootContacts2--;
 		}
 
-		//else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1"))//if A ROCKET HITS Player1
-		//{
-		//	destroyRocket = true;
-		//	player1hit = true;
-		//}
-		//else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2"))//if A ROCKET HITS Player2
-		//{
-		//	destroyRocket = true;
-		//	player2hit = true;
-		//}
 		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "blocksensor") ||
 			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "blocksensor"))//if A ROCKET HITS ground
 		{
@@ -286,22 +278,18 @@ Play::Play(Game* game)
 	system.addEmitter(Snowemitter3);
 
 	
-	 players1Teamselected = false;//if player one has bought any players
-	 players2TeamSeleced = false;
+	players1Teamselected = false;//if player one has bought any players
+	players2TeamSeleced = false;
 
 	player1team.push_back(player1);
-   // player1team.push_back(player3);
+
 	player2team.push_back(player2);
 	player1Number = 0;
 	player2Number = 0;
 
-	player1team[0].Init(World, position, playerTexture, 1, 1);
-	
-//	player1team[0].Update(numFootContacts);
-	player2team[0].Init(World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
-//	player1team[0].Update(numFootContacts);
-	
-	//player2team[0].Update(numFootContacts2);
+	player1team[0].Init(numberPlayersTeam1, World, position, playerTexture, 1, 1);
+
+	player2team[0].Init(numberPlayersTeam2, World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
 	
 } 
 void Play::InitRocketParticle()
@@ -375,7 +363,8 @@ void Play::DrawDebug()
 
 void Play::update()
 {
-
+	player1footid = player1team[player1Number].getID();
+	player2footid = player2team[player2Number].getID();
 	system.update(Particleclock.restart());
 
 	World.Step(1 / 60.f, 8, 3);
@@ -878,9 +867,12 @@ void Play::UpdateStaticBodies()
 
 void Play::SwitchTurn()
 {
-	
+	numFootContacts = 2;
+	numFootContacts2 = 2;
+
 	if (Player1Turn == true)
 	{
+
 		player1Fire = false;
 		Player1Turn = false;
 		overview = false;
@@ -893,7 +885,7 @@ void Play::SwitchTurn()
 		{
 			player1Number = 0;
 		}
-	
+
 	}
 	else if (Player1Turn == false)
 	{
@@ -920,14 +912,18 @@ void Play::CreatePlayer(sf::Vector2f pos, int team,int type)
 	Player temp;
 	if (team == 1)
 	{
-		temp.Init(World, pos, playerTexture, 1,type);
+		temp.Init(numberPlayersTeam1 + 1, World, pos, playerTexture, 1, type);
 		player1team.push_back(temp);
 	}
 	else if (team == 2)
 	{
-		temp.Init(World, pos, player2Texture, 2,type);
+		temp.Init(numberPlayersTeam2 + 1, World, pos, player2Texture, 2, type);
 		player2team.push_back(temp);
 	}
+
+
+	numberPlayersTeam1 = player1team.size();
+	numberPlayersTeam2 = player2team.size();
 	
 	
 }
@@ -936,12 +932,12 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 	
 	if (team == 1)
 	{
-		captain1.Init(World, pos, captainTexture1, 3, type);
+		captain1.Init(1000,World, pos, captainTexture1, 3, type);
 	
 	}
 	else if (team == 2)
 	{
-		captain2.Init(World, pos, captaintexture2, 4, type);
+		captain2.Init(1001,World, pos, captaintexture2, 4, type);
 	}
 
 }

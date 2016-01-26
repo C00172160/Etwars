@@ -16,18 +16,17 @@ public:
 	sf::Vector2f getPosition();
 	sf::Vector2f getVelocity();
 	
-	bool getCaptain();
-	void setCaptain(bool l);
+
 	void setHealth(int damage);
 	void UpdateSprite();
 	int getHealth();
-	void Init(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team,int type);
-
+	void Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type);
+	int getID();
 	
 
 
 private:
-	bool captain;
+	int playernum;
 	int health = 20;
 	b2Body* m_body;
 	int numberOfFootContacts;
