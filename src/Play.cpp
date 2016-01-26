@@ -196,6 +196,7 @@ Play::Play(Game* game)
 	hudPanelTex.loadFromFile("Resources/hudPanel.png");
 	FinishButtonTexture.loadFromFile("Resources/finish.png");
 	RocketPlayerTexture.loadFromFile("Resources/RocketPlayerTexture.png");
+	RocketPlayerTexture2.loadFromFile("Resources/RocketPlayerTexture2.png");
 	HudSprite.setTexture(hudPanelTex);
 	HudSpritePosition = sf::Vector2f(0, 450);
 	
@@ -945,6 +946,8 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 void Play::BuildModeUpdate()
 {
 
+
+
 	HudSprite.setPosition(HudSpritePosition);
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
 	
@@ -960,7 +963,7 @@ void Play::BuildModeUpdate()
 
 	if (Player1Turn == true)
 	{
-	
+		//RocketPlayerSprite.setTexture(RocketPlayerTexture);
 		currentPlayer.setString("PLAYER 1  ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer1Money) + " Credits Remaining");
@@ -970,7 +973,7 @@ void Play::BuildModeUpdate()
 	}
 	else if (Player1Turn == false)
 	{
-
+	//	RocketPlayerSprite.setTexture(RocketPlayerTexture2);
 		currentPlayer.setString("PLAYER 2  ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer2Money) + " Credits Remaining");
@@ -987,7 +990,8 @@ void Play::BuildModeUpdate()
 			
 			if (Player1Turn == true)
 			{
-				placingSprite.setTexture(captainTexture1);
+				CaptainPlacingSprite.setTexture(captainTexture1);
+				placingSprite = CaptainPlacingSprite;
 				mousereleased = false;
 				captain1placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
@@ -996,11 +1000,13 @@ void Play::BuildModeUpdate()
 			}
 			else if (Player1Turn == false)
 			{
-				placingSprite.setTexture(captaintexture2);
+				CaptainPlacingSprite.setTexture(captaintexture2);
+				placingSprite = CaptainPlacingSprite;
 				mousereleased = false;
 				capatain2placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 2, playerType);
 				captainplacemode = false;
+				Player1Turn = true;
 			}
 			
 		}
@@ -1008,7 +1014,7 @@ void Play::BuildModeUpdate()
 		{
 			captainplacemode = false;
 		}
-
+		
 	}
 
 	if (PlaceBlockMode == true)
@@ -1020,7 +1026,8 @@ void Play::BuildModeUpdate()
 
 		if (currentType == 8)
 		{
-			placingSprite.setTexture(dirttex);
+			blockSprite.setTexture(dirttex);
+			placingSprite = blockSprite;
 			price = 100;
 		}
 
@@ -1060,7 +1067,21 @@ void Play::BuildModeUpdate()
 
 		if (playerType == 1)
 		{
-			placingSprite.setTexture(RocketPlayerTexture);
+			if (Player1Turn == true)
+			{
+				RocketPlayerSprite.setTexture(RocketPlayerTexture);
+				placingSprite = RocketPlayerSprite;
+					
+			}
+			else
+			{
+			
+				RocketPlayerSprite.setTexture(RocketPlayerTexture2);
+				placingSprite = RocketPlayerSprite;
+
+			}
+	
+			
 			price = 100;
 		}
 

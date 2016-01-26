@@ -106,7 +106,7 @@ private:
 	sf::Vector2f Explosionsource = sf::Vector2f(0, 0);
 	sf::Sprite ExplosionSprite, FinishButtonSprite;
 	sf::Texture RocketTexture,FinishButtonTexture,dirttex,topStraighttex,leftStraighttex,topLeftCornertex,topRightCornertex,
-	bottomRightCornertex,rightStraight,bottomStraight,bottomLeftCorner,hudPanelTex,cameraposition,RocketPlayerTexture,backGroundTexture,
+		bottomRightCornertex, rightStraight, bottomStraight, bottomLeftCorner, hudPanelTex, cameraposition, RocketPlayerTexture, RocketPlayerTexture2, backGroundTexture,
 	playerTexture, player2Texture, CrosshairTexture, Explosion;
 
 	sf::View player1View, player2View, bulletView, buildView, standardView;
@@ -135,6 +135,8 @@ private:
 	 sf::Sprite HudSprite;
 	 sf::Vector2f HudSpritePosition;
 	 sf::Sprite RocketPlayerSprite;
+	 sf::Sprite blockSprite;
+	 sf::Sprite CaptainPlacingSprite;
 	 sf::Vector2f RocketPlayerSpritePosition;
 	 sf::Text currentPlayer, Money, dirtPrice, RocketPlayerPrice;
 	 bool captain1placed, capatain2placed;
