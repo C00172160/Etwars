@@ -59,8 +59,8 @@ class MyContactListener : public b2ContactListener
 		for (int i = 0; i < player1team.size(); i++)
 		{
 
-			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == (player1team[i].getRocketSensor())) ||
-				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==(player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
+			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player1team[i].getRocketSensor())) ||
+				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==((void*)player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
 			{
 				player1team[i].setHealth(20);
 				//destroyRocket = true;
@@ -70,8 +70,8 @@ class MyContactListener : public b2ContactListener
 		for (int i = 0; i < player2team.size(); i++)
 		{
 
-			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == (player2team[i].getRocketSensor())) ||
-				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == (player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
+			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player2team[i].getRocketSensor())) ||
+				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == ((void*)player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
 			{
 				player2team[i].setHealth(20);
 				//destroyRocket = true;
@@ -489,24 +489,52 @@ void Play::update()
 	for (int i = 0; i < player1team.size(); i++)
 	{
 		game->window.draw(player1team[i].getSprite());
+
+		sf::Text temp;
+		temp.setFont(font);
+		temp.setColor(sf::Color::Black);
+		temp.setStyle(sf::Text::Bold);
+		temp.setPosition(0, 0);
+		temp.setCharacterSize(20);
+		temp.setString(player1team[i].getHealthText());
+		temp.setPosition(player1team[i].getPosition().x - 10, player1team[i].getPosition().y - 40);
+		game->window.draw(temp);
 	}
 	for (int i = 0; i < player2team.size(); i++)
 	{
 		game->window.draw(player2team[i].getSprite());
+		
+		sf::Text temp;
+		temp.setFont(font);
+		temp.setColor(sf::Color::Black);
+		temp.setStyle(sf::Text::Bold);
+		temp.setPosition(0, 0);
+		temp.setCharacterSize(20);
+		temp.setString(player2team[i].getHealthText());
+		temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
+		game->window.draw(temp);
 	}
 	game->window.draw(captain1.getSprite());
 	game->window.draw(captain2.getSprite());
-	
-
 	game->window.draw(cross.getSprite());
-	game->window.draw(player1health);
-	game->window.draw(captain1health);
-	game->window.draw(captain2health);
-	game->window.draw(player2health);
 	game->window.draw(boundingbox);
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
+
+
+		/*for (int i = 0; i < player1team.size(); i++)
+		{
+			game->window.draw(player1team[i].getHealthText());
+		}
+		for (int i = 0; i < player2team.size(); i++)
+		{
+			game->window.draw(player2team[i].getHealthText());
+		}
+*/
+		//game->window.draw(captain1.getHealthText());
+		//game->window.draw(captain2.getHealthText());
+	
 
 	for (int i = 0; i < player1team.size(); i++)
 	{
@@ -516,6 +544,7 @@ void Play::update()
 	{
 		player2team[i].UpdateSprite();
 	}
+	
 	if (BuildMode == true)
 	{
 
@@ -1174,11 +1203,7 @@ void Play::GameStart()
 	BuildMode = false;
 	
 	Player1Turn = true;
-	player1health.setFont(font);
-	player1health.setStyle(sf::Text::Bold);
-	player1health.setPosition(0, 0);
-	player1health.setCharacterSize(20);
-	player1health.setColor(sf::Color::Black);
+
 	captain1health.setFont(font);
 	captain1health.setStyle(sf::Text::Bold);
 	captain1health.setPosition(0, 0);
@@ -1419,14 +1444,12 @@ void Play::UpdateHealth()
 		captain2hit = false;
 	}
 
-	player1health.setPosition(player1team[player1Number].getPosition().x - 10, player1team[player1Number].getPosition().y - 40);
-	player1health.setString(std::to_string(player1team[player1Number].getHealth()));
+
 	captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y- 40);
 	captain1health.setString(std::to_string(captain1.getHealth()));
 	captain2health.setPosition(captain2.getPosition().x - 10, captain2.getPosition().y - 40);
 	captain2health.setString(std::to_string(captain2.getHealth()));
-	player2health.setPosition(player2team[player2Number].getPosition().x - 10, player2team[player2Number].getPosition().y - 40);
-	player2health.setString(std::to_string(player2team[player2Number].getHealth()));
+
 
 	if (captain1.getHealth() == 0)
 	{

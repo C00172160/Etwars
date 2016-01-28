@@ -24,6 +24,9 @@ void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Textur
 	}
 	health = 100;
 
+	
+
+	
 	b2BodyDef myBodyDef;
 	myBodyDef.type = b2_dynamicBody;
 	myBodyDef.fixedRotation = true;
@@ -61,15 +64,15 @@ void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Textur
 
 	if (team == 1)
 	{
-		std::string RocketSensorstring = "Player1" + std::to_string(playernum);
-		RocketSensor = static_cast<void*>(&RocketSensorstring);
-		RocketSensorFixture->SetUserData(RocketSensor);
+		//std::string RocketSensorstring = "Player1" + std::to_string(playernum);
+		//RocketSensor = static_cast<void*>(&RocketSensorstring);
+		RocketSensorFixture->SetUserData((void*)(playernum*1000));
 	}
 	else if (team == 2)
 	{
 		std::string RocketSensorstring = "Player2" + std::to_string(playernum);
 		RocketSensor = static_cast<void*>(&RocketSensorstring);
-		RocketSensorFixture->SetUserData(RocketSensor);
+		RocketSensorFixture->SetUserData((void*)(playernum * 1000));
 	}
 	else if (team == 4)
 	{
@@ -162,6 +165,8 @@ void Player::Update(int numFootContacts)
 void Player::UpdateSprite()
 {
 	
+	//healthtext.setPosition((m_body->GetPosition().x * SCALE) - 10, (m_body->GetPosition().y * SCALE) - 40);
+	healthtext = (std::to_string(health));
 	Sprite.setPosition(m_body->GetPosition().x * SCALE  , m_body->GetPosition().y* SCALE );
 	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
@@ -216,7 +221,12 @@ int  Player::getID()
 	return playernum;
 }
 
-void* Player::getRocketSensor()
+int Player::getRocketSensor()
 {
-	return RocketSensor;
+	return playernum * 1000;
+}
+std::string Player::getHealthText()
+{
+	
+	return healthtext;
 }

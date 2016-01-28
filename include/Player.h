@@ -4,7 +4,7 @@
 
 #include <Box2D\Box2D.h>
 #include "SFML/Graphics.hpp"
-
+#include "game.hpp"
 
 class Player {
 
@@ -22,13 +22,14 @@ public:
 	int getHealth();
 	void Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type);
 	int getID();
-	void* getRocketSensor();
+	int getRocketSensor();
+	std::string getHealthText();
 	
 
 
 private:
 	int playernum;
-	int health = 20;
+	int health ;
 	b2Body* m_body;
 	int numberOfFootContacts;
 	bool isInair;
@@ -43,6 +44,9 @@ private:
 	sf::Vector2f m_velocity;
 	sf::Sprite Sprite;
 	void* RocketSensor;
+	sf::Font font;
+	std::string healthtext;
+
 };
 
 #endif
