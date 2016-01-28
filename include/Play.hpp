@@ -62,63 +62,67 @@ class Play : public GameState
 private:
 	
 
-	
-	sf::Text turn;
-	sf::Clock turnCLock;
+	//TURNS
+	sf::Text turn;//text used to display whos turn it is
+	sf::Clock turnCLock;//used to count down the players turn
 	double turnTimer;
+	//////////////////////////////////////////////////////////////////////////////////
 
+	//PARTICLES
 	sf::Texture Snowtexture;
 	thor::ParticleSystem system;
 	sf::Clock Particleclock;
 	thor::UniversalEmitter Snowemitter1;
 	thor::UniversalEmitter Snowemitter2;
 	thor::UniversalEmitter Snowemitter3;
-	sf::Texture captainTexture1 ,captaintexture2;
 	sf::Clock RocketParticleclock;
 	sf::Texture Firetexture;
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
-	vector<Player> player1team;
-	vector<Player> player2team;
-	int player1Number,player2Number,bulletOffset;
-	SoundManager soundManager;
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//PLAYERS AND TEAMS
+	sf::Texture captainTexture1 ,captaintexture2;
+	int player1Number, player2Number;
 	sf::Vector2f position;
-	sf::Font font;
-
-	/** Prepare the world */
-
+	int playerType;
 	sf::Vector2f playerVelocity;
 	sf::Vector2f playerPosition;
-	bool RocketFired, BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode, Player1Turn, outOfBounds, player1Fire, player2Fire, sizeofmap,
-	startExplosion, zoomed, CountDown, overview, players1Teamselected, players2TeamSeleced, effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, 
-	DopplerToggle;
-	sf::Sprite placingSprite;
+	bool Player1Turn, player1Fire, player2Fire, players1Teamselected, players2TeamSeleced, RocketFired;
 	sf::Text player1health, captain1health, captain2health, player2health;
+	sf::Texture playerTexture, player2Texture, CrosshairTexture, RocketTexture;
+	Player player1, player2, captain1, captain2;
+	Crosshair cross;
+	std::vector<Rocket> Rockets;
+	sf::CircleShape reverbCircle, reverbCircle2;
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//AUDIO
+	SoundManager soundManager;
+	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, DopplerToggle;
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//BUILDMODE
+	bool BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode;
+	sf::Sprite placingSprite, FinishButtonSprite;
+	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2;
+	///////////////////////////////////////////////////////////////////////////
+
+
+	int bulletOffset;
+	sf::Font font;
+	bool outOfBounds, sizeofmap,startExplosion, zoomed, CountDown, overview;
 	Water water1, water2, water3;
 	vector<Block> blocks;
 	int currentType;
-	int playerType;
-	
-	//sf::Texture grasstexture;
-	
-	//sf::Texture DirtTexture;
+
 	
 	sf::Vector2f Explosionsource = sf::Vector2f(0, 0);
-	sf::Sprite ExplosionSprite, FinishButtonSprite;
-	sf::Texture RocketTexture,FinishButtonTexture,dirttex,topStraighttex,leftStraighttex,topLeftCornertex,topRightCornertex,
-		bottomRightCornertex, rightStraight, bottomStraight, bottomLeftCorner, hudPanelTex, cameraposition, RocketPlayerTexture, RocketPlayerTexture2, backGroundTexture,
-	playerTexture, player2Texture, CrosshairTexture, Explosion;
+	sf::Sprite ExplosionSprite;
+	sf::Texture dirttex,topStraighttex,leftStraighttex,topLeftCornertex,topRightCornertex,bottomRightCornertex, rightStraight, bottomStraight, bottomLeftCorner, cameraposition, backGroundTexture, Explosion;
 
 	sf::View player1View, player2View, bulletView, buildView, standardView;
-
-	
 	sf::Vector2f buildViewenter;
-	
-	Player player1, player2, captain1, captain2;
-
-	Crosshair cross;
-	 
-	std::vector<Rocket> Rockets;
 	sf::Sprite background;
 	int gameSize, blockAmount, blockWidth, offset, price, CurrentPlayer1Money, CurrentPlayer2Money;
 	sf::CircleShape  boundingbox;
@@ -127,8 +131,7 @@ private:
 
 	 int width=200;
 	 int heigh30;
-	
-	
+
 	 ///Hud Variables
 	 sf::Sprite DirtBlockHud;
 	 sf::Vector2f DirtBlockPosition;
@@ -140,9 +143,10 @@ private:
 	 sf::Vector2f RocketPlayerSpritePosition;
 	 sf::Text currentPlayer, Money, dirtPrice, RocketPlayerPrice;
 	 bool captain1placed, capatain2placed;
-	 
 	 float explosiontimer;
-	 sf::CircleShape reverbCircle, reverbCircle2;
+
+
+
 
 public:
 

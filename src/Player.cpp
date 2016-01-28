@@ -58,13 +58,18 @@ void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Textur
 	myFixtureDef3.shape = &polygonShape3;
 	myFixtureDef3.isSensor = true;
 	b2Fixture* RocketSensorFixture = m_body->CreateFixture(&myFixtureDef3);
+
 	if (team == 1)
 	{
-		RocketSensorFixture->SetUserData("player1Sensor");
+		std::string RocketSensorstring = "Player1" + std::to_string(playernum);
+		RocketSensor = static_cast<void*>(&RocketSensorstring);
+		RocketSensorFixture->SetUserData(RocketSensor);
 	}
 	else if (team == 2)
 	{
-		RocketSensorFixture->SetUserData("player2Sensor");
+		std::string RocketSensorstring = "Player2" + std::to_string(playernum);
+		RocketSensor = static_cast<void*>(&RocketSensorstring);
+		RocketSensorFixture->SetUserData(RocketSensor);
 	}
 	else if (team == 4)
 	{
@@ -209,4 +214,9 @@ int Player::getHealth()
 int  Player::getID()
 {
 	return playernum;
+}
+
+void* Player::getRocketSensor()
+{
+	return RocketSensor;
 }

@@ -22,6 +22,7 @@ public:
 	int getHealth();
 	void Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type);
 	int getID();
+	void* getRocketSensor();
 	
 
 
@@ -41,7 +42,7 @@ private:
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity;
 	sf::Sprite Sprite;
-
+	void* RocketSensor;
 };
 
 #endif

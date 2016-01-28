@@ -19,6 +19,8 @@ bool Groundhit = false;
 bool captain1hit = false;
 bool captain2hit = false;
 
+vector<Player> player1team;
+vector<Player> player2team;
 
 sf::Vector2f lastbulletpos;
 bool destroyRocket = false;
@@ -54,20 +56,40 @@ class MyContactListener : public b2ContactListener
 			destroyRocket = true;
 			captain2hit = true;
 		}
-
-
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
+		for (int i = 0; i < player1team.size(); i++)
 		{
-			destroyRocket = true;
-			player1hit = true;
+
+			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == (player1team[i].getRocketSensor())) ||
+				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==(player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
+			{
+				player1team[i].setHealth(20);
+				//destroyRocket = true;
+				//player1hit = true;
+			}
 		}
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2Sensor"))//if A ROCKET HITS Player2
+		for (int i = 0; i < player2team.size(); i++)
 		{
-			destroyRocket = true;
-			player2hit = true;
+
+			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == (player2team[i].getRocketSensor())) ||
+				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == (player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
+			{
+				player2team[i].setHealth(20);
+				//destroyRocket = true;
+				//player1hit = true;
+			}
 		}
+		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
+		//{
+		//	destroyRocket = true;
+		//	player1hit = true;
+		//}
+		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2Sensor"))//if A ROCKET HITS Player2
+		//{
+		//	destroyRocket = true;
+		//	player2hit = true;
+		//}
 
 	}
 
@@ -319,7 +341,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	game->window.draw(Rocketsystem);
+	//game->window.draw(Rocketsystem);
 }
 void Play::draw()
 {
@@ -389,7 +411,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	game->window.draw(system);
+	//game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
