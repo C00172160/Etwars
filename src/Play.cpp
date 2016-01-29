@@ -78,18 +78,7 @@ class MyContactListener : public b2ContactListener
 				//player1hit = true;
 			}
 		}
-		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player1Sensor") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player1Sensor"))//if A ROCKET HITS Player1
-		//{
-		//	destroyRocket = true;
-		//	player1hit = true;
-		//}
-		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "player2Sensor") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "player2Sensor"))//if A ROCKET HITS Player2
-		//{
-		//	destroyRocket = true;
-		//	player2hit = true;
-		//}
+
 
 	}
 
@@ -255,6 +244,21 @@ Play::Play(Game* game)
 	captain1placed = false; 
 	capatain2placed = false;
 
+	captain1health.setFont(font);
+	captain1health.setColor(sf::Color::Black);
+	captain1health.setStyle(sf::Text::Bold);
+	captain1health.setCharacterSize(20);
+
+
+	captain2health.setFont(font);
+	captain2health.setColor(sf::Color::Black);
+	captain2health.setStyle(sf::Text::Bold);
+	captain2health.setCharacterSize(20);
+
+	PlaceCaptaintext.setFont(font);
+	PlaceCaptaintext.setColor(sf::Color::Black);
+	PlaceCaptaintext.setStyle(sf::Text::Bold || sf::Text::Italic);
+	PlaceCaptaintext.setCharacterSize(40);
 	///////////////////////////////////
 	int map[30][100] = {
       #include "testlevel.txt"
@@ -341,14 +345,13 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	//game->window.draw(Rocketsystem);
+	game->window.draw(Rocketsystem);
 }
 void Play::draw()
 {
 	
 	return;
 }
-
 void Play::DrawDebug()
 {
 	for (b2Body* BodyIterator = World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
@@ -411,7 +414,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	//game->window.draw(system);
+	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -523,17 +526,7 @@ void Play::update()
 	water3.Draw(game);
 
 
-		/*for (int i = 0; i < player1team.size(); i++)
-		{
-			game->window.draw(player1team[i].getHealthText());
-		}
-		for (int i = 0; i < player2team.size(); i++)
-		{
-			game->window.draw(player2team[i].getHealthText());
-		}
-*/
-		//game->window.draw(captain1.getHealthText());
-		//game->window.draw(captain2.getHealthText());
+	
 	
 
 	for (int i = 0; i < player1team.size(); i++)
@@ -544,7 +537,17 @@ void Play::update()
 	{
 		player2team[i].UpdateSprite();
 	}
-	
+	if (BuildMode == false)
+	{
+		captain2health.setPosition(captain2.getPosition().x - 10, captain2.getPosition().y - 40);
+		captain2health.setString(captain2.getHealthText());
+		captain1health.setString(captain1.getHealthText());
+		captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y - 40);
+
+		game->window.draw(captain2health);
+		game->window.draw(captain1health);
+	}
+
 	if (BuildMode == true)
 	{
 
@@ -998,10 +1001,10 @@ void Play::BuildModeUpdate()
 {
 
 
-
+	
 	HudSprite.setPosition(HudSpritePosition);
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
-	
+	PlaceCaptaintext.setPosition(HudSpritePosition + sf::Vector2f(70, -300));
 	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
 	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
 
@@ -1019,6 +1022,7 @@ void Play::BuildModeUpdate()
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer1Money) + " Credits Remaining");
 		Money.setPosition(HudSpritePosition + sf::Vector2f(110, 10));
+		PlaceCaptaintext.setString("PLAYER 1 PLACE YOUR CAPTAIN!!");
 
 
 	}
@@ -1029,20 +1033,28 @@ void Play::BuildModeUpdate()
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer2Money) + " Credits Remaining");
 		Money.setPosition(HudSpritePosition + sf::Vector2f(110, 10));
-
+		PlaceCaptaintext.setString("PLAYER 2 PLACE YOUR CAPTAIN!!");
 	}
 	
 	if (captainplacemode == true)
 	{
-		placingSprite.setTexture(captainTexture1);
-		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
+		game->window.draw(PlaceCaptaintext);
+		if (Player1Turn == true)
+		{
+			placingSprite.setTexture(captainTexture1);
+		}
+		else
+		{
+			placingSprite.setTexture(captaintexture2);
+		}
+	
+	
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
 		{
 			
 			if (Player1Turn == true)
 			{
-				CaptainPlacingSprite.setTexture(captainTexture1);
-				placingSprite = CaptainPlacingSprite;
+			
 				mousereleased = false;
 				captain1placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
@@ -1051,8 +1063,7 @@ void Play::BuildModeUpdate()
 			}
 			else if (Player1Turn == false)
 			{
-				CaptainPlacingSprite.setTexture(captaintexture2);
-				placingSprite = CaptainPlacingSprite;
+
 				mousereleased = false;
 				capatain2placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 2, playerType);
@@ -1061,11 +1072,8 @@ void Play::BuildModeUpdate()
 			}
 			
 		}
-		else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true)
-		{
-			captainplacemode = false;
-		}
-		
+
+		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
 	}
 
 	if (PlaceBlockMode == true)

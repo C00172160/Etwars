@@ -82,7 +82,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////
 
 	//PLAYERS AND TEAMS
-	sf::Texture captainTexture1 ,captaintexture2;
+	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex;
 	int player1Number, player2Number;
 	sf::Vector2f position;
 	int playerType;
@@ -106,6 +106,7 @@ private:
 	bool BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode;
 	sf::Sprite placingSprite, FinishButtonSprite;
 	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2;
+	sf::Text PlaceCaptaintext;
 	///////////////////////////////////////////////////////////////////////////
 
 
