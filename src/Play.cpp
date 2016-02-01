@@ -178,6 +178,7 @@ Play::Play(Game* game)
 	player2Texture.loadFromFile("Resources/player2.png");
 	captainTexture1.loadFromFile("Resources/captain1Right.png");
 	captaintexture2.loadFromFile("Resources/captain2Left.png");
+	HandgunBulletTexture.loadFromFile("Resources/handgunbullet.png");
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
 
@@ -282,6 +283,7 @@ Play::Play(Game* game)
 
 	Firetexture.loadFromFile("Resources/smoke.png");
 	Snowtexture.loadFromFile("Resources/snow.png");
+	handgunParticleTexture.loadFromFile("Resources/handgunbulletparticle.png");
 	system.setTexture(Snowtexture);
 	Snowemitter1.setEmissionRate(100);
 	Snowemitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
@@ -337,6 +339,7 @@ void Play::InitRocketParticle()
 	//emitter.setParticleTextureIndex(index1);
 
 }
+
 void Play::UpdateRocketParticle()
 {
 
@@ -347,6 +350,7 @@ void Play::UpdateRocketParticle()
 	Rocketsystem.update(RocketParticleclock.restart());
 	game->window.draw(Rocketsystem);
 }
+
 void Play::draw()
 {
 	
@@ -422,6 +426,7 @@ void Play::update()
 	{
 		UpdateRocketParticle();
 	}
+
 	bullerTimer -= clock.restart().asSeconds();
 	if (CountDown == true )
 	{
@@ -588,6 +593,17 @@ void Play::update()
 	//	game->window.draw(reverbCircle);
 	//	game->window.draw(reverbCircle2);
 	}
+	for (int i = 0; i < Handguns.size(); i++)
+	{
+		
+		Handguns[i].Update();
+		game->window.draw(Handguns[i].getSprite());
+
+		if (Handguns[i].getAlive() == false)
+		{
+			Handguns.pop_back();
+		}
+	}
 	game->window.draw(turn);
 	game->window.display();
 
@@ -646,21 +662,31 @@ void Play::handleInput()
 			{
 				if (BuildMode == false)
 				{
-					if (Rockets.size() < 1)
+					if (Rockets.size() < 1 || Handguns.size() < 1)
 					{
 						if (Player1Turn == true)
 						{
 							if (CountDown == false)
 							{
-								player1Fire = true;
-								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1team[player1Number].getPosition());
-								Rockets.push_back(tempRocket);
-								if (effectToggle == true)
+								if (player1team[player1Number].getType() == 1)
 								{
-									soundManager.playFireSound();
+
+									player1Fire = true;
+									Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1team[player1Number].getPosition());
+									Rockets.push_back(tempRocket);
+									if (effectToggle == true)
+									{
+										soundManager.playFireSound();
+									}
+									InitRocketParticle();
 								}
-								
-								InitRocketParticle();
+								else if (player1team[player1Number].getType() == 2 && Handguns.size()< 1)
+								{
+									player1Fire = true;
+									Handgun temp( HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition());
+									Handguns.push_back(temp);
+							
+								}
 								//soundManager.PlayRocket();
 								overview = false;
 							}
@@ -671,17 +697,27 @@ void Play::handleInput()
 						{
 							if (CountDown == false)
 							{
-								player2Fire = true;
-								Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2team[player2Number].getPosition());
-								Rockets.push_back(tempRocket);
-								if (effectToggle == true)
+								if (player2team[player2Number].getType() == 1)
 								{
-									soundManager.playFireSound();
+
+									player2Fire = true;
+									Rocket tempRocket(World, cross.getPosition(), RocketTexture, player2team[player2Number].getPosition());
+									Rockets.push_back(tempRocket);
+									if (effectToggle == true)
+									{
+										soundManager.playFireSound();
+									}
+									InitRocketParticle();
 								}
-								InitRocketParticle();
+								else if (player2team[player1Number].getType() == 2 && Handguns.size()< 1)
+								{
+									player2Fire = true;
+									Handgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition());
+									Handguns.push_back(temp);
+						
+								}
 								//soundManager.PlayRocket();
 								overview = false;
-								//soundManager.PlayRocket();
 							}
 							//soundManager.PlayRocket();
 							//RocketFired = true;
@@ -1306,10 +1342,7 @@ void Play::UpdateCamera()
 			{
 				if (player1Fire == true && overview == false)
 				{
-					/*if (Rockets[i].getPosition().x < 450 || Rockets[i].getPosition().x > 1545)
-					{
-					bullerTimer = 0;
-					}*/
+
 
 					if (Rockets[i].getPosition().x  < bulletOffset)
 					{

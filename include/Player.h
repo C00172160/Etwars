@@ -24,6 +24,7 @@ public:
 	int getID();
 	int getRocketSensor();
 	std::string getHealthText();
+	int getType();
 	
 
 
@@ -46,6 +47,7 @@ private:
 	void* RocketSensor;
 	sf::Font font;
 	std::string healthtext;
+	int playerType;
 
 };
 

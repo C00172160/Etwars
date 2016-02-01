@@ -53,6 +53,7 @@
 #include "SFMLDebugDraw.h"
 #include "Menu.hpp"
 #include "GameOver.hpp"
+#include "Handgun.h"
 
 using namespace std;
 
@@ -79,10 +80,17 @@ private:
 	sf::Texture Firetexture;
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
+
+	sf::Texture handgunParticleTexture;
+	thor::ParticleSystem handgunParticleSystem;
+	sf::Clock handgunparticleClock;
+	thor::UniversalEmitter handgunemitter;
+
 	////////////////////////////////////////////////////////////////////////////////////
 
 	//PLAYERS AND TEAMS
-	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex;
+
+	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex,HandgunBulletTexture;
 	int player1Number, player2Number;
 	sf::Vector2f position;
 	int playerType;
@@ -94,6 +102,7 @@ private:
 	Player player1, player2, captain1, captain2;
 	Crosshair cross;
 	std::vector<Rocket> Rockets;
+	std::vector<Handgun> Handguns;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -168,7 +177,9 @@ public:
 	void GameStart();
 	void CreatePlayer(sf::Vector2f pos, int team,int type);
 	void InitRocketParticle();
+
 	void UpdateRocketParticle();
+
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
 	void CreateBlock(int type, sf::Vector2i position);
 	Play(Game* game);

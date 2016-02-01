@@ -12,6 +12,7 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int
 }
 void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
 {
+	playerType = type;
 	m_position = pos;
 	m_texture = tex;
 	if (team == 1)
@@ -229,4 +230,8 @@ std::string Player::getHealthText()
 {
 	
 	return healthtext;
+}
+int Player::getType(){
+
+	return playerType;
 }
