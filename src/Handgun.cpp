@@ -6,7 +6,8 @@ Handgun::Handgun()
 
 Handgun::Handgun( sf::Texture &bulletTexture,sf::Vector2f crosshairPos,sf::Vector2f playerPos)
 {
-
+	ttl = 30;
+	speed = 10;
 	position = crosshairPos;
 	crosshairPosition = crosshairPos;
 	bulletSprite.setTexture(bulletTexture);
@@ -19,19 +20,26 @@ Handgun::Handgun( sf::Texture &bulletTexture,sf::Vector2f crosshairPos,sf::Vecto
 	velocity = Direction * speed;
 	bulletCircle.setPosition(position.x - bulletCircle.getRadius(),position.y - bulletCircle.getRadius());
 	bulletCircle.setFillColor(sf::Color::Black);
+
+
+
+
 }
 
 
 void Handgun::Update()
 {
 	time ++;
-	if (time > 10)
+	if (time > ttl)
 	{
 		alive = false;
 	}
 	position += velocity ;
 	bulletSprite.setPosition(position);
 	bulletCircle.setPosition(position.x - bulletCircle.getRadius(), position.y - bulletCircle.getRadius());
+
+
+	
 }
 
 sf::Sprite Handgun::getSprite()

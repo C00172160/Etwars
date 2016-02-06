@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <cmath>
+#define _USE_MATH_DEFINES
 
 #include "SFML/Graphics.hpp" 
 
@@ -28,9 +29,10 @@ protected:
 	sf::Vector2f crosshairPosition;
 	sf::Vector2f Direction;
 	sf::Sprite bulletSprite;
-	float speed = 10;
+	float speed ;
+	float angle;
 	int time = 0;
-	
+	float ttl;
 	bool alive;
 };
 

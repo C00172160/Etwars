@@ -55,6 +55,7 @@
 #include "GameOver.hpp"
 #include "Handgun.h"
 #include "Shotgun.h"
+#include "Sniper.h"
 
 using namespace std;
 
@@ -91,7 +92,7 @@ private:
 
 	//PLAYERS AND TEAMS
 
-	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex,HandgunBulletTexture;
+	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex,HandgunBulletTexture,shotgunBulletTex,sniperBullettex;
 	int player1Number, player2Number;
 	sf::Vector2f position;
 	int playerType;
@@ -105,6 +106,7 @@ private:
 	std::vector<Rocket> Rockets;
 	std::vector<Handgun> Handguns;
 	std::vector<Shotgun> Shotguns;
+	std::vector<Sniper> Snipers;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -172,6 +174,7 @@ public:
 	void SwitchTurn();
 	void updateHandguns();
 	void updateShotguns();
+	void updateSnipers();
 	void UpdateCamera();
 	void UpdateRockets();
 	void UpdateHealth();

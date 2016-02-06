@@ -1,13 +1,13 @@
-#include "Shotgun.h"
+#include "Sniper.h"
 
-Shotgun::Shotgun()
+Sniper::Sniper()
 {
 }
 
-Shotgun::Shotgun(sf::Texture &bulletTexture, sf::Vector2f crosshairPos, sf::Vector2f playerPos, float  angleProjection)
+Sniper::Sniper(sf::Texture &bulletTexture, sf::Vector2f crosshairPos, sf::Vector2f playerPos)
 {
-	ttl = 20;
-	speed = 5;
+	ttl = 100;
+	speed = 15;
 	position = crosshairPos;
 	crosshairPosition = crosshairPos;
 	bulletSprite.setTexture(bulletTexture);
@@ -19,9 +19,9 @@ Shotgun::Shotgun(sf::Texture &bulletTexture, sf::Vector2f crosshairPos, sf::Vect
 	Direction = Direction / length;
 	bulletCircle.setPosition(position.x - bulletCircle.getRadius(), position.y - bulletCircle.getRadius());
 	bulletCircle.setFillColor(sf::Color::Black);
-	Direction.x = Direction.x * cos(angleProjection) - Direction.y * sin(angleProjection);
-	Direction.y = Direction.x * sin(angleProjection) + Direction.y * cos(angleProjection);
 	velocity = Direction * speed;
+	angle = atan2(Direction.y, Direction.x);
+	bulletSprite.setRotation((angle / M_PI) * 180.0);
 }
 
 

@@ -12,7 +12,7 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int
 }
 void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
 {
-	playerType = 3;
+	playerType = 4;
 	m_position = pos;
 	m_texture = tex;
 	if (team == 1)
@@ -108,6 +108,7 @@ void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Textur
 	playerRectangle.setSize(sf::Vector2f(24, 30));
 	playerRectangle.setPosition(m_body->GetPosition().x * SCALE - 12, m_body->GetPosition().y* SCALE - 15);
 	playerRectangle.setFillColor(sf::Color::Black);
+   
 }
 
 
@@ -116,37 +117,25 @@ void Player::Update(int numFootContacts)
 {
 	numberOfFootContacts = numFootContacts;
 
-	
-
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		move = true;
 		m_body->ApplyForceToCenter(b2Vec2(10, 0), true);
 
 		source.y = 0;
-
-
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		move = true;
-
 		m_body->ApplyForceToCenter(b2Vec2(-10, 0), true);
-
 		source.y = 1;
-
 	}
 	else
 		move = false;
 
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && numberOfFootContacts >0) {
-
-
 		m_body->ApplyForceToCenter(b2Vec2(0,- 100), true);
 	}
-
 
 	if (m_body->GetLinearVelocity().y <= 0) {
 		isInair = true;
@@ -154,11 +143,6 @@ void Player::Update(int numFootContacts)
 	else {
 		isInair = false;
 	}
-
-
-	
-
-
 }
 
 
@@ -171,14 +155,12 @@ void Player::UpdateSprite()
 	playerRectangle.setPosition(m_body->GetPosition().x * SCALE - 12, m_body->GetPosition().y* SCALE - 15);
 	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
-
 	timer++;
 	if (timer >= 5)
 	{
 		source.x++;
 		if (source.x > 5){
-
-			source.x = 0;
+	  	source.x = 0;
 		}
 		timer = 0;
 	}
@@ -188,22 +170,17 @@ void Player::UpdateSprite()
 		Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
 	}
 
-
-
 }
 sf::RectangleShape Player::getPlayerRectangle(){
-
 	return playerRectangle;
 }
 
 sf::Sprite Player::getSprite()
 {
-
 	return Sprite;
 }
 sf::Vector2f Player::getPosition()
 {
-
 	return sf::Vector2f(m_body->GetPosition().x * SCALE, m_body->GetPosition().y * SCALE);
 }
 sf::Vector2f Player::getVelocity()
@@ -214,12 +191,10 @@ sf::Vector2f Player::getVelocity()
 void Player::setHealth(int damage)
 {
 	health = health - damage;
-
 }
 int Player::getHealth()
 {
 	return health;
-
 }
 int  Player::getID()
 {
@@ -239,3 +214,4 @@ int Player::getType(){
 
 	return playerType;
 }
+

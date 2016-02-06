@@ -163,6 +163,8 @@ Play::Play(Game* game)
 	bottomStraight.loadFromFile("Resources/snow/2.png");
 	bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 	Explosion.loadFromFile("Resources/explosion.png");
+	shotgunBulletTex.loadFromFile("Resources/shotgunbullet.png");
+	sniperBullettex.loadFromFile("Resources/sniperbullet.png");
 	outOfBounds = false;
 	Explosion.setSmooth(true);
 	ExplosionSprite.setTexture(Explosion);
@@ -453,7 +455,7 @@ void Play::update()
 	{
 		if (Player1Turn == true)
 		{
-			cross.Update(player1team[player1Number].getPosition(),player1team[player1Number].getType());
+			cross.Update(player1team[player1Number].getPosition(),player1team[player1Number].getType(),player1team[player1Number]);
 			player1team[player1Number].Update(numFootContacts);
 			playerVelocity = player1team[player1Number].getVelocity();
 			playerPosition = player1team[player1Number].getPosition();
@@ -466,7 +468,7 @@ void Play::update()
 		{
 			turnTimer -= turnCLock.restart().asSeconds();
 			game->window.setKeyRepeatEnabled(false);
-			cross.Update(player2team[player2Number].getPosition(), player2team[player2Number].getType());
+			cross.Update(player2team[player2Number].getPosition(), player2team[player2Number].getType(), player1team[player1Number]);
 			player2team[player2Number].Update(numFootContacts2);
 			playerPosition = player2team[player2Number].getPosition();
 			turn.setString("Player 2's turn, time remaining = " + std::to_string(turnTimer));
@@ -602,7 +604,7 @@ void Play::update()
 	}
 	updateHandguns();
 	updateShotguns();
-	
+	updateSnipers();
 	game->window.draw(turn);
 	game->window.display();
 
@@ -646,6 +648,43 @@ void Play::updateHandguns(){
 		}
 	}
 
+}
+void Play::updateSnipers()
+{
+	for (int i = 0; i < Snipers.size(); i++)
+	{
+
+		Snipers[i].Update();
+
+		for (int j = 0; j < blocks.size(); j++)
+		{
+			if (abs(Snipers[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Snipers[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
+			{
+				if (CollisionManager::CircleRectangleCollision(Snipers[i].getCircleCol(), blocks[j].getRect()) == true)
+				{
+					Snipers[i].setAlive(false);
+					blocks[j].CheckLives();
+				}
+			}
+		}
+		for (int k = 0; k < player2team.size(); k++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Snipers[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
+			{
+				Snipers[i].setAlive(false);
+				player2team[k].setHealth(5);
+			}
+		}
+		game->window.draw(Snipers[i].getSprite());
+
+		//game->window.draw(Shotguns[i].getCircleCol());
+
+		if (Snipers[i].getAlive() == false)
+		{
+			Snipers.pop_back();
+		}
+	}
 }
 void Play::updateShotguns()
 {
@@ -738,7 +777,7 @@ void Play::handleInput()
 			{
 				if (BuildMode == false)
 				{
-					if (Rockets.size() < 1 || Handguns.size() < 1 || Shotguns.size() < 1)
+					if (Rockets.size() < 1 || Handguns.size() < 1 || Shotguns.size() < 1||Snipers.size() < 1)
 					{
 						if (Player1Turn == true)
 						{
@@ -766,12 +805,20 @@ void Play::handleInput()
 								else if (player1team[player1Number].getType() ==  3)
 								{
 									player1Fire = true;
-									Shotgun tempTop(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
-									Shotgun temp(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(), 0);
-									Shotgun tempBottom(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(), -0.5f);
+									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
+									Shotgun temp(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0);
+									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.5f);
 									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
 									Shotguns.push_back(tempBottom);
+
+								}
+								else if (player1team[player1Number].getType() == 4 && Snipers.size() ==0)
+								{
+									player1Fire = true;
+									Sniper temp(sniperBullettex, cross.getPosition(), player1team[player1Number].getPosition());
+									
+									Snipers.push_back(temp);
 
 								}
 
@@ -808,12 +855,20 @@ void Play::handleInput()
 								else if (player2team[player2Number].getType() == 3)
 								{
 									player2Fire = true;
-									Shotgun tempTop(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), 0.5f);
-									Shotgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), 0);
-									Shotgun tempBottom(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), -0.5f);
+									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.5f);
+									Shotgun temp(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0);
+									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.5f);
 									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
 									Shotguns.push_back(tempBottom);
+
+								}
+								else if (player2team[player2Number].getType() == 4 && Snipers.size() == 0)
+								{
+									player1Fire = true;
+									Sniper temp(sniperBullettex, cross.getPosition(), player2team[player2Number].getPosition());
+
+									Snipers.push_back(temp);
 
 								}
 								//soundManager.PlayRocket();

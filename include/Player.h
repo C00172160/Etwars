@@ -27,7 +27,7 @@ public:
 	int getType();
 	sf::RectangleShape getPlayerRectangle();
 	
-
+	
 
 private:
 	sf::RectangleShape playerRectangle;
@@ -50,6 +50,7 @@ private:
 	sf::Font font;
 	std::string healthtext;
 	int playerType;
+	
 
 };
 

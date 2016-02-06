@@ -14,7 +14,7 @@ Crosshair::Crosshair(sf::Texture& tex, sf::Vector2f pos, sf::Texture& handguntex
 	shotgun.setTexture(shotguntex);
 	sniper.setTexture(snipertex);
 
-
+	
 }
 void Crosshair::Init(sf::Texture& tex, sf::Vector2f pos, sf::Texture& handguntex, sf::Texture& Rockettex, sf::Texture& shotguntex, sf::Texture& snipertex)
 {
@@ -28,12 +28,12 @@ void Crosshair::Init(sf::Texture& tex, sf::Vector2f pos, sf::Texture& handguntex
 	sniper.setTexture(snipertex);
 }
 
-void Crosshair::Update(sf::Vector2f playerPos,int guntype)
+void Crosshair::Update(sf::Vector2f playerPos, int guntype, Player& player)
 {
 	gunPosition = playerPos;
 	sf::Vector2f playerPosition = sf::Vector2f(playerPos.x  , playerPos.y  );
 	Sprite.setOrigin(10.f, 10.f);
-	m_position = sf::Vector2f(playerPosition.x +60 , playerPosition.y );
+	m_position = sf::Vector2f(playerPosition.x +gunoffset , playerPosition.y );
 
 	Sprite.setPosition(m_position.x, m_position.y);
 
@@ -46,18 +46,22 @@ void Crosshair::Update(sf::Vector2f playerPos,int guntype)
 	if (guntype == 1)
 	{
 		currentgunSprite = rocketLauncher;
+		gunoffset = 60;
 	}
 	else if (guntype == 2)
 	{
 		currentgunSprite = handgun;
+		gunoffset = 60;
 	}
 	else if (guntype == 3)
 	{
 		currentgunSprite = shotgun;
+		gunoffset = 60;
 	}
 	else if (guntype == 4)
 	{
 		currentgunSprite = sniper;
+		gunoffset = 120;
 	}
 
 	
@@ -69,13 +73,6 @@ y'&=x\sin\theta+y\cos\theta.
 	currentgunSprite.setPosition(playerPos);
 	currentgunSprite.setRotation(angle/M_PI * 180.f);
 	
-	if (currentgunSprite.getRotation() > 90 && currentgunSprite.getRotation() < 270)
-	{
-		currentgunSprite.scale(1, -1);
-	}
-	
-
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		angle += 0.02;
