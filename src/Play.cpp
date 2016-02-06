@@ -548,7 +548,6 @@ void Play::update()
 	for (int i = 0; i < player2team.size(); i++)
 	{
 		player2team[i].UpdateSprite();
-		game->window.draw(player2team[i].getPlayerRectangle());
 	}
 	if (BuildMode == false)
 	{
@@ -601,22 +600,36 @@ void Play::update()
 	//	game->window.draw(reverbCircle);
 	//	game->window.draw(reverbCircle2);
 	}
+	updateHandguns();
+	updateShotguns();
+	
+	game->window.draw(turn);
+	game->window.display();
+
+	return;
+}
+void Play::updateHandguns(){
+
 	for (int i = 0; i < Handguns.size(); i++)
 	{
-		
+
 		Handguns[i].Update();
-		
+	
 		for (int j = 0; j < blocks.size(); j++)
 		{
-			if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), blocks[j].getRect()) == true)
+			if (abs(Handguns[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Handguns[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
 			{
-				Handguns[i].setAlive(false);
-				blocks[j].CheckLives();
+				if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), blocks[j].getRect()) == true)
+				{
+					Handguns[i].setAlive(false);
+					blocks[j].CheckLives();
+				}
 			}
 		}
+			
 		for (int k = 0; k < player2team.size(); k++)
 		{
-			
+
 			if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
 			{
 				Handguns[i].setAlive(false);
@@ -624,7 +637,7 @@ void Play::update()
 			}
 		}
 		game->window.draw(Handguns[i].getSprite());
-		
+
 		game->window.draw(Handguns[i].getCircleCol());
 
 		if (Handguns[i].getAlive() == false)
@@ -632,10 +645,45 @@ void Play::update()
 			Handguns.pop_back();
 		}
 	}
-	game->window.draw(turn);
-	game->window.display();
 
-	return;
+}
+void Play::updateShotguns()
+{
+	for (int i = 0; i < Shotguns.size(); i++)
+	{
+
+		Shotguns[i].Update();
+
+		for (int j = 0; j < blocks.size(); j++)
+		{
+			if (abs(Shotguns[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Shotguns[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
+			{
+				if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), blocks[j].getRect()) == true)
+				{
+					Shotguns[i].setAlive(false);
+					blocks[j].CheckLives();
+				}
+			}
+		}
+		for (int k = 0; k < player2team.size(); k++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
+			{
+				Shotguns[i].setAlive(false);
+				player2team[k].setHealth(5);
+			}
+		}
+		game->window.draw(Shotguns[i].getSprite());
+
+		//game->window.draw(Shotguns[i].getCircleCol());
+
+		if (Shotguns[i].getAlive() == false)
+		{
+			Shotguns.pop_back();
+		}
+	}
+
 }
 
 void Play::PlayExplosion()
@@ -690,7 +738,7 @@ void Play::handleInput()
 			{
 				if (BuildMode == false)
 				{
-					if (Rockets.size() < 1 || Handguns.size() < 1)
+					if (Rockets.size() < 1 || Handguns.size() < 1 || Shotguns.size() < 1)
 					{
 						if (Player1Turn == true)
 						{
@@ -708,13 +756,25 @@ void Play::handleInput()
 									}
 									InitRocketParticle();
 								}
-								else if (player1team[player1Number].getType() == 2 && Handguns.size()< 1)
+								else if (player1team[player1Number].getType() == 2)
 								{
 									player1Fire = true;
 									Handgun temp( HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition());
 									Handguns.push_back(temp);
 							
 								}
+								else if (player1team[player1Number].getType() ==  3)
+								{
+									player1Fire = true;
+									Shotgun tempTop(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
+									Shotgun temp(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(), 0);
+									Shotgun tempBottom(HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition(), -0.5f);
+									Shotguns.push_back(tempTop);
+									Shotguns.push_back(temp);
+									Shotguns.push_back(tempBottom);
+
+								}
+
 								//soundManager.PlayRocket();
 								overview = false;
 							}
@@ -743,6 +803,18 @@ void Play::handleInput()
 									Handgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition());
 									Handguns.push_back(temp);
 						
+
+								}
+								else if (player2team[player2Number].getType() == 3)
+								{
+									player2Fire = true;
+									Shotgun tempTop(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), 0.5f);
+									Shotgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), 0);
+									Shotgun tempBottom(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition(), -0.5f);
+									Shotguns.push_back(tempTop);
+									Shotguns.push_back(temp);
+									Shotguns.push_back(tempBottom);
+
 								}
 								//soundManager.PlayRocket();
 								overview = false;
@@ -1537,7 +1609,7 @@ void Play::UpdateBlocks()
 	for (int i = 0; i < blocks.size(); i++)
 	{
 	//	blocks[i].Update(boundingbox);
-		game->window.draw(blocks[i].getCircle());
+
 		if (blocks[i].getAlive() == false && World.IsLocked() == false)
 		{
 			World.DestroyBody(blocks[i].getBody());

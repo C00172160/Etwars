@@ -12,7 +12,7 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int
 }
 void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
 {
-	playerType = 1;
+	playerType = 3;
 	m_position = pos;
 	m_texture = tex;
 	if (team == 1)

@@ -18,10 +18,10 @@ public:
 	sf::Vector2f getPosition();
 	bool getAlive();
 	void setAlive(bool j);
-	sf::CircleShape Handgun::getCircleCol();
+	sf::CircleShape getCircleCol();
 
 
-private:
+protected:
 	sf::CircleShape bulletCircle;
 	sf::Vector2f position;
 	sf::Vector2f velocity;

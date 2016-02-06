@@ -68,6 +68,12 @@ y'&=x\sin\theta+y\cos\theta.
 	currentgunSprite.setOrigin(currentgunSprite.getGlobalBounds().width / 2, currentgunSprite.getGlobalBounds().height / 2);
 	currentgunSprite.setPosition(playerPos);
 	currentgunSprite.setRotation(angle/M_PI * 180.f);
+	
+	if (currentgunSprite.getRotation() > 90 && currentgunSprite.getRotation() < 270)
+	{
+		currentgunSprite.scale(1, -1);
+	}
+	
 
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))

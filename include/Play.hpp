@@ -54,6 +54,7 @@
 #include "Menu.hpp"
 #include "GameOver.hpp"
 #include "Handgun.h"
+#include "Shotgun.h"
 
 using namespace std;
 
@@ -103,6 +104,7 @@ private:
 	Crosshair cross;
 	std::vector<Rocket> Rockets;
 	std::vector<Handgun> Handguns;
+	std::vector<Shotgun> Shotguns;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -168,6 +170,8 @@ public:
 	void PlayExplosion();
 	void UpdateStaticBodies();
 	void SwitchTurn();
+	void updateHandguns();
+	void updateShotguns();
 	void UpdateCamera();
 	void UpdateRockets();
 	void UpdateHealth();
