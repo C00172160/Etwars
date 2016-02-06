@@ -1,13 +1,29 @@
 #include "Player.h"
 
-Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
+Player::Player()
 {
-	
+
+}
+
+Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
+{
+
+	  
+}
+void Player::Init(int playerNumber, b2World& world, sf::Vector2f pos, sf::Texture &tex, int team, int type)
+{
+	playerType = 1;
 	m_position = pos;
 	m_texture = tex;
-
-	
-
+	if (team == 1)
+	{
+		playernum = playerNumber;
+	}
+	else if (team == 2)
+	{
+		playernum = playerNumber * 100;
+	}
+	health = 100;
 	b2BodyDef myBodyDef;
 	myBodyDef.type = b2_dynamicBody;
 	myBodyDef.fixedRotation = true;
@@ -15,44 +31,85 @@ Player::Player(b2World& world, sf::Vector2f pos, sf::Texture &tex, int id)
 
 	m_body = world.CreateBody(&myBodyDef);
 
+	b2Vec2 vertices[6];
+	vertices[0].Set(-0.4, -0.5);
+	vertices[1].Set(0.4, -0.5);
+	vertices[2].Set(0.4, 0.3);
+	vertices[3].Set(0.2, 0.5);
+	vertices[4].Set(-0.2,0.5 );
+	vertices[5].Set(-0.4, 0.3);
+
 	b2PolygonShape Shape;
-	Shape.SetAsBox((playerWidth / 2) / SCALE, (playerHeight / 2) / SCALE);
+	Shape.Set(vertices, 6); //pass array to the shape
+	//b2PolygonShape Shape;
+	//Shape.SetAsBox((12) / SCALE, (15) / SCALE);
 	b2FixtureDef FixtureDef;
 	FixtureDef.density = 1.f;
 	FixtureDef.friction = 0.7f;
 	FixtureDef.shape = &Shape;
-
 	m_body->CreateFixture(&FixtureDef);
-	
+
+
+	b2PolygonShape polygonShape3;
+	polygonShape3.SetAsBox(((12.f / 2) / SCALE), ((15.f / 2) / SCALE)); //a 2x4 rectangle
+
+	b2FixtureDef myFixtureDef3;
+
+	myFixtureDef3.shape = &polygonShape3;
+	myFixtureDef3.isSensor = true;
+	b2Fixture* RocketSensorFixture = m_body->CreateFixture(&myFixtureDef3);
+
+	if (team == 1)
+	{
+		//std::string RocketSensorstring = "Player1" + std::to_string(playernum);
+		//RocketSensor = static_cast<void*>(&RocketSensorstring);
+		RocketSensorFixture->SetUserData((void*)(playernum*1000));
+	}
+	else if (team == 2)
+	{
+		std::string RocketSensorstring = "Player2" + std::to_string(playernum);
+		RocketSensor = static_cast<void*>(&RocketSensorstring);
+		RocketSensorFixture->SetUserData((void*)(playernum * 1000));
+	}
+	else if (team == 4)
+	{
+		RocketSensorFixture->SetUserData("captain2sensor");
+	}
+	else if (team == 3)
+	{
+		RocketSensorFixture->SetUserData("captain1sensor");
+	}
 
 	//add foot sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox((30.f / 2) / SCALE, (40.f / 2) / SCALE); //a 2x4 rectangle
-
+	polygonShape2.SetAsBox(((15.f / 2)  / SCALE), ((32.f / 2) / SCALE)); //a 2x4 rectangle
 	b2FixtureDef myFixtureDef2;
 
 	myFixtureDef2.shape = &polygonShape2;
 	myFixtureDef2.isSensor = true;
-	b2Fixture* footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
-	if (id ==1)
-	{
-		footSensorFixture->SetUserData("player1");
-	}
-	else if (id == 2)
-	{
-		footSensorFixture->SetUserData("player2");
-	}
 	
-
+	b2Fixture * footSensorFixture = m_body->CreateFixture(&myFixtureDef2);
+	/*if (team == 1)
+	{
+		footSensorFixture->SetUserData("player1foot");
+	}
+	else if (team == 2)
+	{
+		footSensorFixture->SetUserData("player2foot");
+	}*/
+	footSensorFixture->SetUserData((void*)playernum);
+	
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	Sprite.setOrigin(16.f, 16.f);
-
-	Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
-
-	  
+	Sprite.setOrigin(12.f, 15.f);
+	//Sprite.setOrigin(0, 0);
+	Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
+	playerRectangle.setSize(sf::Vector2f(24, 30));
+	playerRectangle.setPosition(m_body->GetPosition().x * SCALE - 12, m_body->GetPosition().y* SCALE - 15);
+	playerRectangle.setFillColor(sf::Color::Black);
 }
+
 
 void Player::Update(int numFootContacts)
 
@@ -87,7 +144,7 @@ void Player::Update(int numFootContacts)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && numberOfFootContacts >0) {
 
 
-		m_body->ApplyForceToCenter(b2Vec2(0,- 50), true);
+		m_body->ApplyForceToCenter(b2Vec2(0,- 100), true);
 	}
 
 
@@ -103,10 +160,16 @@ void Player::Update(int numFootContacts)
 
 
 }
+
+
 void Player::UpdateSprite()
 {
-	Sprite.setPosition(m_body->GetPosition().x * SCALE, m_body->GetPosition().y* SCALE);
-	Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
+	
+	//healthtext.setPosition((m_body->GetPosition().x * SCALE) - 10, (m_body->GetPosition().y * SCALE) - 40);
+	healthtext = (std::to_string(health));
+	Sprite.setPosition(m_body->GetPosition().x * SCALE  , m_body->GetPosition().y* SCALE );
+	playerRectangle.setPosition(m_body->GetPosition().x * SCALE - 12, m_body->GetPosition().y* SCALE - 15);
+	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
 
 
 	timer++;
@@ -122,11 +185,15 @@ void Player::UpdateSprite()
 
 	if (move == true)
 	{
-		Sprite.setTextureRect(sf::IntRect(source.x * 32, source.y * 32, 32, 32));
+		Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
 	}
 
 
 
+}
+sf::RectangleShape Player::getPlayerRectangle(){
+
+	return playerRectangle;
 }
 
 sf::Sprite Player::getSprite()
@@ -139,6 +206,10 @@ sf::Vector2f Player::getPosition()
 
 	return sf::Vector2f(m_body->GetPosition().x * SCALE, m_body->GetPosition().y * SCALE);
 }
+sf::Vector2f Player::getVelocity()
+{
+	return sf::Vector2f(m_body->GetLinearVelocity().x * SCALE, m_body->GetLinearVelocity().y * SCALE);
+}
 
 void Player::setHealth(int damage)
 {
@@ -149,4 +220,22 @@ int Player::getHealth()
 {
 	return health;
 
+}
+int  Player::getID()
+{
+	return playernum;
+}
+
+int Player::getRocketSensor()
+{
+	return playernum * 1000;
+}
+std::string Player::getHealthText()
+{
+	
+	return healthtext;
+}
+int Player::getType(){
+
+	return playerType;
 }

@@ -12,12 +12,36 @@ bool CollisionManager::CircleDetectCollision(sf::CircleShape &s1, sf::CircleShap
 	float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
 	if (distance < (s1.getRadius() +s2.getRadius())){
 		return true;
+		
 	}
 	else {
 		return false;
 	}
 }
+bool CollisionManager::CircleRectangleCollision(sf::CircleShape &s1, sf::RectangleShape &s2){
+	if (s1.getGlobalBounds().intersects(s2.getGlobalBounds()))
+	{
 
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
+	//float distanceX = (s1.getPosition().x + s1.getRadius() / 2) - (s2.getPosition().x + s1.getRadius() / 2); // s1.getPosition().x - s2.getPosition().x;
+	//float distanceY = (s1.getPosition().y + s1.getRadius() / 2) - (s2.getPosition().y + s1.getRadius() / 2);
+	/*float distanceX = (s1.getPosition().x + s1.getRadius()) - (s2.getPosition().x + s2.getRadius());
+	float distanceY = (s1.getPosition().y + s1.getRadius()) - (s2.getPosition().y + s2.getRadius());
+	float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
+	if (distance < (s1.getRadius() + s2.getRadius())){
+		return true;
+
+	}
+	else {
+		return false;
+	}*/
+}
 
 float CollisionManager::dotProduct(sf::Vector2f v1, sf::Vector2f v2){
 
