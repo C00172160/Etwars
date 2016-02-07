@@ -115,7 +115,7 @@ private:
 	//BUILDMODE
 	bool BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode;
 	sf::Sprite placingSprite, FinishButtonSprite;
-	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2;
+	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2,handgunplayer1,handgunplayer2,shotgunplayer1,shotgunplayer2,sniperplayer1,sniperplayer2;
 	sf::Text PlaceCaptaintext;
 	///////////////////////////////////////////////////////////////////////////
 
@@ -148,11 +148,12 @@ private:
 	 sf::Vector2f DirtBlockPosition;
 	 sf::Sprite HudSprite;
 	 sf::Vector2f HudSpritePosition;
-	 sf::Sprite RocketPlayerSprite;
+	 sf::Sprite RocketPlayerSprite,hangunplayersprite,sniperplayersprite,shotgunplayersprite;
+	 
 	 sf::Sprite blockSprite;
 	 sf::Sprite CaptainPlacingSprite;
-	 sf::Vector2f RocketPlayerSpritePosition;
-	 sf::Text currentPlayer, Money, dirtPrice, RocketPlayerPrice;
+	
+	 sf::Text currentPlayer, Money, dirtPrice, RocketPlayerPrice,HandgunPrice,ShotgunPrice,SniperPrice;
 	 bool captain1placed, capatain2placed;
 	 float explosiontimer;
 

@@ -81,7 +81,10 @@ void Crosshair::Update(sf::Vector2f playerPos, int guntype, Player& player)
 	currentgunSprite.setOrigin(currentgunSprite.getGlobalBounds().width / 2, currentgunSprite.getGlobalBounds().height / 2);
 	currentgunSprite.setPosition(playerPos);
 	currentgunSprite.setRotation(angle/M_PI * 180.f);
-	
+	if (currentgunSprite.getRotation() > 90 && currentgunSprite.getRotation() < 270)
+	{
+		currentgunSprite.setScale(1, -1);
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		angle += 0.02;

@@ -175,8 +175,15 @@ Play::Play(Game* game)
 	handguntex.loadFromFile("Resources/handgun.png");
 	shotguntex.loadFromFile("Resources/shotgun.png");
 	snipertex.loadFromFile("Resources/sniper.png");
+
 	rocketlaunchertex.loadFromFile("Resources/RocketLAuncher.png");
-	
+	handgunplayer1.loadFromFile("Resources/handgunplayer1.png");
+	handgunplayer2.loadFromFile("Resources/handgunplayer2.png");
+	shotgunplayer1.loadFromFile("Resources/shotgunplayer1.png");
+	shotgunplayer2.loadFromFile("Resources/shotgunplayer2.png");
+	sniperplayer1.loadFromFile("Resources/sniperplayer1.png");
+	sniperplayer2.loadFromFile("Resources/sniperplayer2.png");
+
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
 
@@ -214,6 +221,8 @@ Play::Play(Game* game)
 	
 	DirtBlockHud.setTexture(dirttex);
 	RocketPlayerSprite.setTexture(RocketPlayerTexture);
+
+
 	FinishButtonSprite.setTexture(FinishButtonTexture);
     CurrentPlayer1Money = 1000;
 	CurrentPlayer2Money = 1000;
@@ -348,7 +357,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	//game->window.draw(Rocketsystem);
+	game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -422,7 +431,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-//	game->window.draw(system);
+	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -437,8 +446,6 @@ void Play::update()
 		
 		bulletView.setCenter(lastbulletpos);
 		game->window.setView(bulletView);
-
-		
 
 		if (bullerTimer <= 0)
 		{
@@ -588,6 +595,9 @@ void Play::update()
 		}
 		game->window.draw(HudSprite);
 		game->window.draw(RocketPlayerSprite);
+		game->window.draw(shotgunplayersprite);
+		game->window.draw(hangunplayersprite);
+		game->window.draw(sniperplayersprite);
 		game->window.draw(DirtBlockHud);
 		game->window.draw(FinishButtonSprite);
 		game->window.draw(currentPlayer);
@@ -667,6 +677,9 @@ void Play::updateHandguns(){
 
 		if (Handguns[i].getAlive() == false)
 		{
+			lastbulletpos = Handguns[i].getPosition();
+			bullerTimer = 1.5f;
+			CountDown = true;
 			Handguns.pop_back();
 			SwitchTurn();
 		}
@@ -715,6 +728,9 @@ void Play::updateSnipers()
 
 		if (Snipers[i].getAlive() == false)
 		{
+			lastbulletpos = Snipers[i].getPosition();
+			bullerTimer = 1.5f;
+			CountDown = true;
 			Snipers.pop_back();
 			SwitchTurn();
 		}
@@ -762,6 +778,9 @@ void Play::updateShotguns()
 
 		if (Shotguns[i].getAlive() == false)
 		{
+			lastbulletpos = Shotguns[i].getPosition();
+			bullerTimer = 1.5f;
+			CountDown = true;
 			Shotguns.pop_back();
 			SwitchTurn();
 			zoomed = false;
@@ -892,7 +911,7 @@ void Play::handleInput()
 									}
 									InitRocketParticle();
 								}
-								else if (player2team[player1Number].getType() == 2 && Handguns.size() == 0)
+								else if (player2team[player2Number].getType() == 2 && Handguns.size() == 0)
 								{
 									player2Fire = true;
 									Handgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition());
@@ -1258,9 +1277,24 @@ void Play::BuildModeUpdate()
 	RocketPlayerSprite.setPosition(HudSpritePosition + sf::Vector2f(150, 50));
 	RocketPlayerPrice.setPosition(RocketPlayerSprite.getPosition() + sf::Vector2f(0, 30));
 
+	hangunplayersprite.setPosition(HudSpritePosition + sf::Vector2f(200, 50));
+	HandgunPrice.setPosition(hangunplayersprite.getPosition() + sf::Vector2f(0, 30));
+   
+	shotgunplayersprite.setPosition(HudSpritePosition + sf::Vector2f(250, 50));
+	ShotgunPrice.setPosition(shotgunplayersprite.getPosition() + sf::Vector2f(0, 30));
+
+		sniperplayersprite.setPosition(HudSpritePosition + sf::Vector2f(300, 50));
+		SniperPrice.setPosition(sniperplayersprite.getPosition() + sf::Vector2f(0, 30));
+
+	
+
 	if (Player1Turn == true)
 	{
-		//RocketPlayerSprite.setTexture(RocketPlayerTexture);
+
+		RocketPlayerSprite.setTexture(RocketPlayerTexture);
+		hangunplayersprite.setTexture(handgunplayer1);
+		shotgunplayersprite.setTexture(shotgunplayer1);
+		sniperplayersprite.setTexture(sniperplayer1);
 		currentPlayer.setString("PLAYER 1  ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer1Money) + " Credits Remaining");
@@ -1271,7 +1305,10 @@ void Play::BuildModeUpdate()
 	}
 	else if (Player1Turn == false)
 	{
-	//	RocketPlayerSprite.setTexture(RocketPlayerTexture2);
+		RocketPlayerSprite.setTexture(RocketPlayerTexture2);
+		hangunplayersprite.setTexture(handgunplayer2);
+		shotgunplayersprite.setTexture(shotgunplayer2);
+		sniperplayersprite.setTexture(sniperplayer2);
 		currentPlayer.setString("PLAYER 2  ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(10, 10));
 		Money.setString(std::to_string(CurrentPlayer2Money) + " Credits Remaining");
@@ -1384,7 +1421,64 @@ void Play::BuildModeUpdate()
 			}
 	
 			
+			price = 500;
+		}
+		else if (playerType == 2)
+		{
+			if (Player1Turn == true)
+			{
+				hangunplayersprite.setTexture(handgunplayer1);
+				placingSprite = hangunplayersprite;
+
+			}
+			else
+			{
+
+				hangunplayersprite.setTexture(handgunplayer2);
+				placingSprite = hangunplayersprite;
+
+			}
+
+
 			price = 100;
+		}
+		else if (playerType == 3)
+		{
+			if (Player1Turn == true)
+			{
+				shotgunplayersprite.setTexture(shotgunplayer1);
+				placingSprite = shotgunplayersprite;
+
+			}
+			else
+			{
+
+				shotgunplayersprite.setTexture(shotgunplayer2);
+				placingSprite = shotgunplayersprite;
+
+			}
+
+
+			price = 300;
+		}
+		else if (playerType == 4)
+		{
+			if (Player1Turn == true)
+			{
+				sniperplayersprite.setTexture(sniperplayer1);
+				placingSprite = sniperplayersprite;
+
+			}
+			else
+			{
+
+				sniperplayersprite.setTexture(sniperplayer2);
+				placingSprite = sniperplayersprite;
+
+			}
+
+
+			price = 600;
 		}
 
 		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
@@ -1439,6 +1533,21 @@ void Play::BuildModeUpdate()
 			else if (CheckClicked(RocketPlayerSprite, position) == true)
 			{
 				playerType = 1;
+				PlacePlayerMode = true;
+			}
+			else if (CheckClicked(hangunplayersprite, position) == true)
+			{
+				playerType = 2;
+				PlacePlayerMode = true;
+			}
+			else if (CheckClicked(shotgunplayersprite, position) == true)
+			{
+				playerType = 3;
+				PlacePlayerMode = true;
+			}
+			else if (CheckClicked(sniperplayersprite, position) == true)
+			{
+				playerType = 4;
 				PlacePlayerMode = true;
 			}
 
@@ -1497,7 +1606,6 @@ void Play::UpdateCamera()
 
 		if (overview == true && Player1Turn == true)
 		{
-		//	standardView.setCenter(player1.getPosition().x, player1.getPosition().y);
 			standardView.setCenter(player1team[player1Number].getPosition().x, player1team[player1Number].getPosition().y);
 			standardView.setSize(1500, 1125);
 			game->window.setView(standardView);
@@ -1544,66 +1652,125 @@ void Play::UpdateCamera()
 		if (Player1Turn == true && overview == false)
 		{
 			game->window.setView(player1View);
-
-			for (int i = 0; i < Rockets.size(); i++)
+			if (player1team[player1Number].getType() == 1)
 			{
-				if (player1Fire == true && overview == false)
+				for (int i = 0; i < Rockets.size(); i++)
 				{
+					if (player1Fire == true && overview == false)
+					{
 
 
-					if (Rockets[i].getPosition().x  < bulletOffset)
-					{
-						bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
-					}
-					if (Rockets[i].getPosition().x  > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
-					{
-						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
-					}
-					if (Rockets[i].getPosition().x  > gameSize  - bulletOffset)
-					{
-						
-						bulletView.setCenter(gameSize-bulletOffset, Rockets[i].getPosition().y);
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
-					}
+						if (Rockets[i].getPosition().x < bulletOffset)
+						{
+							bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Rockets[i].getPosition().x > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
+						{
+							bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Rockets[i].getPosition().x > gameSize - bulletOffset)
+						{
 
+							bulletView.setCenter(gameSize - bulletOffset, Rockets[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+
+					}
+				}
+			}
+			else if (player1team[player1Number].getType() == 4)
+			{
+				for (int i = 0; i < Snipers.size(); i++)
+				{
+					if (player1Fire == true && overview == false)
+					{
+
+
+						if (Snipers[i].getPosition().x < bulletOffset)
+						{
+							bulletView.setCenter(bulletOffset, Snipers[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Snipers[i].getPosition().x > bulletOffset &&  Snipers[i].getPosition().x < gameSize - bulletOffset)
+						{
+							bulletView.setCenter(sf::Vector2f(Snipers[i].getPosition()));
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Snipers[i].getPosition().x > gameSize - bulletOffset)
+						{
+
+							bulletView.setCenter(gameSize - bulletOffset, Snipers[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+					}
 				}
 			}
 		}
 		else if (Player1Turn == false && overview == false)
 		{
 			game->window.setView(player2View);
-
-			for (int i = 0; i < Rockets.size(); i++)
+			if (player2team[player2Number].getType() == 1)
 			{
-				if (player2Fire == true && overview == false)
+				for (int i = 0; i < Rockets.size(); i++)
 				{
-					/*      if (Rockets[i].getPosition().x < 450 || Rockets[i].getPosition().x > 1545)
-					{
-					bullerTimer = 0;
-					}*/
-					if (Rockets[i].getPosition().x  < bulletOffset)
-					{
-						bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
-					}
-					if (Rockets[i].getPosition().x  > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
-					{
-						bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
-					}
-					if (Rockets[i].getPosition().x  > gameSize - bulletOffset)
+					if (player2Fire == true && overview == false)
 					{
 
-						bulletView.setCenter(gameSize - bulletOffset, Rockets[i].getPosition().y);
-						bulletView.setSize(900, 675);
-						game->window.setView(bulletView);
+						if (Rockets[i].getPosition().x < bulletOffset)
+						{
+							bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Rockets[i].getPosition().x > bulletOffset &&  Rockets[i].getPosition().x < gameSize - bulletOffset)
+						{
+							bulletView.setCenter(sf::Vector2f(Rockets[i].getPosition()));
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Rockets[i].getPosition().x > gameSize - bulletOffset)
+						{
+
+							bulletView.setCenter(gameSize - bulletOffset, Rockets[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+					}
+				}
+			}
+			else if (player2team[player2Number].getType() == 4)
+			{
+				for (int i = 0; i < Snipers.size(); i++)
+				{
+					if (player1Fire == true && overview == false)
+					{
+						if (Snipers[i].getPosition().x < bulletOffset)
+						{
+							bulletView.setCenter(bulletOffset, Snipers[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Snipers[i].getPosition().x > bulletOffset &&  Snipers[i].getPosition().x < gameSize - bulletOffset)
+						{
+							bulletView.setCenter(sf::Vector2f(Snipers[i].getPosition()));
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
+						if (Snipers[i].getPosition().x > gameSize - bulletOffset)
+						{
+
+							bulletView.setCenter(gameSize - bulletOffset, Snipers[i].getPosition().y);
+							bulletView.setSize(900, 675);
+							game->window.setView(bulletView);
+						}
 					}
 				}
 			}
