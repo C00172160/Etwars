@@ -44,40 +44,40 @@ class MyContactListener : public b2ContactListener
 		{
 			numFootContacts2++;
 		}
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain1sensor") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain1sensor"))//if A ROCKET HITS Player1
-		{
-			destroyRocket = true;
-			captain1hit = true;
-		}
-		if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain2sensor") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain2sensor"))//if A ROCKET HITS Player1
-		{
-			destroyRocket = true;
-			captain2hit = true;
-		}
-		for (int i = 0; i < player1team.size(); i++)
-		{
+		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain1sensor") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain1sensor"))//if A ROCKET HITS Player1
+		//{
+		//	destroyRocket = true;
+		//	captain1hit = true;
+		//}
+		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain2sensor") ||
+		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain2sensor"))//if A ROCKET HITS Player1
+		//{
+		//	destroyRocket = true;
+		//	captain2hit = true;
+		//}
+		//for (int i = 0; i < player1team.size(); i++)
+		//{
 
-			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player1team[i].getRocketSensor())) ||
-				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==((void*)player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
-			{
-				player1team[i].setHealth(20);
-				//destroyRocket = true;
-				//player1hit = true;
-			}
-		}
-		for (int i = 0; i < player2team.size(); i++)
-		{
+		//	if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player1team[i].getRocketSensor())) ||
+		//		(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==((void*)player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
+		//	{
+		//		player1team[i].setHealth(20);
+		//		//destroyRocket = true;
+		//		//player1hit = true;
+		//	}
+		//}
+		//for (int i = 0; i < player2team.size(); i++)
+		//{
 
-			if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player2team[i].getRocketSensor())) ||
-				(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == ((void*)player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
-			{
-				player2team[i].setHealth(20);
-				//destroyRocket = true;
-				//player1hit = true;
-			}
-		}
+		//	if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player2team[i].getRocketSensor())) ||
+		//		(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == ((void*)player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
+		//	{
+		//		player2team[i].setHealth(20);
+		//		//destroyRocket = true;
+		//		//player1hit = true;
+		//	}
+		//}
 
 
 	}
@@ -98,16 +98,7 @@ class MyContactListener : public b2ContactListener
 			numFootContacts2--;
 		}
 
-		else if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "blocksensor") ||
-			(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "blocksensor"))//if A ROCKET HITS ground
-		{
-			Groundhit = true;
-			destroyRocket = true;
-		}
-		else if (fixtureUserDataA == "rocketsensor" || fixtureUserDataB == "rocketsensor")//if A ROCKET HITS ANYTHING
-		{
-			//	destroyRocket = true;
-		}
+		
 	}
 	void PreSolve(b2Contact* contact)
 	{
@@ -198,7 +189,8 @@ Play::Play(Game* game)
 	background.setPosition(sf::Vector2f(-300,-500));
 
 	World.SetContactListener(&myContactListenerInstance);
-	boundingbox = sf::CircleShape(50);
+	boundingbox = sf::CircleShape(75);
+	
 	boundingbox.setPosition(-500, -500);
 	boundingbox.setFillColor(sf::Color::Transparent);
 	boundingbox.setOutlineThickness(5.f);
@@ -291,7 +283,7 @@ Play::Play(Game* game)
 
 	Firetexture.loadFromFile("Resources/smoke.png");
 	Snowtexture.loadFromFile("Resources/snow.png");
-	handgunParticleTexture.loadFromFile("Resources/handgunbulletparticle.png");
+	
 	system.setTexture(Snowtexture);
 	Snowemitter1.setEmissionRate(100);
 	Snowemitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
@@ -356,7 +348,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	game->window.draw(Rocketsystem);
+	//game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -370,30 +362,34 @@ void Play::DrawDebug()
 	{
 		if (BodyIterator->IsActive())
 		{
-			for (b2Fixture* b2Fixture = BodyIterator->GetFixtureList(); b2Fixture != 0; b2Fixture = b2Fixture->GetNext())
+			if (BodyIterator->GetType() == b2_dynamicBody)
 			{
-				b2Shape::Type shapeType = b2Fixture->GetType();
-
-				if (shapeType == b2Shape::e_polygon)
+				for (b2Fixture* b2Fixture = BodyIterator->GetFixtureList(); b2Fixture != 0; b2Fixture = b2Fixture->GetNext())
 				{
-					b2PolygonShape* polygonShape = (b2PolygonShape*)b2Fixture->GetShape();
 
-					sf::ConvexShape sprite;
-					int lenght = polygonShape->GetVertexCount();
-					sprite.setPointCount(lenght);
-					for (int i = 0; i < lenght; i++){
-						sprite.setPoint(i, sf::Vector2f(polygonShape->GetVertex(i).x, polygonShape->GetVertex(i).y));
+					b2Shape::Type shapeType = b2Fixture->GetType();
+
+					if (shapeType == b2Shape::e_polygon)
+					{
+						b2PolygonShape* polygonShape = (b2PolygonShape*)b2Fixture->GetShape();
+
+						sf::ConvexShape sprite;
+						int lenght = polygonShape->GetVertexCount();
+						sprite.setPointCount(lenght);
+						for (int i = 0; i < lenght; i++){
+							sprite.setPoint(i, sf::Vector2f(polygonShape->GetVertex(i).x, polygonShape->GetVertex(i).y));
+						}
+						sprite.setFillColor(sf::Color(0, 0, 0, 0));
+						sprite.setOutlineColor(sf::Color(0, 0, 0, 180));
+						sprite.setOutlineThickness(-0.025f);
+						sprite.setScale(30.f, 30.f);
+						sprite.setOrigin(0, 0);
+						sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
+						sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
+						game->window.draw(sprite);
 					}
-					sprite.setFillColor(sf::Color(0, 0, 0, 0));
-					sprite.setOutlineColor(sf::Color(0, 0, 0, 180));
-					sprite.setOutlineThickness(-0.025f);
-					sprite.setScale(30.f, 30.f);
-					sprite.setOrigin(0, 0);
-					sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
-					sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
-					game->window.draw(sprite);
+
 				}
-				
 			}
 		}
 	}
@@ -418,7 +414,7 @@ void Play::update()
 	{
 		turnCLock.restart().asSeconds();
 	}
-//	World.DrawDebugData();
+
 	soundManager.update(playerPosition, playerVelocity, sf::Vector2f(playerPosition.x, 555));
 	water1.Update();
 	water2.Update();
@@ -426,7 +422,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	game->window.draw(system);
+//	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -453,25 +449,42 @@ void Play::update()
 
 	if (BuildMode == false)
 	{
+		turn.setString(std::to_string((int)turnTimer));
 		if (Player1Turn == true)
 		{
+
+			turn.setPosition(player1team[player1Number].getPosition().x , player1team[player1Number].getPosition().y - 60);
 			cross.Update(player1team[player1Number].getPosition(),player1team[player1Number].getType(),player1team[player1Number]);
 			player1team[player1Number].Update(numFootContacts);
 			playerVelocity = player1team[player1Number].getVelocity();
 			playerPosition = player1team[player1Number].getPosition();
 			turnTimer -= turnCLock.restart().asSeconds();
-			turn.setString(" Player 1's turn, time remaining = " + std::to_string(turnTimer));
-
 			game->window.setKeyRepeatEnabled(true);
+			if (player1Fire == true)
+			{
+				if (player1team[player1Number].getType() == 2 && Handguns.size() == 0)
+				{
+					player1Fire == false;
+				}
+				else if (player1team[player1Number].getType() == 3 && Shotguns.size() == 0)
+				{
+					player1Fire == false;
+				}
+				else if (player1team[player1Number].getType() == 4 && Snipers.size() == 0)
+				{
+					player1Fire == false;
+				}
+			}
 		}
 		else
 		{
+			turn.setPosition(player2team[player2Number].getPosition().x , player2team[player2Number].getPosition().y - 60);
 			turnTimer -= turnCLock.restart().asSeconds();
 			game->window.setKeyRepeatEnabled(false);
 			cross.Update(player2team[player2Number].getPosition(), player2team[player2Number].getType(), player1team[player1Number]);
 			player2team[player2Number].Update(numFootContacts2);
 			playerPosition = player2team[player2Number].getPosition();
-			turn.setString("Player 2's turn, time remaining = " + std::to_string(turnTimer));
+		
 
 		}
 		if (turnTimer <= 0 && player1Fire == false && player2Fire == false)
@@ -487,7 +500,7 @@ void Play::update()
 			player2team[player2Number].setHealth(100);
 		}
 
-		turn.setPosition(game->window.getView().getCenter().x - game->window.getView().getSize().x / 2, game->window.getView().getCenter().y - game->window.getView().getSize().y / 2);
+		
 		player1team[player1Number].UpdateSprite();
 		player2team[player2Number].UpdateSprite();
 		
@@ -596,12 +609,13 @@ void Play::update()
 
 	//game->window.draw(system);
 
-	//DrawDebug();
+	DrawDebug();
 	if (soundManager.getReverbActive() == true)
 	{
 	//	game->window.draw(reverbCircle);
 	//	game->window.draw(reverbCircle2);
 	}
+
 	updateHandguns();
 	updateShotguns();
 	updateSnipers();
@@ -638,13 +652,23 @@ void Play::updateHandguns(){
 				player2team[k].setHealth(5);
 			}
 		}
+		for (int l = 0; l < player1team.size(); l++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
+			{
+				Handguns[i].setAlive(false);
+				player1team[l].setHealth(5);
+			}
+		}
 		game->window.draw(Handguns[i].getSprite());
 
-		game->window.draw(Handguns[i].getCircleCol());
+	//	game->window.draw(Handguns[i].getCircleCol());
 
 		if (Handguns[i].getAlive() == false)
 		{
 			Handguns.pop_back();
+			SwitchTurn();
 		}
 	}
 
@@ -676,6 +700,15 @@ void Play::updateSnipers()
 				player2team[k].setHealth(5);
 			}
 		}
+		for (int l = 0; l < player1team.size(); l++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Snipers[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
+			{
+				Snipers[i].setAlive(false);
+				player1team[l].setHealth(5);
+			}
+		}
 		game->window.draw(Snipers[i].getSprite());
 
 		//game->window.draw(Shotguns[i].getCircleCol());
@@ -683,6 +716,7 @@ void Play::updateSnipers()
 		if (Snipers[i].getAlive() == false)
 		{
 			Snipers.pop_back();
+			SwitchTurn();
 		}
 	}
 }
@@ -713,6 +747,15 @@ void Play::updateShotguns()
 				player2team[k].setHealth(5);
 			}
 		}
+		for (int l = 0; l < player1team.size(); l++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
+			{
+				Shotguns[i].setAlive(false);
+				player1team[l].setHealth(5);
+			}
+		}
 		game->window.draw(Shotguns[i].getSprite());
 
 		//game->window.draw(Shotguns[i].getCircleCol());
@@ -720,8 +763,11 @@ void Play::updateShotguns()
 		if (Shotguns[i].getAlive() == false)
 		{
 			Shotguns.pop_back();
+			SwitchTurn();
+			zoomed = false;
 		}
 	}
+
 
 }
 
@@ -777,13 +823,12 @@ void Play::handleInput()
 			{
 				if (BuildMode == false)
 				{
-					if (Rockets.size() < 1 || Handguns.size() < 1 || Shotguns.size() < 1||Snipers.size() < 1)
-					{
+					
 						if (Player1Turn == true)
 						{
 							if (CountDown == false)
 							{
-								if (player1team[player1Number].getType() == 1)
+								if (player1team[player1Number].getType() == 1 && Rockets.size() == 0)
 								{
 
 									player1Fire = true;
@@ -795,23 +840,26 @@ void Play::handleInput()
 									}
 									InitRocketParticle();
 								}
-								else if (player1team[player1Number].getType() == 2)
+								else if (player1team[player1Number].getType() == 2 && Handguns.size() == 0)
 								{
 									player1Fire = true;
 									Handgun temp( HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition());
 									Handguns.push_back(temp);
 							
 								}
-								else if (player1team[player1Number].getType() ==  3)
+								else if (player1team[player1Number].getType() ==  3 && Shotguns.size()==0)
 								{
 									player1Fire = true;
 									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
+									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0.25f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0);
+									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.25f);
 									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.5f);
 									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
 									Shotguns.push_back(tempBottom);
-
+									Shotguns.push_back(tempBottom1);
+									Shotguns.push_back(tempTop1);
 								}
 								else if (player1team[player1Number].getType() == 4 && Snipers.size() ==0)
 								{
@@ -832,7 +880,7 @@ void Play::handleInput()
 						{
 							if (CountDown == false)
 							{
-								if (player2team[player2Number].getType() == 1)
+								if (player2team[player2Number].getType() == 1 && Rockets.size() ==0)
 								{
 
 									player2Fire = true;
@@ -844,7 +892,7 @@ void Play::handleInput()
 									}
 									InitRocketParticle();
 								}
-								else if (player2team[player1Number].getType() == 2 && Handguns.size()< 1)
+								else if (player2team[player1Number].getType() == 2 && Handguns.size() == 0)
 								{
 									player2Fire = true;
 									Handgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition());
@@ -852,15 +900,19 @@ void Play::handleInput()
 						
 
 								}
-								else if (player2team[player2Number].getType() == 3)
+								else if (player2team[player2Number].getType() == 3 && Shotguns.size()==0)
 								{
 									player2Fire = true;
 									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.5f);
+									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.25f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0);
 									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.5f);
+									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.25f);
 									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
 									Shotguns.push_back(tempBottom);
+									Shotguns.push_back(tempBottom1);
+									Shotguns.push_back(tempTop1);
 
 								}
 								else if (player2team[player2Number].getType() == 4 && Snipers.size() == 0)
@@ -877,7 +929,7 @@ void Play::handleInput()
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
-					}
+					
 
 				}
 			}
@@ -1571,7 +1623,40 @@ void Play::UpdateRockets()
 	for (int i = 0; i < Rockets.size(); i++)
 	{
 
+		for (int j = 0; j < blocks.size(); j++)
+		{
+			if (abs(Rockets[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Rockets[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
+			{
+				if (CollisionManager::CircleRectangleCollision(Rockets[i].getCircle(), blocks[j].getRect()) == true)
+				{
+					destroyRocket = true;
+					Groundhit = true;
+					
+				}
+			}
+		}
+		
+		for (int k = 0; k < player2team.size(); k++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Rockets[i].getCircle(), player2team[k].getPlayerRectangle()) == true)
+			{
+				destroyRocket = true;
+				Groundhit = true;
+			}
+		}
+		for (int k = 0; k < player1team.size(); k++)
+		{
+
+			if (CollisionManager::CircleRectangleCollision(Rockets[i].getCircle(), player1team[k].getPlayerRectangle()) == true)
+			{
+				destroyRocket = true;
+				Groundhit = true;
+			}
+		}
+
 		Rockets[i].Update(World);
+		game->window.draw(Rockets[i].getCircle());
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (gameSize) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
@@ -1588,6 +1673,11 @@ void Play::UpdateRockets()
 
 		game->window.draw(Rockets[i].getSprite());
 	}
+
+
+
+	
+
 
 	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
@@ -1676,7 +1766,7 @@ void Play::UpdateBlocks()
 
 	if (Groundhit == true)
 	{	
-		boundingbox.setPosition(sf::Vector2f(lastbulletpos.x -50 , lastbulletpos.y-50));
+		boundingbox.setPosition(sf::Vector2f(lastbulletpos.x - boundingbox.getRadius() , lastbulletpos.y-boundingbox.getRadius()));
 		for (int i = 0; i < blocks.size(); i++)
 		{
 			if (CollisionManager::CircleDetectCollision(boundingbox,blocks[i].getCircle()) == true)
@@ -1684,6 +1774,21 @@ void Play::UpdateBlocks()
 				blocks[i].CheckLives();
 			}
 		}
+		for (int j = 0; j < player1team.size(); j++)
+		{
+			if (CollisionManager::CircleRectangleCollision(boundingbox,player1team[j].getPlayerRectangle()) == true)
+			{
+				player1team[j].setHealth(50);
+			}
+		}
+		for (int j = 0; j < player2team.size(); j++)
+		{
+			if (CollisionManager::CircleRectangleCollision(boundingbox, player2team[j].getPlayerRectangle()) == true)
+			{
+				player2team[j].setHealth(50);
+			}
+		}
+
 		boundingbox.setPosition(-500, -500);
 		Groundhit = false;
 	}

@@ -83,10 +83,7 @@ private:
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
 
-	sf::Texture handgunParticleTexture;
-	thor::ParticleSystem handgunParticleSystem;
-	sf::Clock handgunparticleClock;
-	thor::UniversalEmitter handgunemitter;
+	
 
 	////////////////////////////////////////////////////////////////////////////////////
 

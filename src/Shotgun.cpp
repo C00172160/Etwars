@@ -7,7 +7,7 @@ Shotgun::Shotgun()
 Shotgun::Shotgun(sf::Texture &bulletTexture, sf::Vector2f crosshairPos, sf::Vector2f playerPos, float  angleProjection)
 {
 	ttl = 20;
-	speed = 5;
+	speed = 20;
 	position = crosshairPos;
 	crosshairPosition = crosshairPos;
 	bulletSprite.setTexture(bulletTexture);

@@ -23,8 +23,10 @@ private:
 	sf::Sprite Sprite;
 	sf::Vector2f gunPosition;
 	sf::Vector2f m_position;
+	sf::Vector2f drawposition;
 	float angle =0;
 	float gunoffset;
+	float spawnoffset;
 	float rotation = 0;
 
 };
