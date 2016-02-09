@@ -418,7 +418,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	game->window.draw(Rocketsystem);
+//	game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -466,46 +466,105 @@ void Play::DrawDebug()
 
 void Play::update()
 {
-	
-	if (player1team[player1Number].getAlive() == false)
+	for (int i = 0; i < player1team.size();i++)
 	{
-		if ((player1Number +1) < player1team.size() && player1team[player1Number +1].getAlive() == true)
+		if (player1team[i].getAlive() == true)
 		{
-			player1Number++;
+			break;
 		}
-		else if ((player1Number) == player1team.size()-1)
+		else if (i+1 >= player1team.size() && player1team[i].getAlive() == false)
 		{
-			if (findNextAlive(1) == -1)
-			{
-				player1teamdead = true;
-			}
-			else
-			{
-				player1Number = findNextAlive(1);
-			}
+			player1teamdead = true;
+		
 		}
 	}
-	else if (player2team[player2Number].getAlive() == false)
+	for (int i = 0; i < player2team.size();i++)
 	{
-		if ((player2Number) < player2team.size() && player2team[player2Number + 1].getAlive() == true)
+		for (int i = 0; i < player2team.size(); i++)
 		{
-			player2Number++;
-		}
-		else if ((player2Number ) == player2team.size()-1)
-		{
-			if (findNextAlive(2) == -1)
+			if (player2team[i].getAlive() == true)
+			{
+				break;
+			}
+			else if (i + 1 >= player2team.size() && player2team[i].getAlive() == false)
 			{
 				player2teamdead = true;
 			}
-			else
+		}
+	}
+	if (player1teamdead == false)
+	{
+
+
+		if (player1team[player1Number].getAlive() == false)
+		{
+			if (player1Number + 1 < player1team.size())
 			{
-				player2Number = findNextAlive(2);
+				player1Number++;
+			}
+			else if (player1Number + 1 >= player1team.size())
+			{
+				player1Number = 0;
 			}
 
 		}
-
 	}
+	if (player2teamdead == false)
+	{
 
+
+		if (player2team[player2Number].getAlive() == false)
+		{
+			if (player2Number + 1 < player2team.size())
+			{
+				player2Number++;
+			}
+			else if (player2Number + 1 >= player2team.size())
+			{
+				player1Number = 0;
+			}
+
+		}
+	}
+	//if (player1team[player1Number].getAlive() == false)
+	//{
+	//	if ((player1Number +1) < player1team.size() && player1team[player1Number +1].getAlive() == true)
+	//	{
+	//		player1Number++;
+	//	}
+	//	else if ((player1Number+1) == player1team.size())
+	//	{
+	//		if (findNextAlive(1) == -1)
+	//		{
+	//			player1teamdead = true;
+	//		}
+	//		else
+	//		{
+	//			player1Number = findNextAlive(1);
+	//		}
+	//	}
+	//}
+	//else if (player2team[player2Number].getAlive() == false)
+	//{
+	//	if ((player2Number) < player2team.size() && player2team[player2Number + 1].getAlive() == true)
+	//	{
+	//		player2Number++;
+	//	}
+	//	else if ((player2Number+1 ) == player2team.size())
+	//	{
+	//		if (findNextAlive(2) == -1)
+	//		{
+	//			player2teamdead = true;
+	//		}
+	//		else
+	//		{
+	//			player2Number = findNextAlive(2);
+	//		}
+
+	//	}
+
+	//}
+	
 
 
 
@@ -540,7 +599,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	game->window.draw(system);
+//	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -768,43 +827,52 @@ void Play::update()
 	return;
 }
 
-int Play::findNextAlive(int team)
-{
-	if (team == 1)
-	{
-		for (int i = 0; i < player1team.size(); i++)
-		{
-			if (player1team[i].getAlive() == true)
-			{
-				return i;
-				break;
-			}
-			if ((i + 1) >= player1team.size())
-			{
-				return -1;
-				break;
-			}
-		}
-
-	}
-	else if (team == 2)
-	{
-		for (int i = 0; i < player2team.size(); i++)
-		{
-			if (player2team[i].getAlive() == true)
-			{
-				return i;
-				break;
-			}
-			if ((i + 1) >= player2team.size())
-			{
-				return -1;
-				break;
-			}
-		}
-	}
-
-}
+//int Play::findNextAlive(int team)
+//{
+//
+//	bool found = false;
+//	int index = 0;
+//
+//	if (team == 1)
+//	{
+//		for (int i = 0; i < player1team.size(); i++)
+//		{
+//			if (player1team[i].getAlive() == true && found == false)
+//			{
+//				index = i;
+//				found = true;
+//			}
+//			else if (found == false && i + 1 >= player1team.size())
+//			{
+//				player1teamdead == true;
+//				index = -1;
+//			}
+//
+//		}
+//
+//	}
+//
+//	if (team == 2)
+//	{
+//		for (int i = 0; i < player2team.size(); i++)
+//		{
+//			if (player2team[i].getAlive() == true && found == false)
+//			{
+//				index = i;
+//				found = true;
+//			}
+//			else if (found == false && i + 1 >= player2team.size())
+//			{
+//				player2teamdead == true;
+//				index = -1;
+//			}
+//			
+//
+//		}
+//
+//	}
+//	return index;
+//}
 void Play::updateHandguns(){
 
 	for (int i = 0; i < Handguns.size(); i++)
@@ -1410,65 +1478,55 @@ void Play::SwitchTurn()
 	numFootContacts = 2;
 	numFootContacts2 = 2;
 
-	if (Player1Turn == true)
+	
+
+	if (Player1Turn == true  )
 	{
 
-		player1Fire = false;
+		player1Fire = false;	
+		overview = false;
+		turnTimer = 10;
 		if (player2teamdead == false)
 		{
 			Player1Turn = false;
 		}
-	
-		overview = false;
-		turnTimer = 10;
-
 
 		if ((player1Number + 1) < player1team.size())
 		{
 			player1Number++;
 
 		}
-		else if ((player1Number ) == player1team.size()-1)
+		else if ((player1Number +1) == player1team.size())
 		{
-			if (findNextAlive(1) == -1)
-			{
-				player1teamdead = true;
-			}
-			else
-			{
-				player1Number = findNextAlive(1);
-			}
-			
+			player1Number =0;
 		}
+
+	
 
 	}
 	else if (Player1Turn == false)
 	{
 		player2Fire = false;
+		overview = false;
+		turnTimer = 10;
 		if (player1teamdead == false)
 		{
 			Player1Turn = true;
 		}
-		
-		overview = false;
-		turnTimer = 10;
 
 		if ((player2Number + 1) < player2team.size())
 		{
 			player2Number++;
+
 		}
-		else if ((player2Number ) == player2team.size()-1)
+		else if ((player2Number + 1) == player2team.size())
 		{
-			if (findNextAlive(2) == -1)
-			{
-				player2teamdead = true;
-			}
-			else
-			{
-				player2Number = findNextAlive(2);
-			}
+			player2Number = 0;
 		}
+	
 	}
+
+
 
 
 }
@@ -1598,7 +1656,7 @@ void Play::BuildModeUpdate(){
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true && placeable == true)
 		{
 			
-			if (Player1Turn == true)
+			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
 			
 				mousereleased = false;
@@ -1607,7 +1665,7 @@ void Play::BuildModeUpdate(){
 				Player1Turn = false;
 				
 			}
-			else if (Player1Turn == false)
+			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
 			{
 
 				mousereleased = false;
@@ -1684,13 +1742,13 @@ void Play::BuildModeUpdate(){
 
 		if (playerType == 1)
 		{
-			if (Player1Turn == true)
+			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
 				RocketPlayerSprite.setTexture(RocketPlayerTexture);
 				placingSprite = RocketPlayerSprite;
 					
 			}
-			else
+			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
 			{
 			
 				RocketPlayerSprite.setTexture(RocketPlayerTexture2);
@@ -1703,13 +1761,13 @@ void Play::BuildModeUpdate(){
 		}
 		else if (playerType == 2)
 		{
-			if (Player1Turn == true)
+			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
 				hangunplayersprite.setTexture(handgunplayer1);
 				placingSprite = hangunplayersprite;
 
 			}
-			else
+			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
 			{
 
 				hangunplayersprite.setTexture(handgunplayer2);
@@ -1722,13 +1780,13 @@ void Play::BuildModeUpdate(){
 		}
 		else if (playerType == 3)
 		{
-			if (Player1Turn == true)
+			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
 				shotgunplayersprite.setTexture(shotgunplayer1);
 				placingSprite = shotgunplayersprite;
 
 			}
-			else
+			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
 			{
 
 				shotgunplayersprite.setTexture(shotgunplayer2);
@@ -1741,13 +1799,13 @@ void Play::BuildModeUpdate(){
 		}
 		else if (playerType == 4)
 		{
-			if (Player1Turn == true)
+			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
 				sniperplayersprite.setTexture(sniperplayer1);
 				placingSprite = sniperplayersprite;
 
 			}
-			else
+			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
 			{
 
 				sniperplayersprite.setTexture(sniperplayer2);
@@ -2133,7 +2191,7 @@ void Play::UpdateRockets()
 		}
 
 		Rockets[i].Update(World);
-		game->window.draw(Rockets[i].getCircle());
+	//	game->window.draw(Rockets[i].getCircle());
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (gameSize) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
@@ -2192,6 +2250,7 @@ void Play::checkAlive(){
 		{
 			player1team[i].setAlive(false);
 			player1team[i].DestoryBody();
+		
 		}
 	}
 
@@ -2201,24 +2260,14 @@ void Play::checkAlive(){
 		{
 			player2team[i].setAlive(false);
 			player2team[i].DestoryBody();
+	
 		}
 	}
 }
 void Play::UpdateHealth()
 {
 	
-	if (player1hit == true)
-	{
-		player1team[player1Number].setHealth(20);
-		
-		player1hit = false;
-	}
-	if (player2hit == true)
-	{
-		player2team[player2Number].setHealth(20);
-		
-		player2hit = false;
-	}
+	
 	if (captain1hit == true)
 	{
 		captain1.setHealth(20);
