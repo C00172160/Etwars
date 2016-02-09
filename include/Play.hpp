@@ -160,7 +160,8 @@ private:
 	
 	 sf::Text currentPlayer, Money, dirtPriceText, RocketPlayerPriceText, HandgunPriceText, ShotgunPriceText, SniperPriceText, concretepriceText, steelpriceText,dirtName,rocketName,handgunName,shotgunName,sniperName,concreteName,steelName;
 	 bool captain1placed, capatain2placed;
-
+	 bool player1teamdead = false;
+	 bool player2teamdead = false;
 	 float explosiontimer;
 
 
@@ -189,7 +190,7 @@ public:
 	void GameStart();
 	void CreatePlayer(sf::Vector2f pos, int team,int type);
 	void InitRocketParticle();
-
+	int findNextAlive(int team);
 	void UpdateRocketParticle();
 
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);

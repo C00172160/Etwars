@@ -44,40 +44,6 @@ class MyContactListener : public b2ContactListener
 		{
 			numFootContacts2++;
 		}
-		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain1sensor") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain1sensor"))//if A ROCKET HITS Player1
-		//{
-		//	destroyRocket = true;
-		//	captain1hit = true;
-		//}
-		//if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == "captain2sensor") ||
-		//	(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == "captain2sensor"))//if A ROCKET HITS Player1
-		//{
-		//	destroyRocket = true;
-		//	captain2hit = true;
-		//}
-		//for (int i = 0; i < player1team.size(); i++)
-		//{
-
-		//	if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player1team[i].getRocketSensor())) ||
-		//		(fixtureUserDataB == "rocketsensor" && fixtureUserDataA ==((void*)player1team[i].getRocketSensor())))//if A ROCKET HITS Player1
-		//	{
-		//		player1team[i].setHealth(20);
-		//		//destroyRocket = true;
-		//		//player1hit = true;
-		//	}
-		//}
-		//for (int i = 0; i < player2team.size(); i++)
-		//{
-
-		//	if ((fixtureUserDataA == "rocketsensor" && fixtureUserDataB == ((void*)player2team[i].getRocketSensor())) ||
-		//		(fixtureUserDataB == "rocketsensor" && fixtureUserDataA == ((void*)player2team[i].getRocketSensor())))//if A ROCKET HITS Player1
-		//	{
-		//		player2team[i].setHealth(20);
-		//		//destroyRocket = true;
-		//		//player1hit = true;
-		//	}
-		//}
 
 
 	}
@@ -500,54 +466,49 @@ void Play::DrawDebug()
 
 void Play::update()
 {
+	
 	if (player1team[player1Number].getAlive() == false)
 	{
-		if ((player1Number + 1) < player1team.size())
+		if ((player1Number +1) < player1team.size() && player1team[player1Number +1].getAlive() == true)
 		{
 			player1Number++;
 		}
-		else
+		else if ((player1Number) == player1team.size()-1)
 		{
-			for (int i = 0; i < player1team.size(); i++)
+			if (findNextAlive(1) == -1)
 			{
-				if (player1team[i].getAlive() == true)
-				{
-					player1Number = i;
-					
-				}
-				else if (i == player1team.size() -1)
-				{
-					SwitchTurn();
-				}
-
+				player1teamdead = true;
+			}
+			else
+			{
+				player1Number = findNextAlive(1);
 			}
 		}
-
-
 	}
 	else if (player2team[player2Number].getAlive() == false)
 	{
-		if ((player2Number + 1) < player2team.size())
+		if ((player2Number) < player2team.size() && player2team[player2Number + 1].getAlive() == true)
 		{
 			player2Number++;
 		}
-		else
+		else if ((player2Number ) == player2team.size()-1)
 		{
-			for (int i = 0; i < player2team.size(); i++)
+			if (findNextAlive(2) == -1)
 			{
-				if (player2team[i].getAlive() == true)
-				{
-					player2Number = i;
-				}
-				else if (i == player2team.size() - 1)
-				{
-					SwitchTurn();
-				}
-				
+				player2teamdead = true;
 			}
-			
+			else
+			{
+				player2Number = findNextAlive(2);
+			}
+
 		}
+
 	}
+
+
+
+
 	if (player1team[player1Number].getAlive() == true)
 	{
 		player1footid = player1team[player1Number].getID();
@@ -671,10 +632,12 @@ void Play::update()
 		BuildModeUpdate();
 	}
 	
+
+
+
 	for (int i = 0; i < player1team.size(); i++)
 	{
-		game->window.draw(player1team[i].getSprite());
-		
+		game->window.draw(player1team[i].getSprite());	
 		sf::Text temp;
 		temp.setFont(font);
 		temp.setColor(sf::Color::Black);
@@ -684,6 +647,7 @@ void Play::update()
 		temp.setString(player1team[i].getHealthText());
 		temp.setPosition(player1team[i].getPosition().x - 10, player1team[i].getPosition().y - 40);
 		game->window.draw(temp);
+
 	//	player1team[i].DestoryBody();
 	}
 	for (int i = 0; i < player2team.size(); i++)
@@ -699,6 +663,7 @@ void Play::update()
 		temp.setString(player2team[i].getHealthText());
 		temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
 		game->window.draw(temp);
+
 	//	player2team[i].DestoryBody();
 	}
 	game->window.draw(captain1.getSprite());
@@ -798,7 +763,47 @@ void Play::update()
 	game->window.draw(turn);
 	game->window.display();
 
+
+
 	return;
+}
+
+int Play::findNextAlive(int team)
+{
+	if (team == 1)
+	{
+		for (int i = 0; i < player1team.size(); i++)
+		{
+			if (player1team[i].getAlive() == true)
+			{
+				return i;
+				break;
+			}
+			if ((i + 1) >= player1team.size())
+			{
+				return -1;
+				break;
+			}
+		}
+
+	}
+	else if (team == 2)
+	{
+		for (int i = 0; i < player2team.size(); i++)
+		{
+			if (player2team[i].getAlive() == true)
+			{
+				return i;
+				break;
+			}
+			if ((i + 1) >= player2team.size())
+			{
+				return -1;
+				break;
+			}
+		}
+	}
+
 }
 void Play::updateHandguns(){
 
@@ -1409,23 +1414,42 @@ void Play::SwitchTurn()
 	{
 
 		player1Fire = false;
-		Player1Turn = false;
+		if (player2teamdead == false)
+		{
+			Player1Turn = false;
+		}
+	
 		overview = false;
 		turnTimer = 10;
+
+
 		if ((player1Number + 1) < player1team.size())
 		{
 			player1Number++;
+
 		}
-		else
+		else if ((player1Number ) == player1team.size()-1)
 		{
-			player1Number = 0;
+			if (findNextAlive(1) == -1)
+			{
+				player1teamdead = true;
+			}
+			else
+			{
+				player1Number = findNextAlive(1);
+			}
+			
 		}
 
 	}
 	else if (Player1Turn == false)
 	{
 		player2Fire = false;
-		Player1Turn = true;
+		if (player1teamdead == false)
+		{
+			Player1Turn = true;
+		}
+		
 		overview = false;
 		turnTimer = 10;
 
@@ -1433,9 +1457,16 @@ void Play::SwitchTurn()
 		{
 			player2Number++;
 		}
-		else
+		else if ((player2Number ) == player2team.size()-1)
 		{
-			player2Number = 0;
+			if (findNextAlive(2) == -1)
+			{
+				player2teamdead = true;
+			}
+			else
+			{
+				player2Number = findNextAlive(2);
+			}
 		}
 	}
 
@@ -1530,9 +1561,9 @@ void Play::BuildModeUpdate(){
 		hangunplayersprite.setTexture(handgunplayer1);
 		shotgunplayersprite.setTexture(shotgunplayer1);
 		sniperplayersprite.setTexture(sniperplayer1);
-		currentPlayer.setString("PLAYER 1  ");
+		currentPlayer.setString("PLAYER 1,  ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(210, 10));
-		Money.setString(std::to_string(CurrentPlayer1Money) + " Credits Remaining");
+		Money.setString(" Credits Remaining = " + std::to_string(CurrentPlayer1Money));
 		Money.setPosition(HudSpritePosition + sf::Vector2f(310, 10));
 		PlaceCaptaintext.setString("PLAYER 1 PLACE YOUR CAPTAIN!!");
 
@@ -1544,9 +1575,9 @@ void Play::BuildModeUpdate(){
 		hangunplayersprite.setTexture(handgunplayer2);
 		shotgunplayersprite.setTexture(shotgunplayer2);
 		sniperplayersprite.setTexture(sniperplayer2);
-		currentPlayer.setString("PLAYER 2  ");
+		currentPlayer.setString("PLAYER 2, ");
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(210, 10));
-		Money.setString(std::to_string(CurrentPlayer2Money) + " Credits Remaining");
+		Money.setString(" Credits Remaining = " +std::to_string(CurrentPlayer2Money));
 		Money.setPosition(HudSpritePosition + sf::Vector2f(310, 10));
 		PlaceCaptaintext.setString("PLAYER 2 PLACE YOUR CAPTAIN!!");
 	}
@@ -1813,14 +1844,14 @@ void Play::BuildModeUpdate(){
 			}
 
 		}
-		if (placeable == true)
+		/*if (placeable == true)
 		{
 			Money.setString("true");
 		}
 		else
 		{
 			Money.setString("false");
-		}
+		}*/
 
 	
 	
