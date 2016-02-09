@@ -1319,26 +1319,37 @@ void Play::handleInput()
 
 				overview = false;
 			}
-		
-			if (event.key.code == sf::Keyboard::Left && BuildMode == true)
+			if (buildViewenter.x >= 400)
 			{
-				buildViewenter.x -= 20;
-				HudSpritePosition.x -= 20;
+				if (event.key.code == sf::Keyboard::Left && BuildMode == true)
+				{
+					buildViewenter.x -= 20;
+					HudSpritePosition.x -= 20;
+				}
 			}
-			if (event.key.code == sf::Keyboard::Right && BuildMode == true)
+			if (buildViewenter.x <= 1590)
 			{
-				buildViewenter.x += 20;
-				HudSpritePosition.x += 20;
+				if (event.key.code == sf::Keyboard::Right && BuildMode == true)
+				{
+					buildViewenter.x += 20;
+					HudSpritePosition.x += 20;
+				}
 			}
-			if (event.key.code == sf::Keyboard::Up && BuildMode == true)
+			if (buildViewenter.y > -100)
 			{
-				buildViewenter.y -= 20;
-				HudSpritePosition.y -= 20;
+				if (event.key.code == sf::Keyboard::Up && BuildMode == true)
+				{
+					buildViewenter.y -= 20;
+					HudSpritePosition.y -= 20;
+				}
 			}
-			if (event.key.code == sf::Keyboard::Down && BuildMode == true)
+			if (buildViewenter.y < 600)
 			{
-				buildViewenter.y += 20;
-				HudSpritePosition.y += 20;
+				if (event.key.code == sf::Keyboard::Down && BuildMode == true)
+				{
+					buildViewenter.y += 20;
+					HudSpritePosition.y += 20;
+				}
 			}
 
 			break;
@@ -1568,11 +1579,7 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 
 void Play::BuildModeUpdate(){
 
-	/*if (PlacePlayerMode == true || PlaceBlockMode == true || captainplacemode == true)
-	{
-		
-		
-	}*/
+
 
 
 
@@ -1733,7 +1740,7 @@ void Play::BuildModeUpdate(){
 
 
 
-	if (PlacePlayerMode == true)//////////////////////////////////////////////////////////////////////////////////
+	if (PlacePlayerMode == true && captainplacemode == false)//////////////////////////////////////////////////////////////////////////////////
 	{
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true && placeable == true)
 		{
@@ -1823,13 +1830,13 @@ void Play::BuildModeUpdate(){
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
 		{
-			if (Player1Turn == true && CurrentPlayer1Money >= price)
+			if (Player1Turn == true && CurrentPlayer1Money >= price && placingSprite.getPosition().x <990)
 			{
 				mousereleased = false;
 				CreatePlayer(sf::Vector2f(position.x, position.y), 1, playerType);
 				CurrentPlayer1Money -= price;
 			}
-			else if (Player1Turn == false && CurrentPlayer2Money >= price)
+			else if (Player1Turn == false && CurrentPlayer2Money >= price  && placingSprite.getPosition().x >990)
 			{
 				mousereleased = false;
 				CreatePlayer(sf::Vector2f(position.x, position.y), 2, playerType);
