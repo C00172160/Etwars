@@ -14,31 +14,26 @@ Menu::Menu(Game* game)
 	game->window.setView(DefaultView);
 
 	//this->view.setSize(pos);
+	name.loadFromFile("Resources/ETWARS.png");
+	nameSprite.setTexture(name);
+	selectTexture.loadFromFile("Resources/selectmap.png");
+	selectSprite.setTexture(selectTexture);
+	selectSprite.setPosition(sf::Vector2f(300,400));
+	nameSprite.setPosition(290, 150);
 	buttonTexture.loadFromFile("Resources/startbutton.png");
 	//buttonSprite.setTexture(buttonTexture);
 	buttonSprite.setTexture(buttonTexture);
 	buttonSprite.setTextureRect(sf::IntRect(0, 0, 201, 71));
 	buttonSprite.setPosition(sf::Vector2f(400 - (buttonSprite.getGlobalBounds().width / 2), 300 - (buttonSprite.getGlobalBounds().height / 2)));
 	//windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
-
-
-
 }
 void Menu::draw()
 {
-	
-	
-
 	return;
 }
 
 void Menu::update()
 {
-
-
-
-
-
 	game->window.clear(sf::Color::Cyan);
 	Mouseposition = sf::Mouse::getPosition(game->window);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -46,7 +41,7 @@ void Menu::update()
 		emitter.setParticlePosition(thor::Distributions::circle(sf::Vector2f(500, 200), 5));
 	}
 
-	if (CheckClicked(buttonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left)==false)
+	 if (CheckClicked(buttonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left)==false)
 	 {
 		 buttonSprite.setTextureRect(sf::IntRect(0, 72, 201, 71));
 	 }
@@ -61,8 +56,9 @@ void Menu::update()
 	}
 
 	game->window.draw(buttonSprite);
-	
-		game->window.display();
+	game->window.draw(nameSprite);
+	game->window.draw(selectSprite);
+	game->window.display();
 
 		return;
 	

@@ -24,8 +24,8 @@ private:
 	sf::View view;
 	sf::Text text;
 
-	sf::Texture buttonTexture;
-	sf::Sprite buttonSprite;
+	sf::Texture buttonTexture, name,selectTexture;
+	sf::Sprite buttonSprite, nameSprite,selectSprite;
 	sf::Vector2i windowPosition;
 	sf::Vector2i Mouseposition;
 	

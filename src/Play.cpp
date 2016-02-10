@@ -84,7 +84,7 @@ Play::Play(Game* game)
 	turn.setFont(font);
 	turn.setStyle(sf::Text::Bold);
 	turn.setCharacterSize(15);
-	turnTimer = 10;
+	turnTimer = 15;
 
 	 position = sf::Vector2f(500, -50);
 	 font;
@@ -418,7 +418,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-//	game->window.draw(Rocketsystem);
+	game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -475,7 +475,6 @@ void Play::update()
 		else if (i+1 >= player1team.size() && player1team[i].getAlive() == false)
 		{
 			player1teamdead = true;
-		
 		}
 	}
 	for (int i = 0; i < player2team.size();i++)
@@ -494,8 +493,6 @@ void Play::update()
 	}
 	if (player1teamdead == false)
 	{
-
-
 		if (player1team[player1Number].getAlive() == false)
 		{
 			if (player1Number + 1 < player1team.size())
@@ -506,12 +503,10 @@ void Play::update()
 			{
 				player1Number = 0;
 			}
-
 		}
 	}
 	if (player2teamdead == false)
 	{
-
 
 		if (player2team[player2Number].getAlive() == false)
 		{
@@ -523,7 +518,6 @@ void Play::update()
 			{
 				player1Number = 0;
 			}
-
 		}
 	}
 	//if (player1team[player1Number].getAlive() == false)
@@ -599,7 +593,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-//	game->window.draw(system);
+	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -660,8 +654,6 @@ void Play::update()
 			cross.Update(player2team[player2Number].getPosition(), player2team[player2Number].getType(), player1team[player1Number]);
 			player2team[player2Number].Update(numFootContacts2,World);
 			playerPosition = player2team[player2Number].getPosition();
-		
-
 		}
 		if (turnTimer <= 0 && player1Fire == false && player2Fire == false)
 		{
@@ -696,16 +688,20 @@ void Play::update()
 
 	for (int i = 0; i < player1team.size(); i++)
 	{
-		game->window.draw(player1team[i].getSprite());	
+		game->window.draw(player1team[i].getSprite());
 		sf::Text temp;
 		temp.setFont(font);
 		temp.setColor(sf::Color::Black);
 		temp.setStyle(sf::Text::Bold);
 		temp.setPosition(0, 0);
 		temp.setCharacterSize(20);
-		temp.setString(player1team[i].getHealthText());
-		temp.setPosition(player1team[i].getPosition().x - 10, player1team[i].getPosition().y - 40);
-		game->window.draw(temp);
+		if (player1team[i].getAlive() == true)
+		{
+
+			temp.setString(player1team[i].getHealthText());
+			temp.setPosition(player1team[i].getPosition().x - 10, player1team[i].getPosition().y - 40);
+			game->window.draw(temp);
+		}
 
 	//	player1team[i].DestoryBody();
 	}
@@ -719,9 +715,13 @@ void Play::update()
 		temp.setStyle(sf::Text::Bold);
 		temp.setPosition(0, 0);
 		temp.setCharacterSize(20);
-		temp.setString(player2team[i].getHealthText());
-		temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
-		game->window.draw(temp);
+		if (player2team[i].getAlive() == true)
+		{
+
+			temp.setString(player2team[i].getHealthText());
+			temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
+			game->window.draw(temp);
+		}
 
 	//	player2team[i].DestoryBody();
 	}
@@ -734,9 +734,6 @@ void Play::update()
 	water2.Draw(game);
 	water3.Draw(game);
 
-
-	
-	
 
 	for (int i = 0; i < player1team.size(); i++)
 	{
@@ -752,7 +749,6 @@ void Play::update()
 		captain2health.setString(captain2.getHealthText());
 		captain1health.setString(captain1.getHealthText());
 		captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y - 40);
-
 		game->window.draw(captain2health);
 		game->window.draw(captain1health);
 	}
@@ -797,9 +793,7 @@ void Play::update()
 		if (PlaceBlockMode == true || PlacePlayerMode == true || captainplacemode == true)
 		{
 			game->window.draw(placingSprite);	
-		}
-		
-	 
+		} 
 	}
 	if (startExplosion == true)
 	{
@@ -815,14 +809,11 @@ void Play::update()
 	//	game->window.draw(reverbCircle);
 	//	game->window.draw(reverbCircle2);
 	}
-
 	updateHandguns();
 	updateShotguns();
 	updateSnipers();
 	game->window.draw(turn);
 	game->window.display();
-
-
 
 	return;
 }
@@ -877,9 +868,7 @@ void Play::updateHandguns(){
 
 	for (int i = 0; i < Handguns.size(); i++)
 	{
-
 		Handguns[i].Update();
-	
 		for (int j = 0; j < blocks.size(); j++)
 		{
 			if (abs(Handguns[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Handguns[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
@@ -889,14 +878,12 @@ void Play::updateHandguns(){
 					Handguns[i].setAlive(false);
 					blocks[j].CheckLives();
 				}							
-			}
-			
+			}		
 		}
 		if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), captain1.getPlayerRectangle()) == true)
 		{
 			Handguns[i].setAlive(false);
 			captain1.setHealth(10);
-
 		}
 		else if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), captain2.getPlayerRectangle()) == true)
 		{
@@ -906,26 +893,22 @@ void Play::updateHandguns(){
 			
 		for (int k = 0; k < player2team.size(); k++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
 			{
 				Handguns[i].setAlive(false);
-				player2team[k].setHealth(5);
+				player2team[k].setHealth(15);
 			}
 		}
 		for (int l = 0; l < player1team.size(); l++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Handguns[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
 			{
 				Handguns[i].setAlive(false);
-				player1team[l].setHealth(5);
+				player1team[l].setHealth(15);
 			}
 		}
 		game->window.draw(Handguns[i].getSprite());
-
 	//	game->window.draw(Handguns[i].getCircleCol());
-
 		if (Handguns[i].getAlive() == false)
 		{
 			lastbulletpos = Handguns[i].getPosition();
@@ -935,7 +918,6 @@ void Play::updateHandguns(){
 			SwitchTurn();
 		}
 	}
-
 }
 void Play::updateSnipers()
 {
@@ -968,26 +950,22 @@ void Play::updateSnipers()
 		}
 		for (int k = 0; k < player2team.size(); k++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Snipers[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
 			{
 				Snipers[i].setAlive(false);
-				player2team[k].setHealth(5);
+				player2team[k].setHealth(50);
 			}
 		}
 		for (int l = 0; l < player1team.size(); l++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Snipers[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
 			{
 				Snipers[i].setAlive(false);
-				player1team[l].setHealth(5);
+				player1team[l].setHealth(50);
 			}
 		}
 		game->window.draw(Snipers[i].getSprite());
-
 		//game->window.draw(Shotguns[i].getCircleCol());
-
 		if (Snipers[i].getAlive() == false)
 		{
 			lastbulletpos = Snipers[i].getPosition();
@@ -1002,9 +980,7 @@ void Play::updateShotguns()
 {
 	for (int i = 0; i < Shotguns.size(); i++)
 	{
-
 		Shotguns[i].Update();
-
 		for (int j = 0; j < blocks.size(); j++)
 		{
 			if (abs(Shotguns[i].getPosition().x - blocks[j].getBody()->GetPosition().x *SCALE) < 50 && abs(Shotguns[i].getPosition().y - blocks[j].getBody()->GetPosition().y*SCALE) < 50)
@@ -1020,7 +996,6 @@ void Play::updateShotguns()
 		{
 			Shotguns[i].setAlive(false);
 			captain1.setHealth(30);
-
 		}
 		else if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), captain2.getPlayerRectangle()) == true)
 		{
@@ -1029,7 +1004,6 @@ void Play::updateShotguns()
 		}
 		for (int k = 0; k < player2team.size(); k++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), player2team[k].getPlayerRectangle()) == true)
 			{
 				Shotguns[i].setAlive(false);
@@ -1038,7 +1012,6 @@ void Play::updateShotguns()
 		}
 		for (int l = 0; l < player1team.size(); l++)
 		{
-
 			if (CollisionManager::CircleRectangleCollision(Shotguns[i].getCircleCol(), player1team[l].getPlayerRectangle()) == true)
 			{
 				Shotguns[i].setAlive(false);
@@ -1046,9 +1019,7 @@ void Play::updateShotguns()
 			}
 		}
 		game->window.draw(Shotguns[i].getSprite());
-
 		//game->window.draw(Shotguns[i].getCircleCol());
-
 		if (Shotguns[i].getAlive() == false)
 		{
 			lastbulletpos = Shotguns[i].getPosition();
@@ -1059,16 +1030,12 @@ void Play::updateShotguns()
 			zoomed = false;
 		}
 	}
-
-
 }
 
 void Play::PlayExplosion()
 {
 	ExplosionSprite.setPosition(lastbulletpos.x -64 , lastbulletpos.y-64);
 	//Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
-
-
 	explosiontimer++;
 	if (explosiontimer >= 2)
 	{
@@ -1086,9 +1053,7 @@ void Play::PlayExplosion()
 		}
 		explosiontimer = 0;
 	}
-
 	ExplosionSprite.setTextureRect(sf::IntRect(Explosionsource.x * 128, Explosionsource.y * 128, 128, 128));
-
 }
 
 void Play::handleInput()
@@ -1110,19 +1075,16 @@ void Play::handleInput()
 		case sf::Event::KeyPressed:
 		{
 			if (event.key.code == sf::Keyboard::Escape) this->game->window.close();
-
 			if (event.key.code == sf::Keyboard::E)
 			{
 				if (BuildMode == false)
-				{
-					
-						if (Player1Turn == true)
+				{				
+						if (Player1Turn == true )
 						{
 							if (CountDown == false)
 							{
 								if (player1team[player1Number].getType() == 1 && Rockets.size() == 0)
 								{
-
 									player1Fire = true;
 									Rocket tempRocket(World, cross.getPosition(), RocketTexture, player1team[player1Number].getPosition());
 									Rockets.push_back(tempRocket);
@@ -1136,8 +1098,7 @@ void Play::handleInput()
 								{
 									player1Fire = true;
 									Handgun temp( HandgunBulletTexture, cross.getPosition(), player1team[player1Number].getPosition());
-									Handguns.push_back(temp);
-							
+									Handguns.push_back(temp);							
 								}
 								else if (player1team[player1Number].getType() ==  3 && Shotguns.size()==0)
 								{
@@ -1157,11 +1118,8 @@ void Play::handleInput()
 								{
 									player1Fire = true;
 									Sniper temp(sniperBullettex, cross.getPosition(), player1team[player1Number].getPosition());
-									
 									Snipers.push_back(temp);
-
 								}
-
 								//soundManager.PlayRocket();
 								overview = false;
 							}
@@ -1188,9 +1146,7 @@ void Play::handleInput()
 								{
 									player2Fire = true;
 									Handgun temp(HandgunBulletTexture, cross.getPosition(), player2team[player2Number].getPosition());
-									Handguns.push_back(temp);
-						
-
+									Handguns.push_back(temp);		
 								}
 								else if (player2team[player2Number].getType() == 3 && Shotguns.size()==0)
 								{
@@ -1211,9 +1167,7 @@ void Play::handleInput()
 								{
 									player1Fire = true;
 									Sniper temp(sniperBullettex, cross.getPosition(), player2team[player2Number].getPosition());
-
 									Snipers.push_back(temp);
-
 								}
 								//soundManager.PlayRocket();
 								overview = false;
@@ -1221,8 +1175,6 @@ void Play::handleInput()
 							//soundManager.PlayRocket();
 							//RocketFired = true;
 						}
-					
-
 				}
 			}
 			if (event.key.code == sf::Keyboard::Num1)
@@ -1319,7 +1271,7 @@ void Play::handleInput()
 
 				overview = false;
 			}
-			if (buildViewenter.x >= 400)
+			if (buildViewenter.x > 390)
 			{
 				if (event.key.code == sf::Keyboard::Left && BuildMode == true)
 				{
@@ -1327,7 +1279,7 @@ void Play::handleInput()
 					HudSpritePosition.x -= 20;
 				}
 			}
-			if (buildViewenter.x <= 1590)
+			if (buildViewenter.x < 1590)
 			{
 				if (event.key.code == sf::Keyboard::Right && BuildMode == true)
 				{
@@ -1351,7 +1303,6 @@ void Play::handleInput()
 					HudSpritePosition.y += 20;
 				}
 			}
-
 			break;
 		}
 		case sf::Event::MouseButtonReleased:
@@ -1496,7 +1447,7 @@ void Play::SwitchTurn()
 
 		player1Fire = false;	
 		overview = false;
-		turnTimer = 10;
+		turnTimer = 15;
 		if (player2teamdead == false)
 		{
 			Player1Turn = false;
@@ -1511,15 +1462,13 @@ void Play::SwitchTurn()
 		{
 			player1Number =0;
 		}
-
-	
-
 	}
+
 	else if (Player1Turn == false)
 	{
 		player2Fire = false;
 		overview = false;
-		turnTimer = 10;
+		turnTimer = 15;
 		if (player1teamdead == false)
 		{
 			Player1Turn = true;
@@ -1579,10 +1528,7 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 
 void Play::BuildModeUpdate(){
 
-
-
-
-
+	
 	HudSprite.setPosition(HudSpritePosition);
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
 	PlaceCaptaintext.setPosition(HudSpritePosition + sf::Vector2f(70, -300));
@@ -1672,7 +1618,7 @@ void Play::BuildModeUpdate(){
 				Player1Turn = false;
 				
 			}
-			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
+			else if (Player1Turn == false  && placingSprite.getPosition().x > 990)
 			{
 
 				mousereleased = false;
@@ -1740,7 +1686,7 @@ void Play::BuildModeUpdate(){
 
 
 
-	if (PlacePlayerMode == true && captainplacemode == false)//////////////////////////////////////////////////////////////////////////////////
+	if (PlacePlayerMode == true)//////////////////////////////////////////////////////////////////////////////////
 	{
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true && placeable == true)
 		{
@@ -1749,32 +1695,28 @@ void Play::BuildModeUpdate(){
 
 		if (playerType == 1)
 		{
-			if (Player1Turn == true && placingSprite.getPosition().x < 990)
+			if (Player1Turn == true)
 			{
 				RocketPlayerSprite.setTexture(RocketPlayerTexture);
 				placingSprite = RocketPlayerSprite;
 					
 			}
-			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
-			{
-			
+			else 
+			{	
 				RocketPlayerSprite.setTexture(RocketPlayerTexture2);
 				placingSprite = RocketPlayerSprite;
-
-			}
-	
-			
+			}	
 			price = rocketPrice;
 		}
 		else if (playerType == 2)
 		{
-			if (Player1Turn == true && placingSprite.getPosition().x < 990)
+			if (Player1Turn == true )
 			{
 				hangunplayersprite.setTexture(handgunplayer1);
 				placingSprite = hangunplayersprite;
 
 			}
-			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
+			else 
 			{
 
 				hangunplayersprite.setTexture(handgunplayer2);
@@ -1787,13 +1729,13 @@ void Play::BuildModeUpdate(){
 		}
 		else if (playerType == 3)
 		{
-			if (Player1Turn == true && placingSprite.getPosition().x < 990)
+			if (Player1Turn == true )
 			{
 				shotgunplayersprite.setTexture(shotgunplayer1);
 				placingSprite = shotgunplayersprite;
 
 			}
-			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
+			else 
 			{
 
 				shotgunplayersprite.setTexture(shotgunplayer2);
@@ -1806,13 +1748,13 @@ void Play::BuildModeUpdate(){
 		}
 		else if (playerType == 4)
 		{
-			if (Player1Turn == true && placingSprite.getPosition().x < 990)
+			if (Player1Turn == true )
 			{
 				sniperplayersprite.setTexture(sniperplayer1);
 				placingSprite = sniperplayersprite;
 
 			}
-			else if (Player1Turn == false && placingSprite.getPosition().x > 990)
+			else 
 			{
 
 				sniperplayersprite.setTexture(sniperplayer2);
@@ -1826,52 +1768,40 @@ void Play::BuildModeUpdate(){
 
 		placingSprite.setPosition(sf::Vector2f(position.x - 10, position.y - 10));
 
-
-
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
 		{
-			if (Player1Turn == true && CurrentPlayer1Money >= price && placingSprite.getPosition().x <990)
+			if (Player1Turn == true && CurrentPlayer1Money >= price && placingSprite.getPosition().x < 990)
 			{
 				mousereleased = false;
 				CreatePlayer(sf::Vector2f(position.x, position.y), 1, playerType);
 				CurrentPlayer1Money -= price;
 			}
-			else if (Player1Turn == false && CurrentPlayer2Money >= price  && placingSprite.getPosition().x >990)
+			else if (Player1Turn == false && CurrentPlayer2Money >= price && placingSprite.getPosition().x > 990)
 			{
 				mousereleased = false;
 				CreatePlayer(sf::Vector2f(position.x, position.y), 2, playerType);
 				CurrentPlayer2Money -= price;
 			}
-
 		}
-
 	}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
 		{
-
 			mousereleased = false;
-
 			if (CheckClicked(DirtBlockHud, position) == true)
-			{
-				
+			{		
 					currentType = 8;
-					PlaceBlockMode = true;
-				
+					PlaceBlockMode = true;		
 			}
 			if (CheckClicked(concreteblockhud, position) == true)
-			{
-				
+			{		
 					currentType = 10;
-					PlaceBlockMode = true;
-				
+					PlaceBlockMode = true;	
 			}
 			if (CheckClicked(steelblockhud, position) == true)
 			{
-
 				currentType = 11;
 				PlaceBlockMode = true;
-
 			}
 
 			else if (CheckClicked(FinishButtonSprite, position) == true)
@@ -1879,13 +1809,11 @@ void Play::BuildModeUpdate(){
 				if (Player1Turn == true)
 				{
 					Player1Turn = false;
-
 				}
 				else if (Player1Turn == false)
 				{
 					GameStart();
 				}
-
 			}
 			else if (CheckClicked(RocketPlayerSprite, position) == true)
 			{
@@ -1908,18 +1836,7 @@ void Play::BuildModeUpdate(){
 				PlacePlayerMode = true;
 			}
 
-		}
-		/*if (placeable == true)
-		{
-			Money.setString("true");
-		}
-		else
-		{
-			Money.setString("false");
-		}*/
-
-	
-	
+		}	
 }
 void Play::GameStart()
 {
@@ -2022,8 +1939,6 @@ void Play::UpdateCamera()
 				{
 					if (player1Fire == true && overview == false)
 					{
-
-
 						if (Rockets[i].getPosition().x < bulletOffset)
 						{
 							bulletView.setCenter(bulletOffset, Rockets[i].getPosition().y);
@@ -2043,7 +1958,6 @@ void Play::UpdateCamera()
 							bulletView.setSize(900, 675);
 							game->window.setView(bulletView);
 						}
-
 					}
 				}
 			}
@@ -2053,8 +1967,6 @@ void Play::UpdateCamera()
 				{
 					if (player1Fire == true && overview == false)
 					{
-
-
 						if (Snipers[i].getPosition().x < bulletOffset)
 						{
 							bulletView.setCenter(bulletOffset, Snipers[i].getPosition().y);
@@ -2198,7 +2110,7 @@ void Play::UpdateRockets()
 		}
 
 		Rockets[i].Update(World);
-	//	game->window.draw(Rockets[i].getCircle());
+		game->window.draw(Rockets[i].getCircle());
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (gameSize) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
@@ -2215,11 +2127,6 @@ void Play::UpdateRockets()
 
 		game->window.draw(Rockets[i].getSprite());
 	}
-
-
-
-	
-
 
 	if (destroyRocket == true)// && World.IsLocked() == false)
 	{
@@ -2253,7 +2160,7 @@ void Play::checkAlive(){
 	
 	for (int i = 0; i < player1team.size(); i++)
 	{
-		if (player1team[i].getHealth() <= 0 )
+		if (player1team[i].getHealth() <= 0 || player1team[i].getPosition().y > 700)
 		{
 			player1team[i].setAlive(false);
 			player1team[i].DestoryBody();
@@ -2274,7 +2181,6 @@ void Play::checkAlive(){
 void Play::UpdateHealth()
 {
 	
-	
 	if (captain1hit == true)
 	{
 		captain1.setHealth(20);
@@ -2286,24 +2192,20 @@ void Play::UpdateHealth()
 		captain2hit = false;
 	}
 
-
-
 	captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y- 40);
 	captain1health.setString(std::to_string(captain1.getHealth()));
 	captain2health.setPosition(captain2.getPosition().x - 10, captain2.getPosition().y - 40);
 	captain2health.setString(std::to_string(captain2.getHealth()));
 
 
-	if (captain1.getHealth() == 0)
+	if (captain1.getHealth() <= 0 || captain1.getPosition().y > 900)
 	{    
 		game->pushState(new GameOver(this->game,"Player 2 Wins"));
 	}
-	else if (captain2.getHealth() == 0)
+	else if (captain2.getHealth() <= 0 || captain2.getPosition().y > 900)
 	{
 		game->pushState(new GameOver(this->game, "Player 1 Wins"));
 	}
-
-
 }
 
 void Play::UpdateBlocks()
@@ -2317,7 +2219,6 @@ void Play::UpdateBlocks()
 			World.DestroyBody(blocks[i].getBody());
 			blocks.erase(blocks.begin() + i);
 			//		std::vector<Block>::iterator newEnd = std::remove(blocks.begin(), blocks.end(), i);
-
 		}
 	}
 

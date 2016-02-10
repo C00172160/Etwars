@@ -189,7 +189,6 @@ void Player::DestoryBody()
 void Player::UpdateSprite()
 {
 	
-	
 	healthtext = (std::to_string(health));
 	Sprite.setPosition(m_body->GetPosition().x * SCALE  , m_body->GetPosition().y* SCALE );
 	playerRectangle.setPosition(m_body->GetPosition().x * SCALE - 12, m_body->GetPosition().y* SCALE - 15);
@@ -208,8 +207,8 @@ void Player::UpdateSprite()
 	{
 		Sprite.setTextureRect(sf::IntRect(source.x * 24, source.y * 30, 24, 30));
 	}
-
 }
+
 sf::RectangleShape& Player::getPlayerRectangle(){
 	return playerRectangle;
 }
@@ -253,7 +252,6 @@ sf::Vector2f Player::getVelocity()
 	{
 		return sf::Vector2f(0, 0);
 	}
-
 }
 
 void Player::setHealth(int damage)
