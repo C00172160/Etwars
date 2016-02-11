@@ -4,14 +4,12 @@
 #include "Play.hpp"
 
 static  float SCALE = 30.f;
-b2Vec2 Gravity(0.f, 10.0f);
-b2World World(Gravity);
+
 int numFootContacts;
 int numFootContacts2;
 int player1footid;
 int player2footid;
-int numberPlayersTeam1 = 1;
-int numberPlayersTeam2 = 1;
+
 bool player1hit = false;
 bool player2hit = false;
 bool Groundhit = false;
@@ -19,17 +17,14 @@ bool Groundhit = false;
 bool captain1hit = false;
 bool captain2hit = false;
 
-vector<Player> player1team;
-vector<Player> player2team;
 
 sf::Vector2f lastbulletpos;
 bool destroyRocket = false;
 
 
-
-
 class MyContactListener : public b2ContactListener
 {
+
 	void BeginContact(b2Contact* contact) {
 		//check if fixture A was the foot sensor
 		void* fixtureUserDataA = contact->GetFixtureA()->GetUserData();
@@ -64,7 +59,7 @@ class MyContactListener : public b2ContactListener
 			numFootContacts2--;
 		}
 
-		
+
 	}
 	void PreSolve(b2Contact* contact)
 	{
@@ -72,13 +67,19 @@ class MyContactListener : public b2ContactListener
 
 	}
 };
-
+b2Vec2 Gravity(0.f, 10.0f);
+b2World World(Gravity);
 MyContactListener myContactListenerInstance;
+
+
+
 
 Play::Play(Game* game)
 {
+
+
 	this->game = game;
-	
+	changeState = false;
 	turn.setPosition(sf::Vector2f(300, -100));
 	turn.setColor(sf::Color::Red);
 	turn.setFont(font);
@@ -94,7 +95,7 @@ Play::Play(Game* game)
 	 PlacePlayerMode = false;
 	 mousereleased = true;
 	game->window.setFramerateLimit(60);
-   
+    
 	zoomed = false;
 	Player1Turn = true;
 	RocketFired = false;
@@ -516,51 +517,11 @@ void Play::update()
 			}
 			else if (player2Number + 1 >= player2team.size())
 			{
-				player1Number = 0;
+				player2Number = 0;
 			}
 		}
 	}
-	//if (player1team[player1Number].getAlive() == false)
-	//{
-	//	if ((player1Number +1) < player1team.size() && player1team[player1Number +1].getAlive() == true)
-	//	{
-	//		player1Number++;
-	//	}
-	//	else if ((player1Number+1) == player1team.size())
-	//	{
-	//		if (findNextAlive(1) == -1)
-	//		{
-	//			player1teamdead = true;
-	//		}
-	//		else
-	//		{
-	//			player1Number = findNextAlive(1);
-	//		}
-	//	}
-	//}
-	//else if (player2team[player2Number].getAlive() == false)
-	//{
-	//	if ((player2Number) < player2team.size() && player2team[player2Number + 1].getAlive() == true)
-	//	{
-	//		player2Number++;
-	//	}
-	//	else if ((player2Number+1 ) == player2team.size())
-	//	{
-	//		if (findNextAlive(2) == -1)
-	//		{
-	//			player2teamdead = true;
-	//		}
-	//		else
-	//		{
-	//			player2Number = findNextAlive(2);
-	//		}
-
-	//	}
-
-	//}
 	
-
-
 
 	if (player1team[player1Number].getAlive() == true)
 	{
@@ -703,7 +664,6 @@ void Play::update()
 			game->window.draw(temp);
 		}
 
-	//	player1team[i].DestoryBody();
 	}
 	for (int i = 0; i < player2team.size(); i++)
 	{
@@ -722,8 +682,6 @@ void Play::update()
 			temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
 			game->window.draw(temp);
 		}
-
-	//	player2team[i].DestoryBody();
 	}
 	game->window.draw(captain1.getSprite());
 	game->window.draw(captain2.getSprite());
@@ -814,56 +772,11 @@ void Play::update()
 	updateSnipers();
 	game->window.draw(turn);
 	game->window.display();
-
+	AcitvateGameOverState();
 	return;
 }
 
-//int Play::findNextAlive(int team)
-//{
-//
-//	bool found = false;
-//	int index = 0;
-//
-//	if (team == 1)
-//	{
-//		for (int i = 0; i < player1team.size(); i++)
-//		{
-//			if (player1team[i].getAlive() == true && found == false)
-//			{
-//				index = i;
-//				found = true;
-//			}
-//			else if (found == false && i + 1 >= player1team.size())
-//			{
-//				player1teamdead == true;
-//				index = -1;
-//			}
-//
-//		}
-//
-//	}
-//
-//	if (team == 2)
-//	{
-//		for (int i = 0; i < player2team.size(); i++)
-//		{
-//			if (player2team[i].getAlive() == true && found == false)
-//			{
-//				index = i;
-//				found = true;
-//			}
-//			else if (found == false && i + 1 >= player2team.size())
-//			{
-//				player2teamdead == true;
-//				index = -1;
-//			}
-//			
-//
-//		}
-//
-//	}
-//	return index;
-//}
+
 void Play::updateHandguns(){
 
 	for (int i = 0; i < Handguns.size(); i++)
@@ -2110,7 +2023,7 @@ void Play::UpdateRockets()
 		}
 
 		Rockets[i].Update(World);
-		game->window.draw(Rockets[i].getCircle());
+	/*	game->window.draw(Rockets[i].getCircle());*/
 		if (Rockets[i].getPosition().x + 22 < 0 || Rockets[i].getPosition().x - 22 > (gameSize) || Rockets[i].getPosition().y > 600)
 		{
 			destroyRocket = true;
@@ -2200,12 +2113,46 @@ void Play::UpdateHealth()
 
 	if (captain1.getHealth() <= 0 || captain1.getPosition().y > 900)
 	{    
-		game->pushState(new GameOver(this->game,"Player 2 Wins"));
+		//game->pushState(new GameOver(this->game,"Player 2 Wins"));
+		changeState = true;
 	}
 	else if (captain2.getHealth() <= 0 || captain2.getPosition().y > 900)
 	{
-		game->pushState(new GameOver(this->game, "Player 1 Wins"));
+	//	game->pushState(new GameOver(this->game, "Player 1 Wins"));
+		changeState = true;
 	}
+	else if (player1teamdead == true && player2teamdead == true)
+	{
+		
+	//	game->pushState(new GameOver(this->game, "This game is a tie!"));
+		changeState = true;
+	}
+	
+
+	
+}
+
+Play::~Play(){
+
+
+}
+void Play::AcitvateGameOverState(){
+
+	if (changeState == true)
+	{
+		//for (int i = 0; i < blocks.size(); i++)
+		//{
+		//	if (World.IsLocked() == false)
+		//	{
+		//		World.DestroyBody(blocks[i].getBody());
+		//		blocks.erase(blocks.begin() + i);
+		//		//		std::vector<Block>::iterator newEnd = std::remove(blocks.begin(), blocks.end(), i);
+		//	}
+		//}
+	//	World.~b2World();
+		game->changeState(new GameOver(this->game,""));
+	}
+
 }
 
 void Play::UpdateBlocks()

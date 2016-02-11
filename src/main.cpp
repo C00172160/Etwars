@@ -40,7 +40,7 @@
 
 int main()
 {
-
+	
 	Game game;
 
 	game.pushState(new Menu(&game));

@@ -28,8 +28,8 @@ private:
 	sf::Sprite buttonSprite, nameSprite,selectSprite;
 	sf::Vector2i windowPosition;
 	sf::Vector2i Mouseposition;
-	
 
+	//std::stack<GameState*> states;
 	sf::Vector2f p;
 	sf::Texture texture;
 	thor::ParticleSystem system;
@@ -42,7 +42,7 @@ public:
 	virtual void update();
 	virtual void handleInput();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
-
+	~Menu();
 	Menu(Game* game);
 };
 

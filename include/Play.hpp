@@ -84,7 +84,7 @@ private:
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
 
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +107,7 @@ private:
 	std::vector<Sniper> Snipers;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
-
+	bool changeState;
 	//AUDIO
 	SoundManager soundManager;
 	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, DopplerToggle;
@@ -163,8 +163,10 @@ private:
 	 bool player1teamdead = false;
 	 bool player2teamdead = false;
 	 float explosiontimer;
-
-
+	 vector<Player> player1team;
+	 vector<Player> player2team;
+	 int numberPlayersTeam1 = 1;
+	 int numberPlayersTeam2 = 1;
 
 
 public:
@@ -174,6 +176,7 @@ public:
 	void DrawDebug();
 	virtual void update();
 	virtual void handleInput();
+	void AcitvateGameOverState();
 	void PlayExplosion();
 	void UpdateStaticBodies();
 	void SwitchTurn();
@@ -192,7 +195,7 @@ public:
 	void InitRocketParticle();
 	int findNextAlive(int team);
 	void UpdateRocketParticle();
-
+	~Play();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
 	void CreateBlock(int type, sf::Vector2i position);
 	Play(Game* game);

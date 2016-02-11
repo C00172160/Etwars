@@ -7,6 +7,7 @@
 Menu::Menu(Game* game)
 {
 	this->game = game;
+	//states = game->states;
 	sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
 	sf::View DefaultView;
 	DefaultView.setCenter(400, 300);
@@ -49,18 +50,22 @@ void Menu::update()
 	 {
 		 buttonSprite.setTextureRect(sf::IntRect(0, 0, 201, 71));
 	 }
-	else if (CheckClicked(buttonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
-	{
-		buttonSprite.setTextureRect(sf::IntRect(0, 144, 201, 71));
-		game->pushState(new Play(this->game));
-	}
+	
 
 	game->window.draw(buttonSprite);
 	game->window.draw(nameSprite);
 	game->window.draw(selectSprite);
 	game->window.display();
+	 
+	
+	 if (CheckClicked(buttonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
+	 {
+		 buttonSprite.setTextureRect(sf::IntRect(0, 144, 201, 71));
+		 game->changeState(new Play(this->game));
+	 }
 
-		return;
+	return;
+		
 	
 }
 
@@ -76,6 +81,11 @@ bool Menu::CheckClicked(sf::Sprite sprite, sf::Vector2i position)
 	}
 	else
 		return false;
+}
+Menu::~Menu()
+{
+
+	//while (!this->states.empty()) popState();
 }
 
 void Menu::handleInput()
