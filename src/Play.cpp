@@ -5,8 +5,6 @@
 
 static  float SCALE = 30.f;
 
-
-
 int numFootContacts;
 int numFootContacts2;
 int player1footid;
@@ -70,15 +68,16 @@ class MyContactListener : public b2ContactListener
 	}
 };
 
+
 MyContactListener myContactListenerInstance;
 
 
 
 
-Play::Play(Game* game) : World(b2Vec2(0.f, 10.0f))
+Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 {
 
-	
+
 	this->game = game;
 	changeState = false;
 	turn.setPosition(sf::Vector2f(300, -100));
@@ -196,7 +195,7 @@ Play::Play(Game* game) : World(b2Vec2(0.f, 10.0f))
 	steelblockhud.setTexture(steelblock);
 	RocketPlayerSprite.setTexture(RocketPlayerTexture);
 
-	rocketPrice = 500;
+	rocketPrice = 100;
 	shotgunPrice = 350;
 	sniperPrice = 450;
 	handgunPrice = 200;
@@ -287,6 +286,20 @@ Play::Play(Game* game) : World(b2Vec2(0.f, 10.0f))
 	RocketPlayerPriceText.setCharacterSize(20);
 	RocketPlayerPriceText.setColor(sf::Color::Black);
 	RocketPlayerPriceText.setString(to_string(rocketPrice));
+
+	player1NumberText.setFont(font);
+	player1NumberText.setStyle(sf::Text::Bold);
+	player1NumberText.setCharacterSize(50);
+	player1NumberText.setColor(sf::Color::Black);
+	player1NumberText.setString(to_string(player1Number));
+
+
+
+	player2NumberText.setFont(font);
+	player2NumberText.setStyle(sf::Text::Bold);
+	player2NumberText.setCharacterSize(50);
+	player2NumberText.setColor(sf::Color::Black);
+	player2NumberText.setString(to_string(player2Number));
 
 	rocketName.setFont(font);
 	rocketName.setStyle(sf::Text::Bold);
@@ -495,7 +508,7 @@ void Play::update()
 	}
 	if (player1teamdead == false)
 	{
-		if (player1team[player1Number].getAlive() == false)
+		if (player1team[player1Number].getAlive() == false && Player1Turn == true)
 		{
 			if (player1Number + 1 < player1team.size())
 			{
@@ -510,7 +523,7 @@ void Play::update()
 	if (player2teamdead == false)
 	{
 
-		if (player2team[player2Number].getAlive() == false)
+		if (player2team[player2Number].getAlive() == false && Player1Turn == false)
 		{
 			if (player2Number + 1 < player2team.size())
 			{
@@ -523,7 +536,7 @@ void Play::update()
 		}
 	}
 	
-
+	
 	if (player1team[player1Number].getAlive() == true)
 	{
 		player1footid = player1team[player1Number].getID();
@@ -692,8 +705,7 @@ void Play::update()
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
-
-
+	
 	for (int i = 0; i < player1team.size(); i++)
 	{
 		player1team[i].UpdateSprite();
@@ -710,6 +722,8 @@ void Play::update()
 		captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y - 40);
 		game->window.draw(captain2health);
 		game->window.draw(captain1health);
+	
+
 	}
 
 	if (BuildMode == true)
@@ -773,6 +787,12 @@ void Play::update()
 	updateSnipers();
 	game->window.draw(turn);
 	game->window.display();
+	player1NumberText.setString(to_string(player1Number));
+	player2NumberText.setString(to_string(player2Number));
+	player1NumberText.setPosition(standardView.getCenter());
+	player2NumberText.setPosition(standardView.getCenter());
+	game->window.draw(player1NumberText);
+	game->window.draw(player2NumberText);
 	AcitvateGameOverState();
 	return;
 }
@@ -934,15 +954,22 @@ void Play::updateShotguns()
 		}
 		game->window.draw(Shotguns[i].getSprite());
 		//game->window.draw(Shotguns[i].getCircleCol());
+	
 		if (Shotguns[i].getAlive() == false)
 		{
+		
 			lastbulletpos = Shotguns[i].getPosition();
 			bullerTimer = 1.5f;
 			CountDown = true;
 			Shotguns.pop_back();
-			SwitchTurn();
 			zoomed = false;
 		}
+		
+	}
+	if (Shotguns.size() <=0 && shotgunFired == true)
+	{
+		shotgunFired = false;
+		SwitchTurn();
 	}
 }
 
@@ -1017,6 +1044,7 @@ void Play::handleInput()
 								else if (player1team[player1Number].getType() ==  3 && Shotguns.size()==0)
 								{
 									player1Fire = true;
+									shotgunFired = true;
 									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
 									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0.25f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0);
@@ -1065,14 +1093,13 @@ void Play::handleInput()
 								else if (player2team[player2Number].getType() == 3 && Shotguns.size()==0)
 								{
 									player2Fire = true;
-									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.5f);
+									shotgunFired = true;
 									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.25f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0);
-									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.5f);
+							
 									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.25f);
-									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
-									Shotguns.push_back(tempBottom);
+									
 									Shotguns.push_back(tempBottom1);
 									Shotguns.push_back(tempTop1);
 
@@ -1372,7 +1399,7 @@ void Play::SwitchTurn()
 			player1Number++;
 
 		}
-		else if ((player1Number +1) == player1team.size())
+		else if ((player1Number +1) >= player1team.size())
 		{
 			player1Number =0;
 		}
@@ -1393,7 +1420,7 @@ void Play::SwitchTurn()
 			player2Number++;
 
 		}
-		else if ((player2Number + 1) == player2team.size())
+		else if ((player2Number + 1) >= player2team.size())
 		{
 			player2Number = 0;
 		}
@@ -2065,6 +2092,7 @@ void Play::UpdateRockets()
 			Rockets.pop_back();
 			destroyRocket = false;
 			RocketFired = false;
+			//player1Fire = false;
 			SwitchTurn();
 		}
 	}

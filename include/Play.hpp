@@ -105,10 +105,11 @@ private:
 	std::vector<Rocket> Rockets;
 	std::vector<Handgun> Handguns;
 	std::vector<Shotgun> Shotguns;
+	sf::Text player1NumberText, player2NumberText;
 	std::vector<Sniper> Snipers;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
-	bool changeState;
+	bool changeState, shotgunFired;
 	//AUDIO
 	SoundManager soundManager;
 	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, DopplerToggle;
