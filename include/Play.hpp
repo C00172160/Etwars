@@ -66,6 +66,7 @@ class Play : public GameState
 private:
 	
 
+
 	//TURNS
 	sf::Text turn;//text used to display whos turn it is
 	sf::Clock turnCLock;//used to count down the players turn
@@ -83,7 +84,7 @@ private:
 	sf::Texture Firetexture;
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
-
+	b2World World;
 
 
 	////////////////////////////////////////////////////////////////////////////////////
