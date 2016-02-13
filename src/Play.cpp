@@ -74,10 +74,10 @@ MyContactListener myContactListenerInstance;
 
 
 
-Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
+Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO) : World(b2Vec2(0.0f, 10.0f))
 {
 
-
+	soundManager.init(audio);
 	this->game = game;
 	changeState = false;
 	turn.setPosition(sf::Vector2f(300, -100));
@@ -86,7 +86,10 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	turn.setStyle(sf::Text::Bold);
 	turn.setCharacterSize(15);
 	turnTimer = 15;
-
+	currentMap = selectedMap;
+	vsync = VSYNC;
+	fullscreen = FULLSCREEN;
+	audio = AUDIO;
 	 position = sf::Vector2f(500, -50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
@@ -111,15 +114,6 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	CountDown = false;
 	explosiontimer = 5.0f;
 	buildView.setSize(800, 600);
-	dirttex.loadFromFile("Resources/snow/8.png");
-	topStraighttex.loadFromFile("Resources/snow/6.png");
-	leftStraighttex.loadFromFile("Resources/snow/9.png");
-	topLeftCornertex.loadFromFile("Resources/snow/7.png");
-	topRightCornertex.loadFromFile("Resources/snow/4.png");
-	bottomRightCornertex.loadFromFile("Resources/snow/3.png");
-	rightStraight.loadFromFile("Resources/snow/5.png");
-	bottomStraight.loadFromFile("Resources/snow/2.png");
-	bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 	Explosion.loadFromFile("Resources/explosion.png");
 	shotgunBulletTex.loadFromFile("Resources/shotgunbullet.png");
 	sniperBullettex.loadFromFile("Resources/sniperbullet.png");
@@ -133,7 +127,7 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
     sizeofmap = 0;
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
-	backGroundTexture.loadFromFile("Resources/background.jpg");
+	
 	playerTexture.loadFromFile("Resources/player.png");
 	player2Texture.loadFromFile("Resources/player2.png");
 	captainTexture1.loadFromFile("Resources/captain1Right.png");
@@ -161,7 +155,7 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	player1Fire = false;
 	player2Fire = false;
 
-	background.setTexture(backGroundTexture);
+
 	background.scale(1.5,1.3);
 	background.setPosition(sf::Vector2f(-300,-500));
 
@@ -190,7 +184,7 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	HudSprite.setTexture(hudPanelTex);
 	HudSpritePosition = sf::Vector2f(0, 450);
 	
-	DirtBlockHud.setTexture(dirttex);
+
 	concreteblockhud.setTexture(concreteblock);
 	steelblockhud.setTexture(steelblock);
 	RocketPlayerSprite.setTexture(RocketPlayerTexture);
@@ -346,26 +340,11 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	PlaceCaptaintext.setStyle(sf::Text::Bold || sf::Text::Italic);
 	PlaceCaptaintext.setCharacterSize(40);
 	///////////////////////////////////
-	int map[30][100] = {
-      #include "testlevel.txt"
-	};
 
-
-	for (int y = 0; y < 30; y++)
-	{
-		for (int x = 0; x < 100; x++)
-		{
-			int c = map[y][x];
-			if (c == 1 || c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c ==9)
-			{
-				Block temp = Block(map[y][x], sf::Vector2f(x*20, y*20), World);
-				blocks.push_back(temp);
-			}
-		}
-
-	}
-
-
+	InitMap();
+	
+	background.setTexture(backGroundTexture);
+	DirtBlockHud.setTexture(dirttex);
 	Firetexture.loadFromFile("Resources/smoke.png");
 	Snowtexture.loadFromFile("Resources/snow.png");
 	
@@ -406,6 +385,110 @@ Play::Play(Game* game) : World(b2Vec2(0.0f,10.0f))
 	player2team[0] = Player(numberPlayersTeam2, World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
 
 } 
+
+void Play::InitMap()
+{
+	if (currentMap == 1)
+	{
+		int map[30][100] = {
+#include "Atlantis.txt"
+		};
+
+		dirttex.loadFromFile("Resources/snow/8.png");
+		topStraighttex.loadFromFile("Resources/snow/6.png");
+		leftStraighttex.loadFromFile("Resources/snow/9.png");
+		topLeftCornertex.loadFromFile("Resources/snow/7.png");
+		topRightCornertex.loadFromFile("Resources/snow/4.png");
+		bottomRightCornertex.loadFromFile("Resources/snow/3.png");
+		rightStraight.loadFromFile("Resources/snow/5.png");
+		bottomStraight.loadFromFile("Resources/snow/2.png");
+		bottomLeftCorner.loadFromFile("Resources/snow/1.png");
+		backGroundTexture.loadFromFile("Resources/background.jpg");
+
+		for (int y = 0; y < 30; y++)
+		{
+			for (int x = 0; x < 100; x++)
+			{
+				int c = map[y][x];
+				if (c == 1 || c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9)
+				{
+					Block temp = Block(map[y][x], sf::Vector2f(x * 20, y * 20), World);
+					blocks.push_back(temp);
+				}
+			}
+
+		}
+
+
+	}
+	if (currentMap == 2)
+	{
+		int map[30][100] = {
+#include "Elysium.txt"
+		};
+
+		dirttex.loadFromFile("Resources/grass/8.png");
+		topStraighttex.loadFromFile("Resources/grass/6.png");
+		leftStraighttex.loadFromFile("Resources/grass/9.png");
+		topLeftCornertex.loadFromFile("Resources/grass/7.png");
+		topRightCornertex.loadFromFile("Resources/grass/4.png");
+		bottomRightCornertex.loadFromFile("Resources/grass/3.png");
+		rightStraight.loadFromFile("Resources/grass/5.png");
+		bottomStraight.loadFromFile("Resources/grass/2.png");
+		bottomLeftCorner.loadFromFile("Resources/grass/1.png");
+		backGroundTexture.loadFromFile("Resources/forest.jpg");
+
+
+		for (int y = 0; y < 30; y++)
+		{
+			for (int x = 0; x < 100; x++)
+			{
+				int c = map[y][x];
+				if (c == 1 || c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9)
+				{
+					Block temp = Block(map[y][x], sf::Vector2f(x * 20, y * 20), World);
+					blocks.push_back(temp);
+				}
+			}
+
+		}
+	}
+	if (currentMap == 3)
+	{
+		int	map[30][100] = {
+#include "Atlantis.txt"
+		};
+
+		for (int y = 0; y < 30; y++)
+		{
+			for (int x = 0; x < 100; x++)
+			{
+				int c = map[y][x];
+				if (c == 1 || c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9)
+				{
+					Block temp = Block(map[y][x], sf::Vector2f(x * 20, y * 20), World);
+					blocks.push_back(temp);
+				}
+			}
+
+		}
+
+
+		dirttex.loadFromFile("Resources/snow/8.png");
+		topStraighttex.loadFromFile("Resources/snow/6.png");
+		leftStraighttex.loadFromFile("Resources/snow/9.png");
+		topLeftCornertex.loadFromFile("Resources/snow/7.png");
+		topRightCornertex.loadFromFile("Resources/snow/4.png");
+		bottomRightCornertex.loadFromFile("Resources/snow/3.png");
+		rightStraight.loadFromFile("Resources/snow/5.png");
+		bottomStraight.loadFromFile("Resources/snow/2.png");
+		bottomLeftCorner.loadFromFile("Resources/snow/1.png");
+		backGroundTexture.loadFromFile("Resources/volcano.jpg");
+	}
+
+
+
+}
 void Play::InitRocketParticle()
 {
 	Rocketsystem.setTexture(Firetexture);
@@ -433,7 +516,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	game->window.draw(Rocketsystem);
+	//game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -568,7 +651,7 @@ void Play::update()
 
 	game->window.clear(sf::Color::Cyan);
 	game->window.draw(background);
-	game->window.draw(system);
+//	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -1118,7 +1201,7 @@ void Play::handleInput()
 						}
 				}
 			}
-			if (event.key.code == sf::Keyboard::Num1)
+			/*if (event.key.code == sf::Keyboard::Num1)
 			{
 				if (effectToggle == true)
 				{
@@ -1196,7 +1279,7 @@ void Play::handleInput()
 			{
 					soundManager.ToggleDoppler(0);
 
-			}
+			}*/
 
 			
 			if (event.key.code == sf::Keyboard::Z)
@@ -2169,17 +2252,8 @@ void Play::AcitvateGameOverState(){
 
 	if (changeState == true)
 	{
-		//for (int i = 0; i < blocks.size(); i++)
-		//{
-		//	if (World.IsLocked() == false)
-		//	{
-		//		World.DestroyBody(blocks[i].getBody());
-		//		blocks.erase(blocks.begin() + i);
-		//		//		std::vector<Block>::iterator newEnd = std::remove(blocks.begin(), blocks.end(), i);
-		//	}
-		//}
-	//	World.~b2World();
-		game->changeState(new GameOver(this->game,""));
+		soundManager.stopAll();
+		game->changeState(new GameOver(this->game,"",currentMap,vsync,fullscreen,audio));
 	}
 
 }

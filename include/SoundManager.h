@@ -14,7 +14,7 @@ class SoundManager {
 
 public:
 	SoundManager();
-	void init();
+	void init(bool playBGM);
 	void update(sf::Vector2f playerpos, sf::Vector2f playervel, sf::Vector2f sourcepos);
 	void updateRocketSound(sf::Vector2f RocketPos);
 	void PlayRocket(bool toggle);
@@ -29,7 +29,7 @@ public:
 	void ToggleTest(bool toggle);
 	void ToggleDoppler(int level);
 	void PauseTest(bool  toggle);
-
+	void stopAll();
 	sf::Vector2f getReverbPosition();
 
 private:

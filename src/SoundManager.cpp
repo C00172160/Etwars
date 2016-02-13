@@ -8,10 +8,10 @@
 
 SoundManager::SoundManager()
 {
-	init();
+
 }
 
-void SoundManager::init()
+void SoundManager::init(bool playBGM)
 {
 
 	//setup FMOD
@@ -35,16 +35,18 @@ void SoundManager::init()
 	}
 
 ////////////////////////////////////////////////////////BACKGROUND SETUP ////////////////////////////////////////////////////////////////////////////////
-	result = FMODsys->createStream("Resources/song.mp3", FMOD_LOOP_NORMAL, 0, &BackgroundMusic);
+	if (playBGM == true)
+	{
+		result = FMODsys->createStream("Resources/song.mp3", FMOD_LOOP_NORMAL, 0, &BackgroundMusic);
 
-	FMODsys->playSound(
-		FMOD_CHANNEL_FREE,
-		BackgroundMusic,
-		true,
-		&Backgroundchannel);
-	Backgroundchannel->setVolume(0.5f);       // Set the volume while it is paused.
-	Backgroundchannel->setPaused(false);
-
+		FMODsys->playSound(
+			FMOD_CHANNEL_FREE,
+			BackgroundMusic,
+			true,
+			&Backgroundchannel);
+		Backgroundchannel->setVolume(0.5f);       // Set the volume while it is paused.
+		Backgroundchannel->setPaused(false);
+	}
 ///////////////////////////////////////////////////////////WAVE SOUND SETUP///////////////////////////////////////////////////////////////////////////////////
 	result = FMODsys->createSound("Resources/wave.mp3", FMOD_LOOP_NORMAL | FMOD_3D, 0, &WaveSound);
 
@@ -168,6 +170,14 @@ bool SoundManager::getReverbActive()
 void SoundManager::pauseBackground(bool toggle)
 {
 	Backgroundchannel->setPaused(toggle);
+}
+void SoundManager::stopAll()
+{
+	Backgroundchannel->stop();
+	fireChannel->stop();
+	RocketChannel->stop();
+	WaveChannel->stop();
+	TestChannel->stop();
 }
 void  SoundManager::ToggleReverb(bool toggle)
 {

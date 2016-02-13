@@ -3,8 +3,13 @@
 
 #include "game_state.hpp"
 
-GameOver::GameOver(Game* game, std::string string)
+GameOver::GameOver(Game* game, std::string string, int map, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 {
+
+	Map = map;
+	vsync = VSYNC;
+	fullscreen = FULLSCREEN;
+	audio = AUDIO;
 	this->game = game;
 	sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
 	sf::View DefaultView;
@@ -14,8 +19,8 @@ GameOver::GameOver(Game* game, std::string string)
 	menu2.loadFromFile("Resources/menu2.png");
 	menu1Sprite.setTexture(menu1);
 	menu2Sprite.setTexture(menu2);
-	menu1Sprite.setPosition(sf::Vector2f(300, 450));
-	menu2Sprite.setPosition(sf::Vector2f(300, 450));
+	menu1Sprite.setPosition(sf::Vector2f(50, 500));
+	menu2Sprite.setPosition(sf::Vector2f(50, 500));
 	game->window.setView(DefaultView);
 	font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");
 	winner.setString(string);
@@ -46,7 +51,7 @@ void GameOver::update()
 	}
 	if (CheckClicked(menu1Sprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
 	{
-		game->pushState(new Menu(this->game));
+		game->pushState(new Menu(this->game,0,vsync,fullscreen,audio));
 	}
 	game->window.display();
 	return;

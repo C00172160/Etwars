@@ -15,6 +15,8 @@ private:
 
 	sf::Text winner;
 	sf::Font font;
+	int Map;
+	bool  vsync, audio, fullscreen;
 	sf::Texture menu1, menu2;
 	sf::Sprite menu1Sprite, menu2Sprite;
 	sf::Vector2i Mouseposition;
@@ -25,7 +27,7 @@ public:
 	virtual void update();
 	virtual void handleInput();
 	
-	GameOver(Game* game, std::string string);
+	GameOver(Game* game, std::string string,  int map, bool VSYNC, bool FULLSCREEN, bool AUDIO);
 };
 
 #endif /* GAME_STATE_START_HPP */

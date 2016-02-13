@@ -71,6 +71,7 @@ private:
 	sf::Text turn;//text used to display whos turn it is
 	sf::Clock turnCLock;//used to count down the players turn
 	double turnTimer;
+	bool  vsync, audio, fullscreen;
 	//////////////////////////////////////////////////////////////////////////////////
 
 	//PARTICLES
@@ -85,7 +86,7 @@ private:
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
 	b2World World;
-
+	int currentMap = 0;
 
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -189,6 +190,7 @@ public:
 	void UpdateCamera();
 	void UpdateRockets();
 	void UpdateHealth();
+	void InitMap();
 	void UpdateBlocks();
 	void UpdateWater();
 	void BuildModeUpdate();
@@ -200,7 +202,7 @@ public:
 	~Play();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
 	void CreateBlock(int type, sf::Vector2i position);
-	Play(Game* game);
+	Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO);
 };
 
 #endif /* GAME_STATE_EDITOR_HPP */

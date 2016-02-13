@@ -1,6 +1,6 @@
 #include "game.hpp"
 #include "Menu.hpp"
-
+#include "Intro.hpp"
 #ifdef _DEBUG 
 #pragma comment(lib,"sfml-graphics-d.lib") 
 #pragma comment(lib,"sfml-audio-d.lib") 
@@ -43,7 +43,7 @@ int main()
 	
 	Game game;
 
-	game.pushState(new Menu(&game));
+	game.pushState(new Intro(&game));
 
 	game.gameLoop();
 
