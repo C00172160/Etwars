@@ -37,6 +37,7 @@ GameOver::GameOver(Game* game, std::string string, int map, bool VSYNC, bool FUL
 	BGM.play();
 
 
+
 	
 }
 void GameOver::draw()
@@ -56,6 +57,7 @@ void GameOver::update()
 
 	
 	game->window.draw(backgroundsprite);
+	game->window.draw(winner);
 	game->window.draw(menu1Sprite);
 	if (CheckClicked(menu1Sprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == false)
 	{

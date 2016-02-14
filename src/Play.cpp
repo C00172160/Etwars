@@ -384,7 +384,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	player1team[0] =  Player(numberPlayersTeam1, World, position, playerTexture, 1, 1);
 
 	player2team[0] = Player(numberPlayersTeam2, World, position + sf::Vector2f(1200, 0), player2Texture, 2, 1);
-
+	tie = false;
 } 
 
 void Play::InitMap()
@@ -806,6 +806,7 @@ void Play::update()
 	{
 		game->window.draw(captain2.getSprite());
 	}
+	
 	game->window.draw(cross.getSprite());
 	game->window.draw(cross.getGunSprite());
 	//game->window.draw(boundingbox);
@@ -2315,7 +2316,7 @@ void Play::UpdateHealth()
 	{
 		
 	//	game->pushState(new GameOver(this->game, "This game is a tie!"));
-		CountDown = true;
+		tie = true;
 		if (CountDown == false)
 		{
 			changeState = true;
@@ -2335,7 +2336,19 @@ void Play::AcitvateGameOverState(){
 	if (changeState == true)
 	{
 		soundManager.stopAll();
-		game->changeState(new GameOver(this->game,"",currentMap,vsync,fullscreen,audio));
+		if (captain1.getHealth() <=0)
+		{
+			game->changeState(new GameOver(this->game, "Player 2 wins ", currentMap, vsync, fullscreen, audio));
+		}
+		if (captain2.getHealth() <= 0)
+		{
+			game->changeState(new GameOver(this->game, "Player 1 wins ", currentMap, vsync, fullscreen, audio));
+		}
+		if ( tie == true)
+		{
+			game->changeState(new GameOver(this->game, "Tie game! ", currentMap, vsync, fullscreen, audio));
+		}
+		
 	}
 
 }

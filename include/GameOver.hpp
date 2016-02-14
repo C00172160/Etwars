@@ -17,6 +17,7 @@ private:
 	sf::Text winner;
 	sf::Font font;
 	int Map;
+	
 	bool  vsync, audio, fullscreen;
 	sf::Texture menu1, menu2,backgroundtex ;
 	sf::Sprite menu1Sprite, menu2Sprite,backgroundsprite;

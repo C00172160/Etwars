@@ -110,7 +110,7 @@ private:
 	std::vector<Sniper> Snipers;
 	sf::CircleShape reverbCircle, reverbCircle2;
 	////////////////////////////////////////////////////////////////////////////////////
-	bool changeState, shotgunFired, playerBuildCamera;
+	bool changeState, shotgunFired, playerBuildCamera,tie;
 	//AUDIO
 	SoundManager soundManager;
 	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, DopplerToggle;
