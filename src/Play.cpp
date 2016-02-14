@@ -77,7 +77,7 @@ MyContactListener myContactListenerInstance;
 Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO) : World(b2Vec2(0.0f, 10.0f))
 {
 
-	soundManager.init(audio);
+	
 	this->game = game;
 	changeState = false;
 	turn.setPosition(sf::Vector2f(300, -100));
@@ -90,6 +90,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	vsync = VSYNC;
 	fullscreen = FULLSCREEN;
 	audio = AUDIO;
+	soundManager.init(audio);
 	 position = sf::Vector2f(500, -50);
 	 font;
 	 font.loadFromFile("C:\\Windows\\Fonts\\GARA.TTF");

@@ -48,6 +48,7 @@ Menu::Menu(Game* game, int returnedMAP, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	buttonSprite.setPosition(game->window.getSize().x / 2 - buttonSprite.getGlobalBounds().width / 2, 100);
 	//windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
 	backgroundTex.loadFromFile("Resources/menuBackground.png");
+
 	backgroundSprite.setTexture(backgroundTex);
 	backgroundSprite.setPosition(sf::Vector2f(0, 0));
 
@@ -144,7 +145,8 @@ void Menu::update()
 	 }
 	 if (CheckClicked(instructionbuttonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
 	 {
-		 game->changeState(new Instructions(this->game, currentMap, vsync, fullscreen, audio));
+		// game->changeState(new Instructions(this->game, currentMap, vsync, fullscreen, audio));
+		 game->changeState(new GameOver(this->game, "", currentMap, vsync, fullscreen, audio));
 	 }
 	 if (CheckClicked(SettingsButtonSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
 	 {
