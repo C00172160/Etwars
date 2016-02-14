@@ -2,10 +2,13 @@
 
 
 
-
-
-
 Water::Water()
+{
+
+}
+
+
+void Water::Init(bool lava)
 {
 	source1 = 0;
 	source2 = 1;
@@ -14,8 +17,18 @@ Water::Water()
 	source5 = 4;
 	source6 = 5;
 	source7 = 6;
-	watertex.loadFromFile("Resources/water.png");
-	seatex.loadFromFile("Resources/sea.png");
+	if (lava == true)
+	{
+
+
+		watertex.loadFromFile("Resources/lava.png");
+		seatex.loadFromFile("Resources/lavasea.png");
+	}
+	else
+	{
+		watertex.loadFromFile("Resources/water.png");
+		seatex.loadFromFile("Resources/sea.png");
+	}
 	sea.setTexture(seatex);
 	sprite1.setTexture(watertex);
 	sprite2.setTexture(watertex);

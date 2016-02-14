@@ -25,8 +25,8 @@ private:
 	sf::View view;
 	sf::Clock clock;
 	sf::Music Music1;
-	sf::Texture introTex, textTex;
-	sf::Sprite introSprite, textSprite;
+	sf::Texture introTex, textTex,backgroundTex;
+	sf::Sprite introSprite, textSprite,backgroundsprite;
 	sf::Vector2f textPosition;
 	bool change = false;
 	float scaler = 1;

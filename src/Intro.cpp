@@ -21,6 +21,9 @@ Intro::Intro(Game* game)
 	game->window.setView(DefaultView);
 	introTex.loadFromFile("Resources/intro.png");
 	textTex.loadFromFile("Resources/starwars.png");
+	backgroundTex.loadFromFile("Resources/space.png");
+	backgroundsprite.setTexture(backgroundTex);
+	backgroundsprite.setPosition(sf::Vector2f(0, 0));
 	//this->view.setSize(pos);
 	
 	introSprite.setTexture(introTex);
@@ -40,7 +43,7 @@ void Intro::draw()
 void Intro::update()
 {
 	game->window.clear(sf::Color::Black);
-
+	game->window.draw(backgroundsprite);
 	introSprite.setScale(scaler, scaler);
 	introSprite.setPosition(sf::Vector2f(400,300));
 	if (scaler > 0.025)

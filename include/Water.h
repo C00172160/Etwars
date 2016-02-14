@@ -15,7 +15,7 @@ public:
 	void updateWater();
 	void setPositon(sf::Vector2f pos);
 	void Draw(Game* game);
-	
+	void Init(bool lava);
 	
 
 private:

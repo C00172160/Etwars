@@ -426,7 +426,9 @@ void Play::InitMap()
 		bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 		backGroundTexture.loadFromFile("Resources/background.jpg");
 		top.loadFromFile("Resources/iceSky.png");
-
+		water1.Init(false);
+		water2.Init(false);
+		water3.Init(false);
 		
 		
 		for (int y = 0; y < 30; y++)
@@ -461,7 +463,10 @@ void Play::InitMap()
 		bottomStraight.loadFromFile("Resources/grass/2.png");
 		bottomLeftCorner.loadFromFile("Resources/grass/1.png");
 		backGroundTexture.loadFromFile("Resources/forest.jpg");
-
+		top.loadFromFile("Resources/forestSky.png");
+		water1.Init(false);
+		water2.Init(false);
+		water3.Init(false);
 
 		for (int y = 0; y < 30; y++)
 		{
@@ -480,7 +485,7 @@ void Play::InitMap()
 	if (currentMap == 3)
 	{
 		int	map[30][100] = {
-#include "Atlantis.txt"
+#include "Olympus.txt"
 		};
 
 		for (int y = 0; y < 30; y++)
@@ -498,16 +503,20 @@ void Play::InitMap()
 		}
 
 
-		dirttex.loadFromFile("Resources/snow/8.png");
-		topStraighttex.loadFromFile("Resources/snow/6.png");
-		leftStraighttex.loadFromFile("Resources/snow/9.png");
-		topLeftCornertex.loadFromFile("Resources/snow/7.png");
-		topRightCornertex.loadFromFile("Resources/snow/4.png");
-		bottomRightCornertex.loadFromFile("Resources/snow/3.png");
-		rightStraight.loadFromFile("Resources/snow/5.png");
-		bottomStraight.loadFromFile("Resources/snow/2.png");
-		bottomLeftCorner.loadFromFile("Resources/snow/1.png");
+		dirttex.loadFromFile("Resources/wasteland/8.png");
+		topStraighttex.loadFromFile("Resources/wasteland/6.png");
+		leftStraighttex.loadFromFile("Resources/wasteland/9.png");
+		topLeftCornertex.loadFromFile("Resources/wasteland/7.png");
+		topRightCornertex.loadFromFile("Resources/wasteland/4.png");
+		bottomRightCornertex.loadFromFile("Resources/wasteland/3.png");
+		rightStraight.loadFromFile("Resources/wasteland/5.png");
+		bottomStraight.loadFromFile("Resources/wasteland/2.png");
+		bottomLeftCorner.loadFromFile("Resources/wasteland/1.png");
 		backGroundTexture.loadFromFile("Resources/volcano.jpg");
+		top.loadFromFile("Resources/lavaSky.png");
+		water1.Init(true);
+		water2.Init(true);
+		water3.Init(true);
 	}
 
 
@@ -1186,11 +1195,11 @@ void Play::handleInput()
 								{
 									player1Fire = true;
 									shotgunFired = true;
-									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(),0.5f);
-									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0.25f);
+									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(),0.3f);
+									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0.15f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), 0);
-									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.25f);
-									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.5f);
+									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.15f);
+									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player1team[player1Number].getPosition(), -0.3f);
 									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
 									Shotguns.push_back(tempBottom);
@@ -1235,12 +1244,14 @@ void Play::handleInput()
 								{
 									player2Fire = true;
 									shotgunFired = true;
-									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.25f);
+									Shotgun tempTop(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.3f);
+									Shotgun tempTop1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0.15f);
 									Shotgun temp(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), 0);
-							
-									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.25f);
+									Shotgun tempBottom1(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.15f);
+									Shotgun tempBottom(shotgunBulletTex, cross.getPosition(), player2team[player2Number].getPosition(), -0.3f);
+									Shotguns.push_back(tempTop);
 									Shotguns.push_back(temp);
-									
+									Shotguns.push_back(tempBottom);
 									Shotguns.push_back(tempBottom1);
 									Shotguns.push_back(tempTop1);
 
