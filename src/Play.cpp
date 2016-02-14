@@ -148,7 +148,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 
 	steelblock.loadFromFile("Resources/steel.png");
 	concreteblock.loadFromFile("Resources/concrete.png");
-
+	
 	buildViewenter = sf::Vector2f(400, 300);
 	numFootContacts = 0;
 
@@ -214,7 +214,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	dirtName.setCharacterSize(20);
 	dirtName.setColor(sf::Color::Black);
 	dirtName.setString("Dirt");
-
+	playerBuildCamera = false;
 	concretepriceText.setFont(font);
 	concretepriceText.setStyle(sf::Text::Bold);
 	concretepriceText.setCharacterSize(20);
@@ -718,15 +718,7 @@ void Play::update()
 		{
 			SwitchTurn();
 		}
-		if (player1team[player1Number].getPosition().x < 0 || player1team[player1Number].getPosition().x > 2000)
-		{
-			player1team[player1Number].setHealth(100);
-		}
-		else if (player2team[player2Number].getPosition().x < 0 || player2team[player2Number].getPosition().x > 2000)
-		{
-			player2team[player2Number].setHealth(100);
-		}
-
+		
 		
 		player1team[player1Number].UpdateSprite();
 		player2team[player2Number].UpdateSprite();
@@ -743,7 +735,15 @@ void Play::update()
 	}
 	
 
-
+	/*if (player1team[player1Number].getPosition().y > 620)
+	{
+		SwitchTurn();
+	}
+	else if (player2team[player2Number].getPosition().y > 620)
+	{
+		SwitchTurn();
+	}*/
+	
 
 	for (int i = 0; i < player1team.size(); i++)
 	{
@@ -754,6 +754,15 @@ void Play::update()
 		temp.setStyle(sf::Text::Bold);
 		temp.setPosition(0, 0);
 		temp.setCharacterSize(20);
+		if (player1team[i].getPosition().y > 620 && player1team[i].getAlive()==true)
+		{
+			if (i == player1Number)
+			{
+				SwitchTurn();
+			}
+			player1team[i].setHealth(100);
+			
+		}
 		if (player1team[i].getAlive() == true)
 		{
 
@@ -773,7 +782,15 @@ void Play::update()
 		temp.setStyle(sf::Text::Bold);
 		temp.setPosition(0, 0);
 		temp.setCharacterSize(20);
-		if (player2team[i].getAlive() == true)
+		if (player2team[i].getPosition().y > 620 && player2team[i].getAlive() == true)
+		{
+			if (i == player2Number)
+			{
+				SwitchTurn();
+			}
+			player2team[i].setHealth(100);
+		}
+		if (player2team[i].getAlive() == true && player1team[i].getAlive() == true)
 		{
 
 			temp.setString(player2team[i].getHealthText());
@@ -781,11 +798,17 @@ void Play::update()
 			game->window.draw(temp);
 		}
 	}
-	game->window.draw(captain1.getSprite());
-	game->window.draw(captain2.getSprite());
+	if (captain1.getHealth() > 0)
+	{
+		game->window.draw(captain1.getSprite());
+	}
+	if (captain2.getHealth() > 0)
+	{
+		game->window.draw(captain2.getSprite());
+	}
 	game->window.draw(cross.getSprite());
 	game->window.draw(cross.getGunSprite());
-	game->window.draw(boundingbox);
+	//game->window.draw(boundingbox);
 	water1.Draw(game);
 	water2.Draw(game);
 	water3.Draw(game);
@@ -804,9 +827,14 @@ void Play::update()
 		captain2health.setString(captain2.getHealthText());
 		captain1health.setString(captain1.getHealthText());
 		captain1health.setPosition(captain1.getPosition().x - 10, captain1.getPosition().y - 40);
-		game->window.draw(captain2health);
-		game->window.draw(captain1health);
-	
+		if (captain2.getHealth() > 0)
+		{
+			game->window.draw(captain2health);
+		}
+		if (captain1.getHealth() > 0)
+		{
+			game->window.draw(captain1health);
+		}
 
 	}
 
@@ -860,7 +888,7 @@ void Play::update()
 
 	//game->window.draw(system);
 
-//	DrawDebug();
+	DrawDebug();
 	if (soundManager.getReverbActive() == true)
 	{
 	//	game->window.draw(reverbCircle);
@@ -1296,7 +1324,8 @@ void Play::handleInput()
 
 				overview = false;
 			}
-			if (buildViewenter.x > 390)
+		
+			if (buildViewenter.x > 390 && Player1Turn == true)
 			{
 				if (event.key.code == sf::Keyboard::Left && BuildMode == true)
 				{
@@ -1304,7 +1333,23 @@ void Play::handleInput()
 					HudSpritePosition.x -= 20;
 				}
 			}
-			if (buildViewenter.x < 1590)
+			if (buildViewenter.x < 600 && Player1Turn == true)
+			{
+				if (event.key.code == sf::Keyboard::Right && BuildMode == true)
+				{
+					buildViewenter.x += 20;
+					HudSpritePosition.x += 20;
+				}
+			}
+			if (buildViewenter.x > 1400 && Player1Turn == false)
+			{
+				if (event.key.code == sf::Keyboard::Left && BuildMode == true)
+				{
+					buildViewenter.x -= 20;
+					HudSpritePosition.x -= 20;
+				}
+			}
+			if (buildViewenter.x < 1590 && Player1Turn == false)
 			{
 				if (event.key.code == sf::Keyboard::Right && BuildMode == true)
 				{
@@ -1554,13 +1599,13 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 void Play::BuildModeUpdate(){
 
 	
+
+	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
+	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
+	HudSpritePosition = sf::Vector2f(windowPosition.x, windowPosition.y + 450);
 	HudSprite.setPosition(HudSpritePosition);
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
 	PlaceCaptaintext.setPosition(HudSpritePosition + sf::Vector2f(70, -300));
-	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
-	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
-
-
 	DirtBlockHud.setPosition(HudSpritePosition + sf::Vector2f(90, 60));
 	dirtPriceText.setPosition(DirtBlockHud.getPosition() + sf::Vector2f(0, 20));
 	dirtName.setPosition(DirtBlockHud.getPosition() + sf::Vector2f(-10, -25));
@@ -1589,10 +1634,16 @@ void Play::BuildModeUpdate(){
 	SniperPriceText.setPosition(sniperplayersprite.getPosition() + sf::Vector2f(0, 30));
 	sniperName.setPosition(sniperplayersprite.getPosition() + sf::Vector2f(-20, -20));
 	
-
+	
+	
 	if (Player1Turn == true)
 	{
-
+		if (playerBuildCamera == true)
+		{
+			buildViewenter = sf::Vector2f(450, 300);
+			HudSpritePosition = sf::Vector2f(windowPosition.x, windowPosition.y + 450);
+			playerBuildCamera = false;
+		}
 		RocketPlayerSprite.setTexture(RocketPlayerTexture);
 		hangunplayersprite.setTexture(handgunplayer1);
 		shotgunplayersprite.setTexture(shotgunplayer1);
@@ -1602,11 +1653,18 @@ void Play::BuildModeUpdate(){
 		Money.setString(" Credits Remaining = " + std::to_string(CurrentPlayer1Money));
 		Money.setPosition(HudSpritePosition + sf::Vector2f(310, 10));
 		PlaceCaptaintext.setString("PLAYER 1 PLACE YOUR CAPTAIN!!");
-
+	
 
 	}
 	else if (Player1Turn == false)
 	{
+
+		if (playerBuildCamera == true)
+		{
+			buildViewenter = sf::Vector2f(1350, 300);
+			HudSpritePosition = sf::Vector2f(windowPosition.x, windowPosition.y + 450);
+			playerBuildCamera = false;
+		}
 		RocketPlayerSprite.setTexture(RocketPlayerTexture2);
 		hangunplayersprite.setTexture(handgunplayer2);
 		shotgunplayersprite.setTexture(shotgunplayer2);
@@ -1616,6 +1674,8 @@ void Play::BuildModeUpdate(){
 		Money.setString(" Credits Remaining = " +std::to_string(CurrentPlayer2Money));
 		Money.setPosition(HudSpritePosition + sf::Vector2f(310, 10));
 		PlaceCaptaintext.setString("PLAYER 2 PLACE YOUR CAPTAIN!!");
+		buildView.setCenter(sf::Vector2f(1450, 0));
+
 	}
 	
 	if (captainplacemode == true)
@@ -1636,7 +1696,7 @@ void Play::BuildModeUpdate(){
 			
 			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
-			
+				playerBuildCamera = true;
 				mousereleased = false;
 				captain1placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
@@ -1645,7 +1705,7 @@ void Play::BuildModeUpdate(){
 			}
 			else if (Player1Turn == false  && placingSprite.getPosition().x > 990)
 			{
-
+				playerBuildCamera = true;
 				mousereleased = false;
 				capatain2placed = true;
 				CreateCaptain(sf::Vector2f(position.x, position.y), 2, playerType);
@@ -1834,6 +1894,7 @@ void Play::BuildModeUpdate(){
 				if (Player1Turn == true)
 				{
 					Player1Turn = false;
+					playerBuildCamera = true;
 				}
 				else if (Player1Turn == false)
 				{
@@ -2079,6 +2140,14 @@ void Play::UpdateCamera()
 	}
 	else
 	{
+		/*if (Player1Turn == true)
+		{
+			buildViewenter = sf::Vector2f(450, 0);
+		}
+		else
+		{
+			buildViewenter = sf::Vector2f(950, 0);
+		}*/
 		buildView.setCenter(buildViewenter);
 		game->window.setView(buildView);
 	}
@@ -2224,21 +2293,33 @@ void Play::UpdateHealth()
 	captain2health.setString(std::to_string(captain2.getHealth()));
 
 
-	if (captain1.getHealth() <= 0 || captain1.getPosition().y > 900)
-	{    
+	if (captain1.getHealth() <= 0 || captain1.getPosition().y > 620)
+	{
 		//game->pushState(new GameOver(this->game,"Player 2 Wins"));
-		changeState = true;
+	
+		if (CountDown == false)
+		{
+			changeState = true;
+		}
 	}
-	else if (captain2.getHealth() <= 0 || captain2.getPosition().y > 900)
+	else if (captain2.getHealth() <= 0 || captain2.getPosition().y > 620)
 	{
 	//	game->pushState(new GameOver(this->game, "Player 1 Wins"));
-		changeState = true;
+		
+		if (CountDown == false)
+		{
+			changeState = true;
+		}
 	}
 	else if (player1teamdead == true && player2teamdead == true)
 	{
 		
 	//	game->pushState(new GameOver(this->game, "This game is a tie!"));
-		changeState = true;
+		CountDown = true;
+		if (CountDown == false)
+		{
+			changeState = true;
+		}
 	}
 	
 

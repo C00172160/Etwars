@@ -118,6 +118,16 @@ void SelectMap::update()
 		returnButton.setTexture(returnButtonTexture2);
 	}
 
+	game->window.draw(AtlantisText);
+	game->window.draw(ElysiumText);
+	game->window.draw(OlympusText);
+
+
+	game->window.draw(AtlantisSprite);
+	game->window.draw(ElysiumSprite);
+	game->window.draw(OlympusSprtite);
+	game->window.draw(returnButton);
+	game->window.display();
 
 
 	if (CheckClicked(AtlantisSprite, Mouseposition) == true && sf::Mouse::isButtonPressed(sf::Mouse::Left) == true)
@@ -149,16 +159,7 @@ void SelectMap::update()
 
 	
 
-	game->window.draw(AtlantisText);
-	game->window.draw(ElysiumText);
-	game->window.draw(OlympusText);
-
-
-	game->window.draw(AtlantisSprite);
-	game->window.draw(ElysiumSprite);
-	game->window.draw(OlympusSprtite);
-	game->window.draw(returnButton);
-	game->window.display();
+	
 
 
 	
