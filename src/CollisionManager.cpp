@@ -33,7 +33,10 @@ bool CollisionManager::CircleRectangleCollision(sf::CircleShape &s1, sf::Rectang
 }
 
 bool CollisionManager::RectangleRectangleCollision(sf::RectangleShape &s1, sf::RectangleShape &s2){
-	if (s1.getGlobalBounds().intersects(s2.getGlobalBounds()))
+	if (s1.getPosition().x + s1.getGlobalBounds().width > (s2.getPosition().x) &&
+		s1.getPosition().x < (s2.getPosition().x + s2.getGlobalBounds().width) &&
+		(s1.getPosition().y + s1.getGlobalBounds().height) > s2.getPosition().y &&
+		s1.getPosition().y < s2.getPosition().y + s2.getGlobalBounds().height)
 	{
 
 		return true;
@@ -42,6 +45,7 @@ bool CollisionManager::RectangleRectangleCollision(sf::RectangleShape &s1, sf::R
 	{
 		return false;
 	}
+
 
 
 }

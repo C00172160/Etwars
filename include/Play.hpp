@@ -72,15 +72,17 @@ private:
 	sf::Clock turnCLock;//used to count down the players turn
 	double turnTimer;
 	bool  vsync, audio, fullscreen;
+	sf::Texture healthTex;
+
 	//////////////////////////////////////////////////////////////////////////////////
 
 	//PARTICLES
-	sf::Texture Snowtexture;
+	sf::Texture particleTexture;
 	thor::ParticleSystem system;
 	sf::Clock Particleclock;
-	thor::UniversalEmitter Snowemitter1;
-	thor::UniversalEmitter Snowemitter2;
-	thor::UniversalEmitter Snowemitter3;
+	thor::UniversalEmitter particleEmitter1;
+	thor::UniversalEmitter particleEmitter2;
+	thor::UniversalEmitter particleEmitter3;
 	sf::Clock RocketParticleclock;
 	sf::Texture Firetexture;
 	thor::ParticleSystem Rocketsystem;
@@ -117,12 +119,13 @@ private:
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//BUILDMODE
+	sf::CircleShape buildCheck;
 	bool BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode;
 	sf::Sprite placingSprite, FinishButtonSprite;
 	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2,handgunplayer1,handgunplayer2,shotgunplayer1,shotgunplayer2,sniperplayer1,sniperplayer2;
 	sf::Text PlaceCaptaintext;
 	int rocketPrice, shotgunPrice, sniperPrice, handgunPrice, dirtprice, steelPrice, concretePrice;
-	bool placeable = true;
+	bool placeable;
 	sf::CircleShape placingspriteCircle;
 	sf::RectangleShape hudSpriterect;
 	///////////////////////////////////////////////////////////////////////////

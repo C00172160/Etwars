@@ -128,7 +128,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
     sizeofmap = 0;
 	RocketTexture.loadFromFile("Resources/Rocket.png");
 	CrosshairTexture.loadFromFile("Resources/crosshair.png");
-	
+	healthTex.loadFromFile("Resources/health.png");
 	playerTexture.loadFromFile("Resources/player.png");
 	player2Texture.loadFromFile("Resources/player2.png");
 	captainTexture1.loadFromFile("Resources/captain1Right.png");
@@ -357,7 +357,7 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	background3.setScale(-1, 1);
 	DirtBlockHud.setTexture(dirttex);
 	Firetexture.loadFromFile("Resources/smoke.png");
-	Snowtexture.loadFromFile("Resources/snow.png");
+	
 	topSprite.setTexture(top);
 	topSprite2.setTexture(top);
 	topSprite3.setTexture(top);
@@ -369,27 +369,8 @@ Play::Play(Game* game, int selectedMap, bool VSYNC, bool FULLSCREEN, bool AUDIO)
 	topSprite2.setScale(-1, 1);
 	topSprite3.setPosition(sf::Vector2f(sf::Vector2f(topSprite.getPosition().x + topSprite.getGlobalBounds().width, background.getPosition().y - background.getGlobalBounds().height / 2 - 305)));
 	topSprite3.setScale(-1, 1);
-	system.setTexture(Snowtexture);
-	Snowemitter1.setEmissionRate(100);
-	Snowemitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
-	Snowemitter1.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1000, -1000), 100));   // Emit particles in given circle
-	Snowemitter1.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
-	Snowemitter1.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
-	system.addEmitter(Snowemitter1);
 
-	Snowemitter2.setEmissionRate(100);
-	Snowemitter2.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
-	Snowemitter2.setParticlePosition(thor::Distributions::circle(sf::Vector2f(200, -1000), 100));   // Emit particles in given circle
-	Snowemitter2.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
-	Snowemitter2.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
-	system.addEmitter(Snowemitter2);
-
-	Snowemitter3.setEmissionRate(100);
-	Snowemitter3.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
-	Snowemitter3.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1800, -1000), 100));   // Emit particles in given circle
-	Snowemitter3.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
-	Snowemitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
-	system.addEmitter(Snowemitter3);
+	
 
 	
 	players1Teamselected = false;//if player one has bought any players
@@ -426,10 +407,32 @@ void Play::InitMap()
 		bottomLeftCorner.loadFromFile("Resources/snow/1.png");
 		backGroundTexture.loadFromFile("Resources/background.jpg");
 		top.loadFromFile("Resources/iceSky.png");
+		particleTexture.loadFromFile("Resources/snow.png");
 		water1.Init(false);
 		water2.Init(false);
 		water3.Init(false);
-		
+
+		system.setTexture(particleTexture);
+		particleEmitter1.setEmissionRate(100);
+		particleEmitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter1.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1000, -1000), 100));   // Emit particles in given circle
+		particleEmitter1.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter1.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter1);
+
+		particleEmitter2.setEmissionRate(100);
+		particleEmitter2.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter2.setParticlePosition(thor::Distributions::circle(sf::Vector2f(200, -1000), 100));   // Emit particles in given circle
+		particleEmitter2.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter2.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter2);
+
+		particleEmitter3.setEmissionRate(100);
+		particleEmitter3.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter3.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1800, -1000), 100));   // Emit particles in given circle
+		particleEmitter3.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter3);
 		
 		for (int y = 0; y < 30; y++)
 		{
@@ -463,10 +466,34 @@ void Play::InitMap()
 		bottomStraight.loadFromFile("Resources/grass/2.png");
 		bottomLeftCorner.loadFromFile("Resources/grass/1.png");
 		backGroundTexture.loadFromFile("Resources/forest.jpg");
+		particleTexture.loadFromFile("Resources/leaf.png");
 		top.loadFromFile("Resources/forestSky.png");
 		water1.Init(false);
 		water2.Init(false);
 		water3.Init(false);
+
+		system.setTexture(particleTexture);
+		particleEmitter1.setEmissionRate(20);
+		particleEmitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter1.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1000, -1000), 100));   // Emit particles in given circle
+		particleEmitter1.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter1.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter1);
+
+		particleEmitter2.setEmissionRate(20);
+		particleEmitter2.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter2.setParticlePosition(thor::Distributions::circle(sf::Vector2f(200, -1000), 100));   // Emit particles in given circle
+		particleEmitter2.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter2.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter2);
+
+		particleEmitter3.setEmissionRate(20);
+		particleEmitter3.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter3.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1800, -1000), 100));   // Emit particles in given circle
+		particleEmitter3.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter3);
+
 
 		for (int y = 0; y < 30; y++)
 		{
@@ -513,10 +540,35 @@ void Play::InitMap()
 		bottomStraight.loadFromFile("Resources/wasteland/2.png");
 		bottomLeftCorner.loadFromFile("Resources/wasteland/1.png");
 		backGroundTexture.loadFromFile("Resources/volcano.jpg");
+		particleTexture.loadFromFile("Resources/meteor.png");
 		top.loadFromFile("Resources/lavaSky.png");
 		water1.Init(true);
 		water2.Init(true);
 		water3.Init(true);
+
+		system.setTexture(particleTexture);
+		particleEmitter1.setEmissionRate(1);
+		particleEmitter1.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter1.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1000, -1000), 100));   // Emit particles in given circle
+		particleEmitter1.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter1.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter1);
+
+		particleEmitter2.setEmissionRate(1);
+		particleEmitter2.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter2.setParticlePosition(thor::Distributions::circle(sf::Vector2f(200, -1000), 100));   // Emit particles in given circle
+		particleEmitter2.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter2.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter2);
+
+		particleEmitter3.setEmissionRate(1);
+		particleEmitter3.setParticleLifetime(thor::Distributions::uniform(sf::seconds(9), sf::seconds(12)));
+		particleEmitter3.setParticlePosition(thor::Distributions::circle(sf::Vector2f(1800, -1000), 100));   // Emit particles in given circle
+		particleEmitter3.setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0, 200), 50.f)); // Emit towards direction with deviation of 15°
+		particleEmitter3.setParticleRotation(thor::Distributions::uniform(0.f, 360.f));      // Rotate randomly
+		system.addEmitter(particleEmitter3);
+
+
 	}
 
 
@@ -549,7 +601,7 @@ void Play::UpdateRocketParticle()
 
 
 	Rocketsystem.update(RocketParticleclock.restart());
-	//game->window.draw(Rocketsystem);
+	game->window.draw(Rocketsystem);
 }
 
 void Play::draw()
@@ -689,7 +741,7 @@ void Play::update()
 	game->window.draw(topSprite);
 	game->window.draw(topSprite2);
 	game->window.draw(topSprite3);
-//	game->window.draw(system);
+	game->window.draw(system);
 	UpdateStaticBodies();
 	UpdateCamera();
 
@@ -785,12 +837,12 @@ void Play::update()
 	for (int i = 0; i < player1team.size(); i++)
 	{
 		game->window.draw(player1team[i].getSprite());
-		sf::Text temp;
-		temp.setFont(font);
-		temp.setColor(sf::Color::Black);
-		temp.setStyle(sf::Text::Bold);
-		temp.setPosition(0, 0);
-		temp.setCharacterSize(20);
+		sf::Sprite temp;
+		temp.setTexture(healthTex);
+		temp.setOrigin(healthTex.getSize().x / 2, healthTex.getSize().y / 2);
+		float currenthealth = player1team[i].getHealth();
+		temp.setScale((currenthealth / 100), 1);
+
 		if (player1team[i].getPosition().y > 620 && player1team[i].getAlive()==true)
 		{
 			if (i == player1Number)
@@ -802,10 +854,9 @@ void Play::update()
 		}
 		if (player1team[i].getAlive() == true)
 		{
-
-			temp.setString(player1team[i].getHealthText());
-			temp.setPosition(player1team[i].getPosition().x - 10, player1team[i].getPosition().y - 40);
+			temp.setPosition(player1team[i].getPosition().x, player1team[i].getPosition().y - 40);
 			game->window.draw(temp);
+		
 		}
 
 	}
@@ -813,12 +864,12 @@ void Play::update()
 	{
 		game->window.draw(player2team[i].getSprite());
 		
-		sf::Text temp;
-		temp.setFont(font);
-		temp.setColor(sf::Color::Black);
-		temp.setStyle(sf::Text::Bold);
-		temp.setPosition(0, 0);
-		temp.setCharacterSize(20);
+
+		sf::Sprite temp;
+		temp.setTexture(healthTex);
+		temp.setOrigin(healthTex.getSize().x / 2, healthTex.getSize().y / 2);
+		float currenthealth = player2team[i].getHealth();
+		temp.setScale((currenthealth / 100), 1);
 		if (player2team[i].getPosition().y > 620 && player2team[i].getAlive() == true)
 		{
 			if (i == player2Number)
@@ -827,11 +878,10 @@ void Play::update()
 			}
 			player2team[i].setHealth(100);
 		}
-		if (player2team[i].getAlive() == true && player1team[i].getAlive() == true)
+		if (player2team[i].getAlive() == true)
 		{
 
-			temp.setString(player2team[i].getHealthText());
-			temp.setPosition(player2team[i].getPosition().x - 10, player2team[i].getPosition().y - 40);
+			temp.setPosition(player2team[i].getPosition().x, player2team[i].getPosition().y - 40);
 			game->window.draw(temp);
 		}
 	}
@@ -932,6 +982,8 @@ void Play::update()
 	//	game->window.draw(reverbCircle);
 	//	game->window.draw(reverbCircle2);
 	}
+
+	
 	updateHandguns();
 	updateShotguns();
 	updateSnipers();
@@ -1638,10 +1690,29 @@ void Play::CreateCaptain(sf::Vector2f pos, int team, int type)
 
 void Play::BuildModeUpdate(){
 
+	buildCheck.setOrigin(10, 10);
+	buildCheck.setRadius(20);
+	buildCheck.setPosition(placingSprite.getPosition().x, placingSprite.getPosition().y);
+
+	/*for (int i = 0; i < blocks.size(); i++)
+	{
+		if (abs(buildCheck.getPosition().x - blocks[i].getBody()->GetPosition().x *SCALE) < 10 && abs(buildCheck.getPosition().y - blocks[i].getBody()->GetPosition().y*SCALE) < 10)
+			{
+				if (CollisionManager::CircleDetectCollision(buildCheck, blocks[i].getCircle()) == true)
+				{
+					placeable = true;
+				}
+				else
+				{
+					placeable = false;
+				}
+			}		
 	
+	}*/
 
 	sf::Vector2i windowPosition = sf::Vector2i(buildView.getCenter().x - 400, buildView.getCenter().y - 300);
 	sf::Vector2i position = sf::Mouse::getPosition(game->window) + windowPosition;
+	
 	HudSpritePosition = sf::Vector2f(windowPosition.x, windowPosition.y + 450);
 	HudSprite.setPosition(HudSpritePosition);
 	FinishButtonSprite.setPosition(HudSpritePosition + sf::Vector2f(350, 100));
@@ -1688,7 +1759,7 @@ void Play::BuildModeUpdate(){
 		hangunplayersprite.setTexture(handgunplayer1);
 		shotgunplayersprite.setTexture(shotgunplayer1);
 		sniperplayersprite.setTexture(sniperplayer1);
-		currentPlayer.setString("PLAYER 1,  ");
+		currentPlayer.setString(to_string(placeable));
 		currentPlayer.setPosition(HudSpritePosition + sf::Vector2f(210, 10));
 		Money.setString(" Credits Remaining = " + std::to_string(CurrentPlayer1Money));
 		Money.setPosition(HudSpritePosition + sf::Vector2f(310, 10));
@@ -1730,17 +1801,19 @@ void Play::BuildModeUpdate(){
 			placingSprite.setTexture(captaintexture2);
 		}
 	
-	
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true && placeable == true)
+		
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true )
 		{
 			
 			if (Player1Turn == true && placingSprite.getPosition().x < 990)
 			{
-				playerBuildCamera = true;
-				mousereleased = false;
-				captain1placed = true;
-				CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
-				Player1Turn = false;
+				
+				
+					playerBuildCamera = true;
+					mousereleased = false;
+					captain1placed = true;
+					CreateCaptain(sf::Vector2f(position.x, position.y), 1, playerType);
+					Player1Turn = false;
 				
 			}
 			else if (Player1Turn == false  && placingSprite.getPosition().x > 990)
@@ -1788,7 +1861,7 @@ void Play::BuildModeUpdate(){
 
 
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true && placeable == true)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && mousereleased == true)
 		{
 			if ( Player1Turn == true && CurrentPlayer1Money >= price)
 			{
@@ -1813,7 +1886,7 @@ void Play::BuildModeUpdate(){
 
 	if (PlacePlayerMode == true)//////////////////////////////////////////////////////////////////////////////////
 	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true && placeable == true)
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && mousereleased == true)
 		{
 			PlacePlayerMode = false;
 		}
@@ -1963,6 +2036,7 @@ void Play::BuildModeUpdate(){
 			}
 
 		}	
+		game->window.draw(buildCheck);
 }
 void Play::GameStart()
 {
@@ -2372,7 +2446,8 @@ void Play::AcitvateGameOverState(){
 	if (changeState == true)
 	{
 		soundManager.stopAll();
-		if (captain1.getHealth() <=0)
+		game->changeState(new GameOver(this->game, "Player 2 wins ", currentMap, vsync, fullscreen, audio));
+		/*if (captain1.getHealth() <=0)
 		{
 			game->changeState(new GameOver(this->game, "Player 2 wins ", currentMap, vsync, fullscreen, audio));
 		}
@@ -2384,7 +2459,7 @@ void Play::AcitvateGameOverState(){
 		{
 			game->changeState(new GameOver(this->game, "Tie game! ", currentMap, vsync, fullscreen, audio));
 		}
-		
+		*/
 	}
 
 }
@@ -2412,6 +2487,10 @@ void Play::UpdateBlocks()
 			{
 				blocks[i].CheckLives();
 			}
+	
+			
+
+			
 		}
 		for (int j = 0; j < player1team.size(); j++)
 		{

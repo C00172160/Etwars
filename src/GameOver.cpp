@@ -11,7 +11,7 @@ GameOver::GameOver(Game* game, std::string string, int map, bool VSYNC, bool FUL
 	fullscreen = FULLSCREEN;
 	audio = AUDIO;
 	this->game = game;
-	sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
+//	sf::Vector2f pos = sf::Vector2f(this->game->window.getSize());
 	sf::View DefaultView;
 	DefaultView.setCenter(400, 300);
 	DefaultView.setSize(800, 600);
