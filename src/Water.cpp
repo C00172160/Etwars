@@ -34,7 +34,7 @@ void Water::setPositon(sf::Vector2f pos)
 		
 }
 
-void Water::Update()
+void Water::updateWater()
 {
 	timer1++;
 	if (timer1 >= 5)

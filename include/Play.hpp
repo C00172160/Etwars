@@ -53,6 +53,10 @@
 #include "SFMLDebugDraw.h"
 #include "Menu.hpp"
 #include "GameOver.hpp"
+#include "Handgun.h"
+#include "Shotgun.h"
+#include "Sniper.h"
+#include <list>
 
 using namespace std;
 
@@ -62,126 +66,124 @@ class Play : public GameState
 private:
 	
 
-	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle,DopplerToggle;
-	sf::Text turn;
-	sf::Clock turnCLock;
+	//TURNS
+	sf::Text turn;//text used to display whos turn it is
+	sf::Clock turnCLock;//used to count down the players turn
 	double turnTimer;
+	//////////////////////////////////////////////////////////////////////////////////
 
+	//PARTICLES
 	sf::Texture Snowtexture;
 	thor::ParticleSystem system;
 	sf::Clock Particleclock;
 	thor::UniversalEmitter Snowemitter1;
 	thor::UniversalEmitter Snowemitter2;
 	thor::UniversalEmitter Snowemitter3;
-
 	sf::Clock RocketParticleclock;
 	sf::Texture Firetexture;
 	thor::ParticleSystem Rocketsystem;
 	thor::UniversalEmitter RocketEmitter;
-	vector<Player> player1team;
-	vector<Player> player2team;
-	int player1Number;
-	int player2Number;
-	int bulletOffset;
-	SoundManager soundManager;
+
+
+
+	////////////////////////////////////////////////////////////////////////////////////
+
+	//PLAYERS AND TEAMS
+
+	sf::Texture captainTexture1 ,captaintexture2,currentCaptaintex,HandgunBulletTexture,shotgunBulletTex,sniperBullettex;
+	int player1Number, player2Number;
 	sf::Vector2f position;
-	sf::Font font;
-    int wormcount;
-	/** Prepare the world */
-	bool Player1Turn;
+	int playerType;
 	sf::Vector2f playerVelocity;
 	sf::Vector2f playerPosition;
-	bool RocketFired;
-	bool BuildMode;
-	bool PlaceBlockMode;
-	bool PlacePlayerMode;
-	bool mousereleased;
-	sf::Sprite placingSprite;
-	sf::Text player1health;
-	sf::Text player2health;
+	bool Player1Turn, player1Fire, player2Fire, players1Teamselected, players2TeamSeleced, RocketFired;
+	sf::Text player1health, captain1health, captain2health, player2health;
+	sf::Texture playerTexture, player2Texture, CrosshairTexture, RocketTexture,handguntex,shotguntex,snipertex,rocketlaunchertex;
+	Player player1, player2, captain1, captain2;
+	Crosshair cross;
+	std::vector<Rocket> Rockets;
+	std::vector<Handgun> Handguns;
+	std::vector<Shotgun> Shotguns;
+	std::vector<Sniper> Snipers;
+	sf::CircleShape reverbCircle, reverbCircle2;
+	////////////////////////////////////////////////////////////////////////////////////
+	bool changeState;
+	//AUDIO
+	SoundManager soundManager;
+	bool effectToggle, reverbToggle, spacialToggle, backgroundToggle, waveToggle, DopplerToggle;
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//BUILDMODE
+	bool BuildMode, PlaceBlockMode, PlacePlayerMode, mousereleased, captainplacemode;
+	sf::Sprite placingSprite, FinishButtonSprite;
+	sf::Texture FinishButtonTexture, hudPanelTex, RocketPlayerTexture, RocketPlayerTexture2,handgunplayer1,handgunplayer2,shotgunplayer1,shotgunplayer2,sniperplayer1,sniperplayer2;
+	sf::Text PlaceCaptaintext;
+	int rocketPrice, shotgunPrice, sniperPrice, handgunPrice, dirtprice, steelPrice, concretePrice;
+	bool placeable = true;
+	sf::CircleShape placingspriteCircle;
+	sf::RectangleShape hudSpriterect;
+	///////////////////////////////////////////////////////////////////////////
+
+
+	int bulletOffset;
+	sf::Font font;
+	bool outOfBounds, sizeofmap,startExplosion, zoomed, CountDown, overview;
 	Water water1, water2, water3;
 	vector<Block> blocks;
 	int currentType;
-	int playerType;
-	//sf::Texture grasstexture;
-	sf::Texture backGroundTexture;
-	sf::Texture playerTexture;
-	sf::Texture player2Texture;
-	//sf::Texture DirtTexture;
-	sf::Texture CrosshairTexture;
-	sf::Texture Explosion;
+
+	
 	sf::Vector2f Explosionsource = sf::Vector2f(0, 0);
 	sf::Sprite ExplosionSprite;
-	sf::Texture FinishButtonTexture;
-	sf::Sprite FinishButtonSprite;
-	sf::Texture RocketTexture;
-	sf::Texture dirttex;	
-	sf::Texture topStraighttex;
-	sf::Texture leftStraighttex;
-	sf::Texture topLeftCornertex;
-	sf::Texture topRightCornertex;
-	sf::Texture bottomRightCornertex;
-	sf::Texture rightStraight;
-	sf::Texture bottomStraight;
-	sf::Texture bottomLeftCorner;
-	sf::Texture hudPanelTex;
-	sf::Vector2f cameraposition;
-	sf::Texture RocketPlayerTexture;
-	sf::View player1View, player2View, bulletView, buildView, standardView;
-	int sizeofmap;
-	bool outOfBounds;
-	sf::Vector2f buildViewenter;
-	
-	Player player1;
-	Player player2;
+	sf::Texture dirttex,topStraighttex,leftStraighttex,topLeftCornertex,topRightCornertex,bottomRightCornertex, rightStraight, bottomStraight, bottomLeftCorner, cameraposition, backGroundTexture, Explosion,steelblock,concreteblock;
 
-	Crosshair cross;
-	bool player1Fire;
-	bool player2Fire;
-	std::vector<Rocket> Rockets;
+	sf::View player1View, player2View, bulletView, buildView, standardView;
+	sf::Vector2f buildViewenter;
 	sf::Sprite background;
-	int gameSize;
-	int blockAmount;
-	int blockWidth;
-	int offset;
+	int gameSize, blockAmount, blockWidth, offset, price, CurrentPlayer1Money, CurrentPlayer2Money;
 	sf::CircleShape  boundingbox;
 	sf::Clock clock;
 	float bullerTimer;
-	bool CountDown;
+
 	 int width=200;
 	 int heigh30;
-	 bool overview;
-	 bool zoomed;
+
 	 ///Hud Variables
-	 bool players1Teamselected;
-	 bool players2TeamSeleced;
-	 sf::Sprite DirtBlockHud;
+	 sf::Sprite DirtBlockHud,concreteblockhud,steelblockhud;
 	 sf::Vector2f DirtBlockPosition;
 	 sf::Sprite HudSprite;
 	 sf::Vector2f HudSpritePosition;
-	 sf::Sprite RocketPlayerSprite;
-	 sf::Vector2f RocketPlayerSpritePosition;
-	 sf::Text currentPlayer;
-	 sf::Text Money;
-	 sf::Text dirtPrice;
-	 sf::Text RocketPlayerPrice;
-	 bool startExplosion;
-	 int price;
-	 int CurrentPlayer1Money;
-	 int CurrentPlayer2Money;
+	 sf::Sprite RocketPlayerSprite,hangunplayersprite,sniperplayersprite,shotgunplayersprite;
+	 
+	 sf::Sprite blockSprite;
+	 sf::Sprite CaptainPlacingSprite;
+	
+	 sf::Text currentPlayer, Money, dirtPriceText, RocketPlayerPriceText, HandgunPriceText, ShotgunPriceText, SniperPriceText, concretepriceText, steelpriceText,dirtName,rocketName,handgunName,shotgunName,sniperName,concreteName,steelName;
+	 bool captain1placed, capatain2placed;
+	 bool player1teamdead = false;
+	 bool player2teamdead = false;
 	 float explosiontimer;
-	 sf::CircleShape reverbCircle;
-	 sf::CircleShape reverbCircle2;
+	 vector<Player> player1team;
+	 vector<Player> player2team;
+	 int numberPlayersTeam1 = 1;
+	 int numberPlayersTeam2 = 1;
+
 
 public:
 
 	virtual void draw();
+	void CreateCaptain(sf::Vector2f pos, int team, int type);
 	void DrawDebug();
 	virtual void update();
 	virtual void handleInput();
+	void AcitvateGameOverState();
 	void PlayExplosion();
 	void UpdateStaticBodies();
 	void SwitchTurn();
+	void updateHandguns();
+	void updateShotguns();
+	void checkAlive();
+	void updateSnipers();
 	void UpdateCamera();
 	void UpdateRockets();
 	void UpdateHealth();
@@ -191,7 +193,9 @@ public:
 	void GameStart();
 	void CreatePlayer(sf::Vector2f pos, int team,int type);
 	void InitRocketParticle();
+	int findNextAlive(int team);
 	void UpdateRocketParticle();
+	~Play();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
 	void CreateBlock(int type, sf::Vector2i position);
 	Play(Game* game);

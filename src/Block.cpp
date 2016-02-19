@@ -8,12 +8,14 @@ Block::Block(int c ,sf::Vector2f position,b2World& world){
 	m_position = sf::Vector2f(position.x , position.y );
 	type = c;
 	createBlock(world, m_position,type);
-	circle.setOrigin(10, 10);
-	circle.setRadius(10);
-	circle.setPosition(m_position.x , m_position.y );
-	circle.setFillColor(sf::Color::Transparent);
-	circle.setOutlineThickness(5.f);
-	circle.setOutlineColor(sf::Color::Black);
+	blockRectangle.setSize(sf::Vector2f(20, 20));
+	blockCirlce.setRadius(10);
+	blockCirlce.setOrigin(10, 10);
+
+	blockCirlce.setPosition(m_position.x, m_position.y);
+	blockCirlce.setFillColor(sf::Color::Transparent);
+	blockCirlce.setOutlineThickness(0.5f);
+	blockCirlce.setOutlineColor(sf::Color::Black);
 }
 
 	
@@ -116,7 +118,20 @@ void Block::createBlock(b2World& world, sf::Vector2f position,int type) {
 		lives = 1;
 
 	}
+	else if (type == 10){
 
+		BlockBody->SetUserData("concrete");
+		lives = 3;
+
+	}
+	else if (type == 11){
+
+		BlockBody->SetUserData("steel");
+		lives = 5;
+
+	}
+	blockRectangle.setOrigin(10, 10);
+	blockRectangle.setPosition(BlockBody->GetPosition().x*SCALE, BlockBody->GetPosition().y*SCALE);
 
 }
 
@@ -128,7 +143,6 @@ void Block::CheckLives()
 		{
 			alive = false;
 		}
-
 }
 bool Block::getAlive()
 {
@@ -137,11 +151,13 @@ bool Block::getAlive()
 }
 b2Body* Block::getBody()
 {
-
 	return BlockBody;
-	
 }
-sf::CircleShape& Block::getCircle(){
-
-	return circle;
+sf::RectangleShape& Block::getRect()
+{
+	return blockRectangle;
+}
+sf::CircleShape& Block::getCircle()
+{
+	return blockCirlce;
 }

@@ -12,7 +12,7 @@ class Water {
 public:
 
 	Water();
-	void Update();
+	void updateWater();
 	void setPositon(sf::Vector2f pos);
 	void Draw(Game* game);
 	

@@ -24,7 +24,7 @@ class Rocket{
 		b2Body* Rocket::getBody();
 		void setAlive(bool boolean);
 		sf::Vector2f getVelocity();
-
+		sf::CircleShape getCircle();
 
 	
 
@@ -33,8 +33,8 @@ class Rocket{
 	private:
 		bool alive = true;
 		b2Body* m_body;
-		float Height = 10;
-		float Width = 20;
+		float Height = 30;
+		float Width = 30;
 		const float SCALE = 30.f;
 		sf::Vector2f m_position;
 		sf::Texture m_texture;
@@ -42,7 +42,7 @@ class Rocket{
 		sf::Sprite Sprite;
 		float angle;
 		b2Fixture* SensorFixture;
-
+		sf::CircleShape collisioncircle;
 
 };
 

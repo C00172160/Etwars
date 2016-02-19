@@ -15,6 +15,7 @@ public:
 	void Block::CheckLives();
 	bool getAlive();
 	b2Body* getBody();
+	sf::RectangleShape& getRect();
 	sf::CircleShape& getCircle();
 
 private:
@@ -24,7 +25,9 @@ private:
 	b2Fixture* SensorFixture;
 	bool alive = true;
 	b2Body * BlockBody;
-	sf::CircleShape circle;
+	sf::RectangleShape blockRectangle;
+	sf::CircleShape blockCirlce;
+	
 };
 
 #endif

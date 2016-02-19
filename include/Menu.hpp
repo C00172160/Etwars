@@ -24,12 +24,16 @@ private:
 	sf::View view;
 	sf::Text text;
 
-	sf::Texture buttonTexture;
-	sf::Sprite buttonSprite;
+	sf::Texture buttonTexture, name,selectTexture;
+	sf::Sprite buttonSprite, nameSprite,selectSprite;
 	sf::Vector2i windowPosition;
 	sf::Vector2i Mouseposition;
-	
-
+	sf::Texture rock;
+	sf::Sprite rockSprite;
+	bool physics;
+	float mass, deltaTime, weight, gravity;
+	sf::Vector2f rockPos, rockVel, m_acceleration;
+	//std::stack<GameState*> states;
 	sf::Vector2f p;
 	sf::Texture texture;
 	thor::ParticleSystem system;
@@ -42,7 +46,8 @@ public:
 	virtual void update();
 	virtual void handleInput();
 	bool CheckClicked(sf::Sprite sprite, sf::Vector2i position);
-
+	void reset();
+	~Menu();
 	Menu(Game* game);
 };
 

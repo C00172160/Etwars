@@ -17,8 +17,8 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 	m_position = pos;
 	m_texture = tex;
 
-	
-
+	collisioncircle.setFillColor(sf::Color::Black);
+	collisioncircle.setOrigin(16, 16);
 	b2BodyDef myBodyDef;
 	myBodyDef.type = b2_dynamicBody;
 	myBodyDef.fixedRotation = false;
@@ -26,8 +26,9 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 
 	m_body = world.CreateBody(&myBodyDef);
 
-	b2PolygonShape Shape;
-	Shape.SetAsBox((Width/ 2) / SCALE, (Height / 2) / SCALE);
+	b2CircleShape Shape;
+	//Shape.SetAsBox((Width/ 2) / SCALE, (Height / 2) / SCALE);
+	Shape.m_radius = 15/SCALE;
 	b2FixtureDef FixtureDef;
 	FixtureDef.density = 0.f;
 	FixtureDef.friction = 1.f;
@@ -35,11 +36,11 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 	m_body->CreateFixture(&FixtureDef);
 	m_body->SetUserData("rocket");
 	
-
+	collisioncircle.setRadius(16);
 	//add  sensor fixture
 	b2PolygonShape polygonShape2;
-	polygonShape2.SetAsBox((Width / SCALE) + 0.3f, (Height / SCALE) + 0.3f); //a 2x4 rectangle
-
+	//polygonShape2.SetAsBox((Width / SCALE) + 0.3f, (Height / SCALE) + 0.3f); //a 2x4 rectangle
+	polygonShape2.SetAsBox((Width / 2) / SCALE, (Height / 2) / SCALE);
 	b2FixtureDef myFixtureDef2;
 
 	myFixtureDef2.shape = &polygonShape2;
@@ -49,7 +50,7 @@ Rocket::Rocket(b2World& world, sf::Vector2f pos, sf::Texture &tex, sf::Vector2f 
 
 	tex.setSmooth(true);
 	Sprite.setTexture(tex);
-	Sprite.setOrigin(10.5 , 5 );
+	Sprite.setOrigin(15 , 15 );
 	//Sprite.setOrigin(0,0);
 
 	sf::Vector2f Direction = pos - (sf::Vector2f(PlayerPos.x,PlayerPos.y));
@@ -64,7 +65,7 @@ void Rocket::Update(b2World& world)
 {
 	Sprite.setPosition(m_body->GetPosition().x * SCALE, m_body->GetPosition().y* SCALE);
 	Sprite.setRotation(m_body->GetAngle() * 180 / b2_pi);
-
+	collisioncircle.setPosition((m_body->GetPosition().x * SCALE), (m_body->GetPosition().y* SCALE));
 	angle = atan2((double)m_body->GetLinearVelocity().y, (double)m_body->GetLinearVelocity().x);
 	m_body->SetTransform(m_body->GetWorldCenter(), angle - ((float)M_1_PI) / 2.0f);
 }
@@ -95,4 +96,9 @@ void Rocket::setAlive(bool boolean)
 {
 
 	alive = boolean;
+}
+sf::CircleShape Rocket::getCircle()
+{
+
+	return collisioncircle;
 }

@@ -35,7 +35,6 @@
 void Game::pushState(GameState* state)
 {
 	this->states.push(state);
-
 	return;
 }
 
@@ -83,8 +82,9 @@ void Game::gameLoop()
 
 Game::Game()
 {
-	this->window.create(sf::VideoMode(800, 600), "ET WARS");
+	this->window.create(sf::VideoMode(800, 600), "ET WARS");//,sf::Style::Fullscreen);
 	this->window.setFramerateLimit(60);
+	this->window.setVerticalSyncEnabled(true);
 }
 
 Game::~Game()
