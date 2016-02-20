@@ -12,12 +12,39 @@ bool CollisionManager::CircleDetectCollision(sf::CircleShape &s1, sf::CircleShap
 	float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
 	if (distance < (s1.getRadius() +s2.getRadius())){
 		return true;
+		
 	}
 	else {
 		return false;
 	}
 }
+bool CollisionManager::CircleRectangleCollision(sf::CircleShape &s1, sf::RectangleShape &s2){
+	if (s1.getGlobalBounds().intersects(s2.getGlobalBounds()))
+	{
 
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
+
+}
+
+bool CollisionManager::RectangleRectangleCollision(sf::RectangleShape &s1, sf::RectangleShape &s2){
+	if (s1.getGlobalBounds().intersects(s2.getGlobalBounds()))
+	{
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+
+}
 
 float CollisionManager::dotProduct(sf::Vector2f v1, sf::Vector2f v2){
 
